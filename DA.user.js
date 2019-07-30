@@ -15,26 +15,26 @@
     let fuelTanksCapacity = 0;
 
     const newBar = document.createElement("div");
-    const ciê¿arowySondaButton = '<button id="ciê¿arowySonda">Ciê¿arowy - Sonda</button>';
-    const ciê¿arowyP³ywakButton = '<button id="ciê¿arowyP³ywak">Ciê¿arowy - P³ywak</button>';
-    const osobowyP³ywakButton = '<button id="osobowyP³ywak">osobowy - P³ywak</button>';
+    const ciÃªÂ¿arowySondaButton = '<button id="ciÃªÂ¿arowySonda">CiÃªÂ¿arowy - Sonda</button>';
+    const ciÃªÂ¿arowyPÂ³ywakButton = '<button id="ciÃªÂ¿arowyPÂ³ywak">CiÃªÂ¿arowy - PÂ³ywak</button>';
+    const osobowyPÂ³ywakButton = '<button id="osobowyPÂ³ywak">osobowy - PÂ³ywak</button>';
     const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
     const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
 
-    newBar.innerHTML = `<div id="buttonDiv">${ciê¿arowySondaButton}${ciê¿arowyP³ywakButton}  |  |  | ${osobowyP³ywakButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
+    newBar.innerHTML = `<div id="buttonDiv">${ciÃªÂ¿arowySondaButton}${ciÃªÂ¿arowyPÂ³ywakButton}  |  |  | ${osobowyPÂ³ywakButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
 
     $(".break")[0].children[0].append(newBar);
 
-    document.getElementById("ciê¿arowySonda").addEventListener('click', ciê¿arowySonda);
-    document.getElementById("ciê¿arowyP³ywak").addEventListener('click', ciê¿arowyP³ywak);
-    document.getElementById("osobowyP³ywak").addEventListener('click', osobowyP³ywak);
+    document.getElementById("ciÃªÂ¿arowySonda").addEventListener('click', ciÃªÂ¿arowySonda);
+    document.getElementById("ciÃªÂ¿arowyPÂ³ywak").addEventListener('click', ciÃªÂ¿arowyPÂ³ywak);
+    document.getElementById("osobowyPÂ³ywak").addEventListener('click', osobowyPÂ³ywak);
     document.getElementById("odklikajCan").addEventListener('click', odklikajCanFunc);
     document.getElementById("serwisSondy").addEventListener('click', serwisSondyFunc);
 
-    function ciê¿arowySonda(e) {
+    function ciÃªÂ¿arowySonda(e) {
         e.preventDefault();
         uniwersalne();
-        ciê¿arowyUniwersalne();
+        ciÃªÂ¿arowyUniwersalne();
 
         $("#s2id_pomiar_paliwa_id").select2('val', 2);
         click("#paliwo_z_sondy");
@@ -47,10 +47,10 @@
         $("#prog_wartosci_paliwa_u").val(percentOfFuelTank(2));
     }
 
-    function ciê¿arowyP³ywak(e) {
+    function ciÃªÂ¿arowyPÂ³ywak(e) {
         e.preventDefault();
         uniwersalne();
-        ciê¿arowyUniwersalne();
+        ciÃªÂ¿arowyUniwersalne();
 
         $("#s2id_pomiar_paliwa_id").select2('val', 3);
         unclick("#paliwo_z_sondy");
@@ -65,7 +65,7 @@
         console.log(fuelTanksCapacity)
     }
 
-    function ciê¿arowyUniwersalne() {
+    function ciÃªÂ¿arowyUniwersalne() {
         $("#min_napiecie_stacji").val(21);
         $("#s2id_poprawnosc_tacho_id").select2('val', 1);
         $("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
@@ -81,7 +81,7 @@
         click("#sposob_gener_zdarzen4");
     }
 
-    function osobowyP³ywak(e) {
+    function osobowyPÂ³ywak(e) {
         e.preventDefault();
         uniwersalne();
         osobowyUniwersalne();
