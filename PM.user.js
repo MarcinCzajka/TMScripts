@@ -12,6 +12,8 @@
 
 (function() {
     'use strict';
+	
+	//Script from GH
 
     const headerString = document.getElementById('bottom_header').children[1].children[0].innerText;
     if(headerString.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
