@@ -12,29 +12,30 @@
 (function() {
     'use strict';
 
+//To jest skrypt z GH
     let fuelTanksCapacity = 0;
 
     const newBar = document.createElement("div");
-    const ci篹arowySondaButton = '<button id="ci篹arowySonda">Ci篹arowy - Sonda</button>';
-    const ci篹arowyP造wakButton = '<button id="ci篹arowyP造wak">Ci篹arowy - P造wak</button>';
-    const osobowyP造wakButton = '<button id="osobowyP造wak">osobowy - P造wak</button>';
+    const ciezarowySondaButton = '<button id="ciezarowySonda">ciezarowy - Sonda</button>';
+    const ciezarowyPlywakButton = '<button id="ciezarowyPlywak">ciezarowy - Plywak</button>';
+    const osobowyPlywakButton = '<button id="osobowyPlywak">osobowy - Plywak</button>';
     const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
     const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
 
-    newBar.innerHTML = `<div id="buttonDiv">${ci篹arowySondaButton}${ci篹arowyP造wakButton}  |  |  | ${osobowyP造wakButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
+    newBar.innerHTML = `<div id="buttonDiv">${ciezarowySondaButton}${ciezarowyPlywakButton}  |  |  | ${osobowyPlywakButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
 
     $(".break")[0].children[0].append(newBar);
 
-    document.getElementById("ci篹arowySonda").addEventListener('click', ci篹arowySonda);
-    document.getElementById("ci篹arowyP造wak").addEventListener('click', ci篹arowyP造wak);
-    document.getElementById("osobowyP造wak").addEventListener('click', osobowyP造wak);
+    document.getElementById("ciezarowySonda").addEventListener('click', ciezarowySonda);
+    document.getElementById("ciezarowyPlywak").addEventListener('click', ciezarowyPlywak);
+    document.getElementById("osobowyPlywak").addEventListener('click', osobowyPlywak);
     document.getElementById("odklikajCan").addEventListener('click', odklikajCanFunc);
     document.getElementById("serwisSondy").addEventListener('click', serwisSondyFunc);
 
-    function ci篹arowySonda(e) {
+    function ciezarowySonda(e) {
         e.preventDefault();
         uniwersalne();
-        ci篹arowyUniwersalne();
+        ciezarowyUniwersalne();
 
         $("#s2id_pomiar_paliwa_id").select2('val', 2);
         click("#paliwo_z_sondy");
@@ -47,10 +48,10 @@
         $("#prog_wartosci_paliwa_u").val(percentOfFuelTank(2));
     }
 
-    function ci篹arowyP造wak(e) {
+    function ciezarowyPlywak(e) {
         e.preventDefault();
         uniwersalne();
-        ci篹arowyUniwersalne();
+        ciezarowyUniwersalne();
 
         $("#s2id_pomiar_paliwa_id").select2('val', 3);
         unclick("#paliwo_z_sondy");
@@ -65,7 +66,7 @@
         console.log(fuelTanksCapacity)
     }
 
-    function ci篹arowyUniwersalne() {
+    function ciezarowyUniwersalne() {
         $("#min_napiecie_stacji").val(21);
         $("#s2id_poprawnosc_tacho_id").select2('val', 1);
         $("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
@@ -81,7 +82,7 @@
         click("#sposob_gener_zdarzen4");
     }
 
-    function osobowyP造wak(e) {
+    function osobowyPlywak(e) {
         e.preventDefault();
         uniwersalne();
         osobowyUniwersalne();
