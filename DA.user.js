@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Presety - Dane Administracyjne
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  try to take over the world!
 // @author       MAC
 // @match        */api/vehicle/admin/save/*
@@ -13,26 +13,26 @@
     'use strict';
 
 //To jest skrypt z GH
-    let fuelTanksCapacity = 0;
+    let fuelCapacity = 0;
 
     const newBar = document.createElement("div");
-    const ciezarowySondaButton = '<button id="ciezarowySonda">ciezarowy - Sonda</button>';
-    const ciezarowyPlywakButton = '<button id="ciezarowyPlywak">ciezarowy - Plywak</button>';
-    const osobowyPlywakButton = '<button id="osobowyPlywak">osobowy - Plywak</button>';
+    const truckProbeButton = '<button id="truckProbe">Ci??arowy - Sonda</button>';
+    const truckFloaterButton = '<button id="truckFloater">Ci??arowy - P?ywak</button>';
+    const carFloaterButton = '<button id="carFloater">osobowy - P?ywak</button>';
     const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
     const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
 
-    newBar.innerHTML = `<div id="buttonDiv">${ciezarowySondaButton}${ciezarowyPlywakButton}  |  |  | ${osobowyPlywakButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
+    newBar.innerHTML = `<div id="buttonDiv">${truckProbeButton}${truckFloaterButton}  |  |  | ${carFloaterButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
 
     $(".break")[0].children[0].append(newBar);
 
-    document.getElementById("ciezarowySonda").addEventListener('click', ciezarowySonda);
-    document.getElementById("ciezarowyPlywak").addEventListener('click', ciezarowyPlywak);
-    document.getElementById("osobowyPlywak").addEventListener('click', osobowyPlywak);
+    document.getElementById("truckProbe").addEventListener('click', truckProbe);
+    document.getElementById("truckFloater").addEventListener('click', truckFloater);
+    document.getElementById("carFloater").addEventListener('click', carFloater);
     document.getElementById("odklikajCan").addEventListener('click', odklikajCanFunc);
     document.getElementById("serwisSondy").addEventListener('click', serwisSondyFunc);
 
-    function ciezarowySonda(e) {
+    function truckProbe(e) {
         e.preventDefault();
         uniwersalne();
         ciezarowyUniwersalne();
@@ -42,13 +42,13 @@
 
         $("#min_odchylenie").val(1.5);
 
-        $("#prog_weryfikujacy_paliwa").val(percentOfFuelTank(3.5));
-        $("#prog_wartosci_paliwa").val(percentOfFuelTank(3.5));
-        $("#prog_weryfikujacy_paliwa_u").val(percentOfFuelTank(2));
-        $("#prog_wartosci_paliwa_u").val(percentOfFuelTank(2));
+        $("#prog_weryfikujacy_paliwa").val(litersByPercent(3.5));
+        $("#prog_wartosci_paliwa").val(litersByPercent(3.5));
+        $("#prog_weryfikujacy_paliwa_u").val(litersByPercent(2));
+        $("#prog_wartosci_paliwa_u").val(litersByPercent(2));
     }
 
-    function ciezarowyPlywak(e) {
+    function truckFloater(e) {
         e.preventDefault();
         uniwersalne();
         ciezarowyUniwersalne();
@@ -58,12 +58,11 @@
 
         $("#min_odchylenie").val(5);
 
-        const percentOfFuel = percentOfFuelTank(5);
+        const percentOfFuel = litersByPercent(5);
         $("#prog_weryfikujacy_paliwa").val((percentOfFuel > 50 ? 0 : percentOfFuel));
         $("#prog_wartosci_paliwa").val((percentOfFuel > 50 ? 0 : percentOfFuel));
         $("#prog_weryfikujacy_paliwa_u").val(0);
         $("#prog_wartosci_paliwa_u").val(0);
-        console.log(fuelTanksCapacity)
     }
 
     function ciezarowyUniwersalne() {
@@ -82,7 +81,7 @@
         click("#sposob_gener_zdarzen4");
     }
 
-    function osobowyPlywak(e) {
+    function carFloater(e) {
         e.preventDefault();
         uniwersalne();
         osobowyUniwersalne();
@@ -93,11 +92,10 @@
         $("#min_odchylenie").val(5);
 
 
-        $("#prog_weryfikujacy_paliwa").val(percentOfFuelTank(10));
-        $("#prog_wartosci_paliwa").val(percentOfFuelTank(10));
+        $("#prog_weryfikujacy_paliwa").val(litersByPercent(10));
+        $("#prog_wartosci_paliwa").val(litersByPercent(10));
         $("#prog_weryfikujacy_paliwa_u").val(0);
         $("#prog_wartosci_paliwa_u").val(0);
-        console.log(fuelTanksCapacity)
     }
 
     function osobowyUniwersalne() {
@@ -118,10 +116,10 @@
     function uniwersalne() {
         $("#wywlaszczenie_zdarzenia").val(1000);
 
-        fuelTanksCapacity = 0;
+        fuelCapacity = 0;
         for(let i = 1; i <= 6; i++) {
             $("#zone_tank_" + i).val($("#pojemnosc_zbiornika_" + i).val());
-            fuelTanksCapacity += +$("#pojemnosc_zbiornika_" + i).val();
+            fuelCapacity += +$("#pojemnosc_zbiornika_" + i).val();
         }
 
         $("#ilosc_punktow_drogi").val(5);
@@ -193,8 +191,8 @@
         if($(element)[0].checked) $(element).click();
     }
 
-    function percentOfFuelTank(percent) {
-        return Math.floor(fuelTanksCapacity * (percent / 100));
+    function litersByPercent(percent) {
+        return Math.floor(fuelCapacity * (percent / 100));
     }
 
     

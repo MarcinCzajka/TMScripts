@@ -15,56 +15,58 @@
 	
 	//Script from GH
 
-    const headerString = document.getElementById('bottom_header').children[1].children[0].innerText;
-    if(headerString.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
+    const headerCaption = document.getElementById('bottom_header').children[1].children[0].innerText;
+    if(headerCaption.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
 
 
-        const newTextbox = document.createElement("div");
-        newTextbox.innerHTML = '<div style="width:100%"><input type="text" id="newTextbox" style="width:100%"><button id="newButton">Wypełnij protokół</button></div>';
+        const myTextbox = document.createElement("div");
+        myTextbox.innerHTML = '<div style="width:100%"><input type="text" id="myTextbox" style="width:100%"><button id="newButton">Wypełnij protokół</button></div>';
 
-        document.getElementById("header").appendChild(newTextbox);
+        document.getElementById("header").appendChild(myTextbox);
 
         document.getElementById("newButton").addEventListener('click', fillProtocol);
 
         ///////////////////////////////////////////////////////////////////////////
 
         function fillProtocol() {
-            const textbox = JSON.parse(document.getElementById("newTextbox").value);
+            const userJSON = JSON.parse(document.getElementById("myTextbox").value);
 
             //Kategoria montażu i monter
-            if(textbox.monter === "Klienta" || !textbox.monter) {
+            if(userJSON.monter === "Klienta" || !userJSON.monter) {
                 $("#s2id_kategoria_id").select2('val', 2);
             }
             else {
                 $("#s2id_kategoria_id").select2('val', 1);
             }
 
-            if(textbox.type === "Montaż") {
+            if(userJSON.type === "Montaż") {
                 $("#s2id_type_id").select2('val', 1);
-            } else if(textbox.type === "Upgrade") {
+            } else if(userJSON.type === "Upgrade") {
                 $("#s2id_type_id").select2('val', 2);
             }
 
             //Nr rejestracyjny
-            if(textbox.rej) $("#nr_rejestracyjny").val(textbox.rej);
-            if(textbox.boczny) $("#nr_boczny_pojazdu").val(textbox.boczny);
+            if(userJSON.rej) $("#nr_rejestracyjny").val(userJSON.rej);
+            if(userJSON.boczny) $("#nr_boczny_pojazdu").val(userJSON.boczny);
 
             // Marka/model
-            $("#s2id_vehicle_type_id").select2("val", 1);
-
-            const marka = $("#marka_id")[0];
-
-            for(let i = 0; i < marka.length; i++) {
-                if(marka[i].innerText.toLowerCase() === textbox.marka.toLowerCase()) {
-                    $("#marka_id").select2('val', marka[i].value).trigger("change");
+			const trucksArray = ['DAF', 'IVECO', 'MAN', 'MERCEDES', 'RENAULT', 'SCANIA', 'VOLVO']
+			if(trucksArray.indexOf(userJSON.marka) > -1) {
+				$("#s2id_vehicle_type_id").select2("val", 1);
+			}
+			
+            const vehicleBrands = $("#marka_id")[0];
+            for(let i = 0; i < vehicleBrands.length; i++) {
+                if(vehicleBrands[i].innerText.toLowerCase() === userJSON.marka.toLowerCase()) {
+                    $("#marka_id").select2('val', vehicleBrands[i].value).trigger("change");
                     break;
                 };
             };
 
-            document.getElementsByName('model')[0].value = textbox.model;
+            document.getElementsByName('model')[0].value = userJSON.model;
 
             //Nr SIM
-            document.getElementsByName('nr_karty_sim')[0].value = textbox.sim;
+            document.getElementsByName('nr_karty_sim')[0].value = userJSON.sim;
 
             //Podłączenia
             //Rejestrator
@@ -75,88 +77,89 @@
 
             //Typ rejestratora
             //Skaut
-            if(textbox.typRejestratora.substring(0, 2) === "SE") {
-                const rodzajeRejestratora = $("#rodzaj_rejestratora_id")[0];
-
-                for(let i = 0; i < rodzajeRejestratora.length; i++) {
-                    if(rodzajeRejestratora[i].innerText === "Setivo") {
-                        $("#s2id_rodzaj_rejestratora_id").select2('val', rodzajeRejestratora[i].value).trigger('change.select2');
+            if(userJSON.typRejestratora.substring(0, 2) === "SE") {
+                const blackboxBrands = $("#rodzaj_rejestratora_id")[0];
+                for(let i = 0; i < blackboxBrands.length; i++) {
+                    if(blackboxBrands[i].innerText === "Setivo") {
+                        $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxBrands[i].value).trigger('change.select2');
                         break;
                     };
                 };
+				
                 //Baza odczytów
                 document.getElementById("database-config").style = "width: 260px; display: inline-block";
 
-                const baza = document.getElementsByName("config_db_id")[0];
+                const databaseConfigs = document.getElementsByName("config_db_id")[0];
 
-                for(let i = 0; i < baza.length; i++) {
-                    if(baza[i].innerText === "[A] gps.ze-it.pl") {
-                        $("#s2id_autogen17").select2('val', baza[i].value).trigger('change.select2');
+                for(let i = 0; i < databaseConfigs.length; i++) {
+                    if(databaseConfigs[i].innerText === "[A] gps.ze-it.pl") {
+                        $("#s2id_autogen17").select2('val', databaseConfigs[i].value).trigger('change.select2');
                         break;
                     };
                 };
 
                 //Typ rejestratora
-                const typRejestratora = $("#typ_rejestratora_id")[0];
+                const blackboxType = $("#typ_rejestratora_id")[0];
 
-                for(let i = 0; i < typRejestratora.length; i++) {
-                    if(typRejestratora[i].innerText === textbox.typRejestratora) {
-                        $("#s2id_typ_rejestratora_id").select2('val', typRejestratora[i].value).trigger('change.select2');
+                for(let i = 0; i < blackboxType.length; i++) {
+                    if(blackboxType[i].innerText === userJSON.typRejestratora) {
+                        $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
                         break;
                     };
                 }
-            } else if(textbox.typRejestratora === "Albatros") {
-                const rodzajeRejestratora = $("#rodzaj_rejestratora_id")[0];
+            } else if(userJSON.typRejestratora === "Albatros") {
+                const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
-                for(let i = 0; i < rodzajeRejestratora.length; i++) {
-                    if(rodzajeRejestratora[i].innerText === "Albatros") {
-                        $("#s2id_rodzaj_rejestratora_id").select2('val', rodzajeRejestratora[i].value).trigger('change.select2');
+                for(let i = 0; i < blackboxProducent.length; i++) {
+                    if(blackboxProducent[i].innerText === "Albatros") {
+                        $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxProducent[i].value).trigger('change.select2');
                         break;
                     };
                 };
 
-                const typRejestratora = $("#typ_rejestratora_id")[0];
+                const blackboxType = $("#typ_rejestratora_id")[0];
 
-                for(let i = 0; i < typRejestratora.length; i++) {
-                    if(typRejestratora[i].innerText === "Albatros 8.5") {
-                        $("#s2id_typ_rejestratora_id").select2('val', typRejestratora[i].value).trigger('change.select2');
+                for(let i = 0; i < blackboxType.length; i++) {
+                    if(blackboxType[i].innerText === "Albatros 8.5") {
+                        $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
                         break;
                     };
                 };
 
 
-            } else if (textbox.typRejestratora === "Teltonika") {
-                const rodzajeRejestratora = $("#rodzaj_rejestratora_id")[0];
+            } else if (userJSON.typRejestratora === "Teltonika") {
+                const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
-                for(let i = 0; i < rodzajeRejestratora.length; i++) {
-                    if(rodzajeRejestratora[i].innerText === "TELTONIKA") {
-                        $("#s2id_rodzaj_rejestratora_id").select2('val', rodzajeRejestratora[i].value).trigger('change.select2');
+                for(let i = 0; i < blackboxProducent.length; i++) {
+                    if(blackboxProducent[i].innerText === "TELTONIKA") {
+                        $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxProducent[i].value).trigger('change.select2');
                         break;
                     };
                 };
 
                 document.getElementById("database-config").style = "width: 260px; display: inline-block";
 
-                const baza = document.getElementsByName("config_db_id")[0];
+                const database = document.getElementsByName("config_db_id")[0];
 
-                for(let i = 0; i < baza.length; i++) {
-                    if(baza[i].innerText === "[A] gps.ze-it.pl") {
-                        $("#s2id_autogen17").select2('val', baza[i].value).trigger('change.select2');
+                for(let i = 0; i < database.length; i++) {
+                    if(database[i].innerText === "[A] gps.ze-it.pl") {
+                        $("#s2id_autogen17").select2('val', database[i].value).trigger('change.select2');
                         break;
                     };
                 };
 
-                const typRejestratora = $("#typ_rejestratora_id")[0];
+                const blackboxType = $("#typ_rejestratora_id")[0];
 
-                for(let i = 0; i < typRejestratora.length; i++) {
-                    if(typRejestratora[i].innerText === "FMB120") {
-                        $("#s2id_typ_rejestratora_id").select2('val', typRejestratora[i].value).trigger('change.select2');
+                for(let i = 0; i < blackboxType.length; i++) {
+                    if(blackboxType[i].innerText === "FMB120") {
+                        $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
                         break;
                     };
                 };
             };
 
-            document.getElementsByName('dscr')[0].value = textbox.id;
+			//Id rejestratora
+            document.getElementsByName('dscr')[0].value = userJSON.id;
 
             if(!document.getElementsByName('rej_c')[0].checked) {
                 document.getElementsByName('rej_c')[0].click();
@@ -168,20 +171,20 @@
             }
 
             //D8
-            if(textbox.d8) {
+            if(userJSON.d8) {
                 if(!document.getElementsByName('kabel_d8')[0].checked) {
                     $("#kabel_d8").click();
                 }
-                if(textbox.modelTacho === "Siemens")
+                if(userJSON.modelTacho === "Siemens")
                     $("#kabel_d8_producent_id").select2('val', 1);
-                if(textbox.modelTacho === "Stonerige")
+                if(userJSON.modelTacho === "Stonerige")
                     $("#kabel_d8_producent_id").select2('val', 2);
 
 
-                const rodzajeD8 = $("#kabel_d8_podlaczenie_id")[0];
-                for(let i = 0; i < rodzajeD8.length; i++) {
-                    if(rodzajeD8[i].innerText === textbox.d8) {
-                        $("#s2id_kabel_d8_podlaczenie_id").select2('val', rodzajeD8[i].value).trigger('change.select2');
+                const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
+                for(let i = 0; i < d8Connections.length; i++) {
+                    if(d8Connections[i].innerText === userJSON.d8) {
+                        $("#s2id_kabel_d8_podlaczenie_id").select2('val', d8Connections[i].value).trigger('change.select2');
                         break;
                     };
                 };
@@ -193,19 +196,19 @@
             }
 
             //TachoReader
-            if(textbox.d8 === "Tachoreader") {
+            if(userJSON.d8 === "Tachoreader") {
                 if(!document.getElementsByName('tachoreader')[0].checked) {
                     $("#tachoreader").click();
                 }
 
-                if(textbox.modelTacho === "Siemens")
+                if(userJSON.modelTacho === "Siemens")
                     $("#s2id_tachoreader_model_id").select2('val', 1);
-                if(textbox.modelTacho === "Stonerige")
+                if(userJSON.modelTacho === "Stonerige")
                     $("#s2id_tachoreader_model_id").select2('val', 2);
 
                 $("#tachoreader_status").val(2);
 
-                document.getElementById("tachoreader_nr_firmware").value = textbox.wersjaTacho;
+                document.getElementById("tachoreader_nr_firmware").value = userJSON.wersjaTacho;
             }
 
             //Przystawka CAN
@@ -217,8 +220,8 @@
 
             let rodzajPrzystawki = "Przystawka indukcyjna magistrali CAN";
 
-            /*if(textbox.marka.toLowerCase === "mercedes") {
-                if(textbox.model.toLowerCase().contains("actros") || textbox.model.toLowerCase().contains("mp")) {
+            /*if(userJSON.marka.toLowerCase === "mercedes") {
+                if(userJSON.model.toLowerCase().contains("actros") || userJSON.model.toLowerCase().contains("mp")) {
                     //rodzajPrzystawki = "Przystawka pasywna" ??
                 };
             };*/
@@ -235,14 +238,14 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
             //Sondy an0
-            if(textbox.an0numer) {
+            if(userJSON.an0numer) {
                 document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                 const an0 = document.querySelectorAll("tr[data-number='1']")[0].children[2];
-                an0.children[0].children[2].value = textbox.an0pojemnosc; //Pojemność
+                an0.children[0].children[2].value = userJSON.an0pojemnosc; //Pojemność
                 an0.children[1].children[2].click(); //Zaklikanie Sonda
-                an0.children[4].children[0].children[2].value = textbox.an0skalowanie; //Skalowanie
-                an0.children[4].children[2].children[2].value = textbox.an0numer; //Numer sondy
+                an0.children[4].children[0].children[2].value = userJSON.an0skalowanie; //Skalowanie
+                an0.children[4].children[2].children[2].value = userJSON.an0numer; //Numer sondy
 
                 const rodzajSondyId = an0.children[4].children[1].children[2].id;
                 $(`#${rodzajSondyId}`).select2('val', 1); //Sonda Perpetuum
@@ -251,21 +254,21 @@
                 $(`#${numerWejsciaId}`).select2('val', 0); //An0
 
                 const lokalizacjaId = an0.children[6].children[1].children[2].id;
-                $(`#${lokalizacjaId}`).select2('val', (textbox.prawyZbiornik === "An0" ? 0 : 2)); //Prawy/lewy tył
+                $(`#${lokalizacjaId}`).select2('val', (userJSON.prawyZbiornik === "An0" ? 0 : 2)); //Prawy/lewy tył
 
                 an0.parentElement.children[3].children[0].click(); //Zaklikaj sonde
 
             }
 
             //Sondy an1
-            if(textbox.an1numer) {
+            if(userJSON.an1numer) {
                 document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                 const an1 = document.querySelectorAll("tr[data-number='2']")[0].children[2];
-                an1.children[0].children[2].value = textbox.an1pojemnosc; //Pojemność
+                an1.children[0].children[2].value = userJSON.an1pojemnosc; //Pojemność
                 an1.children[1].children[2].click(); //Zaklikanie Sonda
-                an1.children[4].children[0].children[2].value = textbox.an1skalowanie; //Skalowanie
-                an1.children[4].children[2].children[2].value = textbox.an1numer; //Numer sondy
+                an1.children[4].children[0].children[2].value = userJSON.an1skalowanie; //Skalowanie
+                an1.children[4].children[2].children[2].value = userJSON.an1numer; //Numer sondy
 
                 const rodzajSondyId = an1.children[4].children[1].children[2].id;
                 $(`#${rodzajSondyId}`).select2('val', 1); //Sonda Perpetuum
@@ -274,32 +277,32 @@
                 $(`#${numerWejsciaId}`).select2('val', 1); //An1
 
                 const lokalizacjaId = an1.children[6].children[1].children[2].id;
-                $(`#${lokalizacjaId}`).select2('val', (textbox.prawyZbiornik === "An1" ? 0 : 2)); //Prawy/lewy tył
+                $(`#${lokalizacjaId}`).select2('val', (userJSON.prawyZbiornik === "An1" ? 0 : 2)); //Prawy/lewy tył
 
                 an1.parentElement.children[3].children[0].click(); //Zaklikaj sonde
             }
 
             //Informacje końcowe
-            document.getElementsByName("miejsce_rejestratora")[0].value = textbox.gdzieRejestrator || ".";
-            document.getElementsByName("stan_licznika")[0].value = textbox.przebieg || ".";
+            document.getElementsByName("miejsce_rejestratora")[0].value = userJSON.gdzieRejestrator || ".";
+            document.getElementsByName("stan_licznika")[0].value = userJSON.przebieg || ".";
 
             //Monter
             const monterzy = $("#wykonal")[0];
             for(let i = 0; i < monterzy.length; i++) {
-                if(monterzy[i].innerText === textbox.monter) {
+                if(monterzy[i].innerText === userJSON.monter) {
                     $("#s2id_wykonal").select2('val', monterzy[i].value).trigger("change");
                     break;
                 }
             }
 
             //Data i czas
-            $("#kiedy2").val(textbox.date);
-            $("#s2id_kiedy2hour").select2('val', textbox.godzina).trigger('change.select2');
-            $("#s2id_kiedy2minute").select2('val', textbox.minuta).trigger('change.select2');
+            $("#kiedy2").val(userJSON.date);
+            $("#s2id_kiedy2hour").select2('val', userJSON.godzina).trigger('change.select2');
+            $("#s2id_kiedy2minute").select2('val', userJSON.minuta).trigger('change.select2');
 
 
             //Uwagi
-            $("#uwagi").val(`${textbox.czynnosci}${(textbox.czynnosci ? '\n\n' : '')}${textbox.konfiguracja}`);
+            $("#uwagi").val(`${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`);
 
         };
 
