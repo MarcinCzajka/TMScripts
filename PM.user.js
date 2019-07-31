@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.4.0
+// @version      2.4.1
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -327,11 +327,11 @@
 			newDinTr.children[0].children[2].value = din;
 			
 			//stan
-			$(`#${newDinTr.children[1].children[2].id}`)[0].select2('val', (stan === 'Wysoki' ? 1 : 0));
+			$(`#${newDinTr.children[1].children[2].id}`).select2('val', (stan === 'Wysoki' ? 1 : 0));
 			
 			//kolor
 				
-				const dinKolory = (`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
+				const dinKolory = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
                 for(let i = 0; i < dinKolory.length; i++) {
                     if(dinKolory[i].innerText === kolor) {
