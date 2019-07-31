@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.2.1
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -234,8 +234,8 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
 		//Urządzenia dodatkowe inne
-			if(userJSON.konfiguracja.toLowerCase().contains("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
-			if(userJSON.konfiguracja.toLowerCase().contains("immo")) addUrzadzenieDodatkoweInne('immobiliser');
+			if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
+			if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
 			
             //Sondy an0
             if(userJSON.an0numer) {
@@ -319,7 +319,7 @@
                 };
             };
 
-            const newCanTr = document.getElementsByClassName("odd active added dino_tr");
+            const newCanTr = document.getElementsByClassName("active added dino_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
 
