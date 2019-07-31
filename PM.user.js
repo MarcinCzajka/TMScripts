@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.3.0
+// @version      2.4.0
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -312,7 +312,7 @@
 			document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
 
             const noweUrzadzenieId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
-            const urzadzenia = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[1];
+			const urzadzenia = $(`#${noweUrzadzenieId}`)[0].nextSibling;
 
             for(let i = 0; i < urzadzenia.length; i++) {
                 if(urzadzenia[i].innerText === urzadzenie) {
@@ -320,8 +320,27 @@
                     break;
                 };
             };
+			
+			const newDinTr = $(`#${noweUrzadzenieId}`)[0].parentNode.nextSibling.nextSibling;
+			
+			//nr wejscia
+			newDinTr.children[0].children[2].value = din;
+			
+			//stan
+			$(`#${newDinTr.children[1].children[2].id}`)[0].select2('val', (stan === 'Wysoki' ? 1 : 0));
+			
+			//kolor
+				
+				const dinKolory = (`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
-            const newCanTr = document.getElementsByClassName("active added dino_tr");
+                for(let i = 0; i < dinKolory.length; i++) {
+                    if(dinKolory[i].innerText === kolor) {
+                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', dinKolory[i].value).trigger('change.select2');
+                        break;
+                    };
+                };
+
+            const newCanTr = document.getElementsByClassName("active added din_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
 		
