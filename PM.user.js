@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      2.2
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -219,12 +219,8 @@
             const urzadzenia = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
 
             let rodzajPrzystawki = "Przystawka indukcyjna magistrali CAN";
-
-            /*if(userJSON.marka.toLowerCase === "mercedes") {
-                if(userJSON.model.toLowerCase().contains("actros") || userJSON.model.toLowerCase().contains("mp")) {
-                    //rodzajPrzystawki = "Przystawka pasywna" ??
-                };
-            };*/
+		//Jeżeli albatros to CanLogistic
+			if(userJSON.typRejestratora === "Albatros") rodzajPrzystawki = "Przystawka Canlogistic (Albatros)";
 
             for(let i = 0; i < urzadzenia.length; i++) {
                 if(urzadzenia[i].innerText === rodzajPrzystawki || urzadzenia[i].innerText === "safeCAN - CanClick") {
@@ -237,6 +233,10 @@
 
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
+		//Urządzenia dodatkowe inne
+			if(userJSON.konfiguracja.toLowerCase().contains("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
+			if(userJSON.konfiguracja.toLowerCase().contains("immo")) addUrzadzenieDodatkoweInne('immobiliser');
+			
             //Sondy an0
             if(userJSON.an0numer) {
                 document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
@@ -305,6 +305,23 @@
             $("#uwagi").val(`${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`);
 
         };
+		
+		function addUrzadzenieDodatkoweInne(urzadzenie) {
+			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
+
+            const noweUrzadzenieId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
+            const urzadzenia = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
+
+            for(let i = 0; i < urzadzenia.length; i++) {
+                if(urzadzenia[i].innerText === urzadzenie) {
+                    $(`#${noweUrzadzenieId}`).select2('val', urzadzenia[i].value).trigger('change.select2');
+                    break;
+                };
+            };
+
+            const newCanTr = document.getElementsByClassName("odd active added dino_tr");
+            newCanTr[newCanTr.length - 1].classList.add("bad");
+		}
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////
