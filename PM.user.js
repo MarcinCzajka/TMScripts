@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.2.1
+// @version      2.3.0
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -211,8 +211,7 @@
                 document.getElementById("tachoreader_nr_firmware").value = userJSON.wersjaTacho;
             }
 
-            //Przystawka CAN
-
+        //Przystawka CAN
             document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
             const noweUrzadzenieId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
@@ -229,10 +228,13 @@
                 };
             };
 
-            const newCanTr = document.getElementsByClassName("odd active added dino_tr");
+            const newCanTr = document.getElementsByClassName("active added dino_tr");
 
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
+		//Urządzenia dodatkowe Din 1-5
+			if(userJSON.konfiguracja.toLowerCase().includes("webasto")) addUrzadzenieDodatkoweDin('Webasto', 2, 'Wysoki', 'Granatowy');
+			
 		//Urządzenia dodatkowe inne
 			if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
 			if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
@@ -305,6 +307,23 @@
             $("#uwagi").val(`${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`);
 
         };
+		
+		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, kolor) {
+			document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
+
+            const noweUrzadzenieId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
+            const urzadzenia = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[1];
+
+            for(let i = 0; i < urzadzenia.length; i++) {
+                if(urzadzenia[i].innerText === urzadzenie) {
+                    $(`#${noweUrzadzenieId}`).select2('val', urzadzenia[i].value).trigger('change.select2');
+                    break;
+                };
+            };
+
+            const newCanTr = document.getElementsByClassName("active added dino_tr");
+            newCanTr[newCanTr.length - 1].classList.add("bad");
+		}
 		
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
