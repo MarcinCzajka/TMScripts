@@ -12,7 +12,8 @@
 (function() {
     'use strict';
 
-//To jest skrypt z GH
+//Hello world <--------------
+
     let fuelCapacity = 0;
 
     const newBar = document.createElement("div");
