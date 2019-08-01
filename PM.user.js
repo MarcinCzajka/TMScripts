@@ -13,7 +13,7 @@
 (function() {
     'use strict';
 	
-	//Script from GH
+	//2019-08-01
 
     const headerCaption = document.getElementById('bottom_header').children[1].children[0].innerText;
     if(headerCaption.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
