@@ -233,7 +233,7 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
 		//Urządzenia dodatkowe Din 1-5
-			if(konf.includes("webasto")) addUrzadzenieDodatkoweDin('Webasto', 2, 'Wysoki', 'Granatowy');
+			if(userJSON.konfiguracja.includes("webasto")) addUrzadzenieDodatkoweDin('Webasto', 2, 'Wysoki', 'Granatowy');
 			
 		//Urządzenia dodatkowe inne
 			if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
