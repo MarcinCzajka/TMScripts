@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -168,20 +168,21 @@
             //CAN
 			const canConfig = userJSON.canConfig;
 			click("#can");
-			if(canConfig.canPredkosc.toLowerCase().includes("tak")) {
-				click("#spn84_c")
-				click("#spn1611_c")
+			if(canconfig) {
+				if(canConfig.canPredkosc.toLowerCase().includes("tak")) {
+					click("#spn84_c")
+					click("#spn1611_c")
+				}
+				if(canConfig.canObroty.toLowerCase().includes("tak")) click("#spn190_c")
+				if(canConfig.canDystans.toLowerCase().includes("tak")) click("#spn917_c")
+				if(canConfig.canPaliwo.toLowerCase().includes("tak")) click("#spn96_c")
+				if(canConfig.canZuzycie.toLowerCase().includes("tak")) click("#spn250_c")
+				if(canConfig.canStatusy.toLowerCase().includes("tak")) {
+					click("#spanstatus_c")
+					click("#tagid_c")
+				}
+				if(canConfig.canWebasto.toLowerCase().includes("tak")) click("#webasto_can_c")
 			}
-			if(canConfig.canObroty.toLowerCase().includes("tak")) click("#spn190_c")
-			if(canConfig.canDystans.toLowerCase().includes("tak")) click("#spn917_c")
-			if(canConfig.canPaliwo.toLowerCase().includes("tak")) click("#spn96_c")
-			if(canConfig.canZuzycie.toLowerCase().includes("tak")) click("#spn250_c")
-			if(canConfig.canStatusy.toLowerCase().includes("tak")) {
-				click("#spanstatus_c")
-				click("#tagid_c")
-			}
-			if(canConfig.canWebasto.toLowerCase().includes("tak")) click("#webasto_can_c")
-
             //D8
             if(userJSON.d8) {
                 if(!document.getElementsByName('kabel_d8')[0].checked) {
