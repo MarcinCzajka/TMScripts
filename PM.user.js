@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      2.8
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -248,6 +248,7 @@
 			if(userJSON.konfiguracja.includes("webasto")) {
 				let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
 				webastoString = webastoString.substr(0, webastoString.indexOf(','));
+				console.log(webastoString)
 				if(webastoString.includes("can") {
 					click("#webasto_can_c")
 				} else {
