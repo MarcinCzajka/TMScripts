@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.8
+// @version      2.9
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -249,14 +249,16 @@
 				let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
 				webastoString = webastoString.substr(0, webastoString.indexOf(','));
 				console.log(webastoString)
-				if(webastoString.includes("can") {
+				if(webastoString.includes("can")) {
 					click("#webasto_can_c")
 				} else {
 					let webastoDin = 2;
 					for (let i = 0; i < webastoString.length; i++) {
-						if(isInteger(webastoString.charAt(i))) webastoDin = webastoString.charAt(i);
-						break;
-					}
+						if(parseInt(webastoString.charAt(i))) {
+							webastoDin = parseInt(webastoString.charAt(i));
+							break;
+						};
+					};
 					
 					addUrzadzenieDodatkoweDin('Webasto', webastoDin, 'Wysoki', 'Granatowy');
 				};
