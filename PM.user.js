@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      3.1
+// @version      3.2
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -168,7 +168,7 @@
             //CAN
 			const canConfig = userJSON.canConfig;
 			click("#can");
-			if(canconfig) {
+			if(canConfig) {
 				if(canConfig.canPredkosc.toLowerCase().includes("tak")) {
 					click("#spn84_c")
 					click("#spn1611_c")
