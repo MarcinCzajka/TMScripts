@@ -245,7 +245,21 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 
 		//Urządzenia dodatkowe Din 1-5
-			if(userJSON.konfiguracja.includes("webasto")) addUrzadzenieDodatkoweDin('Webasto', 2, 'Wysoki', 'Granatowy');
+			if(userJSON.konfiguracja.includes("webasto")) {
+				let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
+				webastoString = webastoString.substr(0, webastoString.indexOf(','));
+				if(webastoString.includes("can") {
+					click("#webasto_can_c")
+				} else {
+					let webastoDin = 2;
+					for (let i = 0; i < webastoString.length; i++) {
+						if(isInteger(webastoString.charAt(i))) webastoDin = webastoString.charAt(i);
+						break;
+					}
+					
+					addUrzadzenieDodatkoweDin('Webasto', webastoDin, 'Wysoki', 'Granatowy');
+				};
+			};
 			
 		//Urządzenia dodatkowe inne
 			if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');

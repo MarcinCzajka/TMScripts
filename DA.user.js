@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Presety - Dane Administracyjne
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  try to take over the world!
 // @author       MAC
 // @match        */api/vehicle/admin/save/*
@@ -17,9 +17,9 @@
     let fuelCapacity = 0;
 
     const newBar = document.createElement("div");
-    const truckProbeButton = '<button id="truckProbe">Ci??arowy - Sonda</button>';
-    const truckFloaterButton = '<button id="truckFloater">Ci??arowy - P?ywak</button>';
-    const carFloaterButton = '<button id="carFloater">osobowy - P?ywak</button>';
+    const truckProbeButton = '<button id="truckProbe">Ciężarowy - Sonda</button>';
+    const truckFloaterButton = '<button id="truckFloater">Ciężarowy - Pływak</button>';
+    const carFloaterButton = '<button id="carFloater">osobowy - Pływak</button>';
     const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
     const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
 
