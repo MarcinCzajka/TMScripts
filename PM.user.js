@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.6
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -13,7 +13,7 @@
 (function() {
     'use strict';
 	
-	//2019-08-01
+	//2019-08-02
 
     const headerCaption = document.getElementById('bottom_header').children[1].children[0].innerText;
     if(headerCaption.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
@@ -166,9 +166,16 @@
             }
 
             //CAN
-            if(!document.getElementById('can').checked) {
-                $("#can").click();
-            }
+			const canConfig = userJSON.canConfig;
+			click("#can");
+			if(canConfig.canPredkosc.toLowerCase().includes("tak")) click("#spn84_c")
+			if(canConfig.canObroty.toLowerCase().includes("tak")) click("#spn190_c")
+			if(canConfig.canDystans.toLowerCase().includes("tak")) click("#spn917_c")
+			if(canConfig.canPaliwo.toLowerCase().includes("tak")) click("#spn96_c")
+			if(canConfig.canZuzycie.toLowerCase().includes("tak")) click("#spn250_c")
+			if(canConfig.canStatusy.toLowerCase().includes("tak")) click("#spanstatus_c")
+			if(canConfig.canWebasto.toLowerCase().includes("tak")) click("#webasto_can_c")
+			if($("#spn84_c").checked && $("#spn190_c").checked && $("#spn917_c").checked) click("#spn1611_c")
 
             //D8
             if(userJSON.d8) {
@@ -360,9 +367,14 @@
             const newCanTr = document.getElementsByClassName("active added dino_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
+		
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////
+		
+		function click(element) {
+			if(!$(element)[0].checked) $(element).click();
+    }
 
     }
 })();
