@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.0
+	// @version      2.1
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -22,8 +22,9 @@
 		const carFloaterButton = '<button id="carFloater">osobowy - Pływak</button>';
 		const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
 		const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
+		const nowyWatek = '<button id="nowyWatek">Nowy wątek</button>';
 
-		newBar.innerHTML = `<div id="buttonDiv">${truckProbeButton}${truckFloaterButton}  |  |  | ${carFloaterButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy}</div>`;
+		newBar.innerHTML = `<div id="buttonDiv">${truckProbeButton}${truckFloaterButton}  |  |  | ${carFloaterButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy} | | | | | ${nowyWatek}</div>`;
 
 		$(".break")[0].children[0].append(newBar);
 
