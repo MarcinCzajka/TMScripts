@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.2
+	// @version      2.3
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -14,8 +14,9 @@
 	(function() {
 		'use strict';
 
-	//Hello world <--------------
-
+	//2019-08-06
+	const noZasysaj = 'ale dluugo';
+	
 		let fuelCapacity = 0;
 
 		const newBar = document.createElement("div");
