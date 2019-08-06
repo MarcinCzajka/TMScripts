@@ -1,11 +1,13 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.1
+	// @version      2.2
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
-	// @grant        none
+	// @grant        GM_getValue
+	// @grant        GM_setValue
+	// @grant        GM_deleteValue
 	// @include      *api/vehicle/admin/save/*
 	// ==/UserScript==
 
