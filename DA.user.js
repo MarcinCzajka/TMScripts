@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.4
+	// @version      2.5
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -14,8 +14,7 @@
 	(function() {
 		'use strict';
 
-	//2019-08-06
-	const noZasysaj = 'ale dluugo';
+	//2019-08-07
 	
 		let fuelCapacity = 0;
 
@@ -85,6 +84,9 @@
 			$("#max_obroty_silnika_przelicznik").val(1);
 
 			click("#sposob_gener_zdarzen4");
+			click("#rejestruj_obroty2");
+			click("#tachometr_w_pojezdzie3");
+			click("#gen_zdarzen_predkosc2");
 		}
 
 		function carFloater(e) {
