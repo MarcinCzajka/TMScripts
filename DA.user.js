@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.5
+	// @version      2.6
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -122,6 +122,11 @@
 		}
 
 		function uniwersalne() {
+			//Wersja algorytmu
+			if($("#s2id_autogen4")[0].parentNode.previousSibling.previousSibling.innerText === "Wersja algorytmu:") {
+				$("#s2id_autogen4").select2('val', 4);
+			}
+			
 			$("#wywlaszczenie_zdarzenia").val(1000);
 
 			fuelCapacity = 0;
