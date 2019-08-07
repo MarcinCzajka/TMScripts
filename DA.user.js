@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.3
+	// @version      2.4
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -62,7 +62,7 @@
 			$("#s2id_pomiar_paliwa_id").select2('val', 3);
 			unclick("#paliwo_z_sondy");
 
-			$("#min_odchylenie").val(5);
+			$("#min_odchylenie").val(100);
 
 			const percentOfFuel = litersByPercent(5);
 			$("#prog_weryfikujacy_paliwa").val((percentOfFuel > 50 ? 0 : percentOfFuel));
