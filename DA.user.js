@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.6
+	// @version      2.7
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -142,10 +142,6 @@
 			$("#liczba_przedzialow").val(2);
 			$("#liczba_przedzialow_u").val(2);
 
-			click("#usuwaj_pkt_zerowe");
-			$("#usuwaj_pkt_zerowe_do").val(1);
-			$("#usuwaj2_pkt_zerowe_od").val(103);
-			$("#usuwaj2_pkt_zerowe_do").val(109);
 			click("#niewylaczony_zaplon");
 			click("#bez_zaniku_zasilania");
 			click("#bez_zaniku_zasilania_u");
