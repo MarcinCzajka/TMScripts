@@ -32,7 +32,7 @@
             const userJSON = JSON.parse(document.getElementById("myTextbox").value);
 
             //Kategoria montażu i monter
-            if(userJSON.monter === "Klienta" || !userJSON.monter) {
+            if(userJSON.monter === "Monter klienta" || !userJSON.monter) {
                 $("#s2id_kategoria_id").select2('val', 2);
             }
             else {
