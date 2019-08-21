@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      3.2
+// @version      3.3
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -13,10 +13,6 @@
 (function() {
     'use strict';
 	//2019-08-21
-	
-	if(1) {
-		console.log(1);
-	};
 
     const headerCaption = document.getElementById('bottom_header').children[1].children[0].innerText;
     if(headerCaption.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
