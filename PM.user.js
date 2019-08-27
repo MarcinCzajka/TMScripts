@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      3.4
+// @version      3.5
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -29,6 +29,23 @@
 
         function fillProtocol() {
             const userJSON = JSON.parse(document.getElementById("myTextbox").value);
+			
+			//Wybranie firmy
+				const firmy = document.getElementById("firma1_id");
+				for(let i = 0; i < firmy.length; i++) {
+					if(firmy[i].innerText === userJSON.firma) {
+						$('#firma1_id').select2('val', firmy[i].value).trigger('change');
+						break;
+					};
+				};
+				const grupyPojazdow = document.getElementById("grupa_pojazdow_id");
+				console.log(grupyPojazdow)
+				for(let i = 0; i < grupyPojazdow.length; i++) {
+					if(grupyPojazdow[i].innerText.toLowerCase() === 'wszystkie') {
+						$('#s2id_grupa_pojazdow_id').select2('val', grupyPojazdow[i].value).trigger('change');
+						break;
+					};
+				};
 
             //Kategoria montażu i monter
             if(userJSON.monter === "Monter klienta" || !userJSON.monter) {
