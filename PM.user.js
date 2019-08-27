@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      3.6
+// @version      3.8
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -26,7 +26,6 @@
         document.getElementById("newButton").addEventListener('click', tryToFillProtocol);
 		
 		function tryToFillProtocol() {
-            $loader.hidingAllowed = false
             $loader.show();
 
             try {
@@ -37,7 +36,6 @@
                 console.log(error);
             }
             finally {
-                $loader.hidingAllowed = true
                 $loader.hide();
             }
         }
@@ -56,7 +54,7 @@
 					};
 				};
 				const grupyPojazdow = document.getElementById("grupa_pojazdow_id");
-				console.log(grupyPojazdow)
+
 				for(let i = 0; i < grupyPojazdow.length; i++) {
 					if(grupyPojazdow[i].innerText.toLowerCase() === 'wszystkie') {
 						$('#s2id_grupa_pojazdow_id').select2('val', grupyPojazdow[i].value).trigger('change');
@@ -282,7 +280,7 @@
 			if(userJSON.konfiguracja.toLowerCase().includes("webasto")) {
 				let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
 				webastoString = webastoString.substr(0, webastoString.indexOf(','));
-				console.log(webastoString)
+
 				if(webastoString.includes("can")) {
 					click("#webasto_can_c")
 				} else {
