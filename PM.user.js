@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    http://tampermonkey.net/
-// @version      4.0
+// @version      3.9
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
