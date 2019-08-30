@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -30,6 +30,8 @@
         };
         intervalCount++;
     }, 1000);
+	
+	const calibrationToolkit = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
 
 function makePoints(obj) {
     let p;
