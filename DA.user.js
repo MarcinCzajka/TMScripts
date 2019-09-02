@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
-	// @namespace    http://tampermonkey.net/
-	// @version      2.10
+	// @namespace    https://github.com/MarcinCzajka
+	// @version      2.11
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*

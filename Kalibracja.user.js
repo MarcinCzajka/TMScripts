@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
-// @namespace    http://tampermonkey.net/
-// @version      1.1
+// @namespace    https://github.com/MarcinCzajka
+// @version      1.2
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
