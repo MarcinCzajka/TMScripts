@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.11
+// @version      3.12
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -62,9 +62,11 @@
                     }
 
                     if(userJSON.type === "Montaż") {
-                        $("#s2id_type_id").select2('val', 1);
+                        $("#type_id").select2('val', 1).trigger('change');
                     } else if(userJSON.type === "Upgrade") {
-                        $("#s2id_type_id").select2('val', 2);
+                        $("#type_id").select2('val', 2).trigger('change');
+                    } else if(userJSON.type.includes("Przekładka")) {
+                        $("#type_id").select2('val', 3).trigger('change');
                     }
 
                     //Nr rejestracyjny
