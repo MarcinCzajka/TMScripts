@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.11
+	// @version      2.12
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -89,9 +89,9 @@
 			click("#gen_zdarzen_predkosc1");
 			
 			if(!fuelCapacity) {
-				$('#pojemnosc_zbiornika_6').val(666);
-				$('#zone_tank_6').val(666);
-				fuelCapacity = 666;
+				$('#pojemnosc_zbiornika_6').val(999);
+				$('#zone_tank_6').val(999);
+				fuelCapacity = 999;
 			}
 		}
 
