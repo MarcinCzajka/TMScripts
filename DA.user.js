@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.9
+	// @version      2.10
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -91,6 +91,7 @@
 			if(!fuelCapacity) {
 				$('#pojemnosc_zbiornika_6').val(666);
 				$('#zone_tank_6').val(666);
+				fuelCapacity = 666;
 			}
 		}
 
