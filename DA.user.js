@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    http://tampermonkey.net/
-	// @version      2.8
+	// @version      2.9
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -86,7 +86,12 @@
 			click("#sposob_gener_zdarzen4");
 			click("#rejestruj_obroty2");
 			click("#tachometr_w_pojezdzie3");
-			click("#gen_zdarzen_predkosc2");
+			click("#gen_zdarzen_predkosc1");
+			
+			if(!fuelCapacity) {
+				$('#pojemnosc_zbiornika_6').val(666);
+				$('#zone_tank_6').val(666);
+			}
 		}
 
 		function carFloater(e) {
