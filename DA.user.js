@@ -19,12 +19,12 @@
 		let fuelCapacity = 0;
 
 		const newBar = document.createElement("div");
-		const truckProbeButton = '<button id="truckProbe">Ciężarowy - Sonda</button>';
-		const truckFloaterButton = '<button id="truckFloater">Ciężarowy - Pływak</button>';
-		const carFloaterButton = '<button id="carFloater">osobowy - Pływak</button>';
-		const odklikajCan = '<button id="odklikajCan">Odklikaj CAN</button>';
-		const serwisSondy = '<button id="serwisSondy">Serwis sondy</button>';
-		const nowyWatek = '<button id="nowyWatek">Nowy wątek</button>';
+		const truckProbeButton = '<input type="button" value="Ciężarowy - Sonda" id="truckProbe"></input>';
+		const truckFloaterButton = '<input type="button" value="Ciężarowy - Pływak" id="truckFloater"></input>';
+		const carFloaterButton = '<input type="button" value="osobowy - Pływak" id="carFloater"></input>';
+		const odklikajCan = '<input type="button" value="Odklikaj CAN" id="odklikajCan"></input>';
+		const serwisSondy = '<input type="button" value="Serwis sondy" id="serwisSondy"></input>';
+		const nowyWatek = '<input type="button" value="Nowy wątek" id="nowyWatek"></input>';
 
 		newBar.innerHTML = `<div id="buttonDiv">${truckProbeButton}${truckFloaterButton}  |  |  | ${carFloaterButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy} | | | | | ${nowyWatek}</div>`;
 
