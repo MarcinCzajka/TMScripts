@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         setServicesToOdebrane
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.0
-// @description  Montaż
+// @version      1.1
+// @description  Serwis
 // @author       MAC
 // @match        */api/services*
 // @grant        none
@@ -24,7 +24,7 @@
         e.preventDefault();
 
         $('#problem_from').val(undefined);
-        $('#dataCreatedFrom').val(undefined);
+        $('#problem_date_from').val(undefined);
 
         $('#submit_filter').trigger('click');
 
