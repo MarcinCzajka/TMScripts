@@ -11,6 +11,7 @@
 
 (function() {
     'use strict';
+	//2019-09-04
 
     const newDiv = document.createElement("div");
     const clearBtn = '<input type="button" value="Reset Date" id="clearDateAndChangeCategory"></input>';
