@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         setInstallationToOdebrane
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.0
+// @version      1.1
 // @description  Montaż
 // @author       MAC
 // @match        */api/installation/main/index/*
@@ -13,7 +13,7 @@
     'use strict';
 
     const newDiv = document.createElement("div");
-    const clearBtn = '<button id="clearDateAndChangeCategory">Reset Date</button>';
+    const clearBtn = '<input type="button" value="Reset Date" id="clearDateAndChangeCategory"></input>';
 
     newDiv.innerHTML = clearBtn;
     document.getElementById('createdFrom').parentElement.prepend(newDiv);
