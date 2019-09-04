@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.14
+	// @version      2.15
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -18,16 +18,17 @@
 	
 		let fuelCapacity = 0;
 
-		const newBar = document.createElement("div");
-		const truckProbeButton = '<input type="button" value="Ciężarowy - Sonda" id="truckProbe"></input>';
-		const truckFloaterButton = '<input type="button" value="Ciężarowy - Pływak" id="truckFloater"></input>';
-		const carFloaterButton = '<input type="button" value="osobowy - Pływak" id="carFloater"></input>';
-		const odklikajCan = '<input type="button" value="Odklikaj CAN" id="odklikajCan"></input>';
-		const serwisSondy = '<input type="button" value="Serwis sondy" id="serwisSondy"></input>';
-		const nowyWatek = '<input type="button" value="Nowy wątek" id="nowyWatek"></input>';
+		const newBar = document.createElement("td");
+        newBar.setAttribute('colspan', '6');
+        newBar.style.width = '100%';
 
-		newBar.innerHTML = `<div id="buttonDiv">${truckProbeButton}${truckFloaterButton}  |  |  | ${carFloaterButton}  |  |  |  ${odklikajCan}  |  |  | ${serwisSondy} | | | | | ${nowyWatek}</div>`;
-
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Ciężarowy - Sonda" id="truckProbe"></input>');
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Ciężarowy - Pływak" id="truckFloater"></input>');
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="osobowy - Pływak" id="carFloater"></input>');
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Odklikaj CAN" id="odklikajCan"></input>');
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Serwis sondy" id="serwisSondy"></input>');
+		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Nowy wątek" id="nowyWatek"></input>');
+		
 		$(".break")[0].children[0].append(newBar);
 
 		document.getElementById("truckProbe").addEventListener('click', truckProbe);
