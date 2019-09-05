@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.2
+// @version      1.3
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -15,21 +15,37 @@
 
     let intervalCount = 1;
     const checkForConfirmedEvents = setInterval(function(){
-        if(intervalCount >= 10) clearInterval(checkForConfirmedEvents);
+        console.log('Scanning for events: ' + intervalCount);
+        if(intervalCount > 2) clearInterval(checkForConfirmedEvents);
 
         const eventStatuses = $("#fuel_chart").contents().find("img.invoice_report_status");
-
         if(eventStatuses[0]) {
             for(let i = 0; i < eventStatuses.length; i++) {
                 if(eventStatuses[i].title !== 'status w raporcie: niepotwierdzone') {
                     alert('Wątek zawiera wyjaśnione zdarzenia.');
+
+                    clearInterval(checkForConfirmedEvents);
                     break;
                 };
             };
-            clearInterval(checkForConfirmedEvents);
+        }
+        else {
+
+            const fueldropStatuses = $("#fuel_chart").contents().find("img.invoice_report_status_fueldrop");
+            if(fueldropStatuses[0]) {
+                for(let i = 0; i < fueldropStatuses.length; i++) {
+                    if(fueldropStatuses[i].title !== 'status w raporcie: niepotwierdzone') {
+                        alert('Wątek zawiera wyjaśnione zdarzenia.');
+
+                        clearInterval(checkForConfirmedEvents);
+                        break;
+                    };
+                };
+            };
         };
+
         intervalCount++;
-    }, 1000);
+    }, 2000);
 	
 	const calibrationToolkit = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
 

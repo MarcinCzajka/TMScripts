@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.13
+// @version      3.14
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -151,7 +151,7 @@
                         };
 
 
-                    } else if (userJSON.typRejestratora === "Teltonika") {
+                    } else if (userJSON.typRejestratora === "Teltonika" || parseInt(userJSON.id) > 999999) {
                         const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
                         for(let i = 0; i < blackboxProducent.length; i++) {
