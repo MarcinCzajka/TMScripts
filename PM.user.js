@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.12
+// @version      3.13
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -131,7 +131,7 @@
                                 break;
                             };
                         }
-                    } else if(userJSON.typRejestratora === "Albatros") {
+                    } else if(userJSON.typRejestratora === "Albatros" || (parseInt(userJSON.id) > 99999 && parseInt(userJSON.id) < 999999)) {
                         const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
                         for(let i = 0; i < blackboxProducent.length; i++) {
