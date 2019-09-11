@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.3
+// @version      1.4
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -28,8 +28,7 @@
                     break;
                 };
             };
-        }
-        else {
+        } else {
 
             const fueldropStatuses = $("#fuel_chart").contents().find("img.invoice_report_status_fueldrop");
             if(fueldropStatuses[0]) {
@@ -46,13 +45,34 @@
 
         intervalCount++;
     }, 2000);
-	
-	const calibrationToolkit = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
+
+
+    const calibrationToolkit1 = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
+    if(calibrationToolkit1) {
+        calibrationToolkit1.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas1"></input>');
+        document.getElementById("cmCanvas1").addEventListener('click', function() {makePoints(cm1)});
+    };
+
+    const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
+    if(calibrationToolkit2) {
+        calibrationToolkit2.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas2"></input>');
+        document.getElementById("cmCanvas2").addEventListener('click', function() {makePoints(cm2)});
+    }
+
+    const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
+    if(calibrationToolkit3) {
+        calibrationToolkit2.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas3"></input>');
+        document.getElementById("cmCanvas3").addEventListener('click', function() {makePoints(cm3)});
+    }
 
 function makePoints(obj) {
     let p;
     obj.removeAllPoints()
 
+    p = obj.makePoint(0, 300);
+					obj.points.push(p);
+					obj.points.sort(compare);
+					obj.canvas.add(p);
     p = obj.makePoint(150, 150);
 					obj.points.push(p);
 					obj.points.sort(compare);
@@ -62,6 +82,10 @@ function makePoints(obj) {
 					obj.points.sort(compare);
 					obj.canvas.add(p);
     p = obj.makePoint(225, 75);
+					obj.points.push(p);
+					obj.points.sort(compare);
+					obj.canvas.add(p);
+    p = obj.makePoint(300, 0);
 					obj.points.push(p);
 					obj.points.sort(compare);
 					obj.canvas.add(p);
