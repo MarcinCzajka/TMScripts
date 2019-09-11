@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.14
+// @version      3.15
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -100,6 +100,7 @@
 
 
                     //Typ rejestratora
+					if(userJSON.id.substring(0,1).toLowerCase() === 'h' && !userJSON.typRejestratora) userJSON.typRejestratora = "SE5";
                     //Skaut
                     if(userJSON.typRejestratora.substring(0, 2) === "SE") {
                         const blackboxBrands = $("#rodzaj_rejestratora_id")[0];
