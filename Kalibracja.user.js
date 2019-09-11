@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.6
+// @version      1.7
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -50,7 +50,7 @@
     const calibrationToolkit1 = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
     if(calibrationToolkit1) {
 		const newDiv =
-		  `<div id='newButton1' style='position:relative;height:27px;width:27px;padding:5px;margin:0;cursor:pointer;'>
+		  `<div id='newButton1' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>`;
@@ -62,7 +62,7 @@
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
     if(calibrationToolkit2) {
 		const newDiv =
-		  `<div id='newButton2' style='position:relative;height:27px;width:27px;padding:5px;margin:0;cursor:pointer;'>
+		  `<div id='newButton2' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>`;
@@ -73,7 +73,7 @@
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
     if(calibrationToolkit3) {
 		const newDiv =
-		  `<div id='newButton3' style='position:relative;height:27px;width:27px;padding:5px;margin:0;cursor:pointer;'>
+		  `<div id='newButton3' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>`;
