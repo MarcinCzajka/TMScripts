@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.4
+// @version      1.5
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -49,20 +49,36 @@
 
     const calibrationToolkit1 = document.getElementsByClassName('canvas-container')[0].nextElementSibling;
     if(calibrationToolkit1) {
-        calibrationToolkit1.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas1"></input>');
-        document.getElementById("cmCanvas1").addEventListener('click', function() {makePoints(cm1)});
+		const newDiv =
+		  `<div id='newButton1' style='position:relative;height:27px;width:27px;padding:5px;margin:0;'>
+			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
+			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
+		   </div>`;
+        calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
+		
+        document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1)});
     };
 
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
     if(calibrationToolkit2) {
-        calibrationToolkit2.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas2"></input>');
-        document.getElementById("cmCanvas2").addEventListener('click', function() {makePoints(cm2)});
+		const newDiv =
+		  `<div id='newButton2' style='position:relative;height:27px;width:27px;padding:5px;margin:0;'>
+			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
+			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
+		   </div>`;
+        calibrationToolkit2.insertAdjacentHTML('beforeend', newDiv);
+        document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2)});
     }
 
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
     if(calibrationToolkit3) {
-        calibrationToolkit2.insertAdjacentHTML('beforeend', '<input style="height:15px" type="button" value="S" id="cmCanvas3"></input>');
-        document.getElementById("cmCanvas3").addEventListener('click', function() {makePoints(cm3)});
+		const newDiv =
+		  `<div id='newButton3' style='position:relative;height:27px;width:27px;padding:5px;margin:0;'>
+			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
+			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
+		   </div>`;
+        calibrationToolkit3.insertAdjacentHTML('beforeend', newDiv);
+        document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3)});
     }
 
 function makePoints(obj) {
