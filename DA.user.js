@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.16
+	// @version      2.17
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -52,6 +52,11 @@
 			$("#prog_wartosci_paliwa").val(litersByPercent(3.5));
 			$("#prog_weryfikujacy_paliwa_u").val(litersByPercent(2));
 			$("#prog_wartosci_paliwa_u").val(litersByPercent(2));
+			
+			unclick('#usuwaj_pkt_zerowe');
+			$('#usuwaj_pkt_zerowe_do').val(0);
+			$('#usuwaj2_pkt_zerowe_od').val(0);
+			$('#usuwaj2_pkt_zerowe_do').val(0);
 		}
 
 		function truckFloater(e) {
