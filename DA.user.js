@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.15
+	// @version      2.16
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -69,6 +69,11 @@
 			$("#prog_wartosci_paliwa").val((percentOfFuel > 50 ? 50 : percentOfFuel));
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
+			
+			click('#usuwaj_pkt_zerowe');
+			$('#usuwaj_pkt_zerowe_do').val(1);
+			$('#usuwaj2_pkt_zerowe_od').val(103);
+			$('#usuwaj2_pkt_zerowe_do').val(109);
 		}
 
 		function ciezarowyUniwersalne() {
@@ -110,6 +115,11 @@
 			$("#prog_wartosci_paliwa").val(litersByPercent(10));
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
+			
+			click('#usuwaj_pkt_zerowe');
+			$('#usuwaj_pkt_zerowe_do').val(1);
+			$('#usuwaj2_pkt_zerowe_od').val(103);
+			$('#usuwaj2_pkt_zerowe_do').val(109);
 		}
 
 		function osobowyUniwersalne() {
