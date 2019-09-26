@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.16
+// @version      3.17
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -62,6 +62,7 @@
                     }
 
                     if(userJSON.type === "Montaż") {
+						isInvoiceActiveOnAnotherVehicle(userJSON.id);
                         $("#type_id").select2('val', 1).trigger('change');
                     } else if(userJSON.type === "Upgrade") {
                         $("#type_id").select2('val', 2).trigger('change');
@@ -422,6 +423,23 @@
             const newCanTr = document.getElementsByClassName("active added dino_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
+		
+		async function isInvoiceActiveOnAnotherVehicle(id) {
+            const baseUrl = `/api/invoice/vehicle?current_page=1&current_limit=10&form_action=search&form_search=${id}&form_filter=filter_enabled%3D1%26firma1_id%3D%26company_user_vehicle_groups%3D%26status_sim%3D1%26mapa_typ%3D0%26table_calendar_input%3D%26table_calendar_input2%3D%26table_calendar_input3%3D%26table_calendar_input4%3D%26table_calendar_input5%3D%26table_calendar_input6%3D&mod-sidemenu-val=`
+            await fetch(baseUrl)
+				.then(res => {
+					res.text()
+						.then(res => {
+						let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
+
+						if(editedResponse.includes('Aktywna')) {
+							alert('Rejestrator posiada aktywny MFV');
+							console.log(editedResponse);
+						};
+					});
+				});
+
+        };
 		
 
 
