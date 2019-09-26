@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.15
+// @version      3.16
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -39,7 +39,7 @@
                     //Wybranie firmy
                     const firmy = document.getElementById("firma1_id");
                     for(let i = 0; i < firmy.length; i++) {
-                        if(firmy[i].innerText === userJSON.firma) {
+                        if(firmy[i].innerText === (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma)) {
                             $('#firma1_id').select2('val', firmy[i].value).trigger('change');
                             break;
                         };
