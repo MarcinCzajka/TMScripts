@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.17
+// @version      3.18
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -433,7 +433,7 @@
 						let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
 
 						if(editedResponse.includes('Aktywna')) {
-							alert('Rejestrator posiada aktywny MFV');
+							alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
 							console.log(editedResponse);
 						};
 					});
