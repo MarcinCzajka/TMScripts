@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.0
+// @version      4.1
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -217,7 +217,7 @@
 							
 							if(userJSON.modelTacho === "Siemens") {
 								$("#tmr_model_id").select2('val', 1);
-							} else if(userJSON.modelTacho === "Siemens") {
+							} else if(userJSON.modelTacho === "Stonerige") {
 								$("#tmr_model_id").select2('val', 2);
 							}
 							
