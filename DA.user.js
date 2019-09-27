@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.18
+	// @version      2.19
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -43,7 +43,7 @@
 			uniwersalne();
 			ciezarowyUniwersalne();
 
-			$("#s2id_pomiar_paliwa_id").select2('val', 2);
+			$('#pomiar_paliwa_id').select2('val', 2).trigger('change.select2');
 			click("#paliwo_z_sondy");
 
 			$("#min_odchylenie").val(1.5);
@@ -64,7 +64,7 @@
 			uniwersalne();
 			ciezarowyUniwersalne();
 
-			$("#s2id_pomiar_paliwa_id").select2('val', 3).trigger('change.select2');
+			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2');
 			unclick("#paliwo_z_sondy");
 
 			$("#min_odchylenie").val(100);
@@ -111,7 +111,7 @@
 			uniwersalne();
 			osobowyUniwersalne();
 
-			$("#s2id_pomiar_paliwa_id").select2('val', 3).trigger('change.select2');
+			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2')
 			unclick("#paliwo_z_sondy");
 
 			$("#min_odchylenie").val(5);
