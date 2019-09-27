@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.18
+// @version      4.0
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -211,27 +211,39 @@
                     }
                     //D8
                     if(userJSON.d8) {
-                        if(!document.getElementsByName('kabel_d8')[0].checked) {
-                            $("#kabel_d8").click();
-                        }
-                        if(userJSON.modelTacho === "Siemens")
-                            $("#kabel_d8_producent_id").select2('val', 1);
-                        if(userJSON.modelTacho === "Stonerige")
-                            $("#kabel_d8_producent_id").select2('val', 2);
+						if(userJSON.d8 === "TMR") {
+							click("#tmr");
+							$("#tmr_status").val(userJSON.tmrResponse);
+							
+							if(userJSON.modelTacho === "Siemens") {
+								$("#tmr_model_id").select2('val', 1);
+							} else if(userJSON.modelTacho === "Siemens") {
+								$("#tmr_model_id").select2('val', 2);
+							}
+							
+							$("#tmr_nr_firmware").val(userJSON.wersjaTacho);
+						} else {
+							if(!document.getElementsByName('kabel_d8')[0].checked) {
+								$("#kabel_d8").click();
+							}
+							if(userJSON.modelTacho === "Siemens")
+								$("#kabel_d8_producent_id").select2('val', 1);
+							if(userJSON.modelTacho === "Stonerige")
+								$("#kabel_d8_producent_id").select2('val', 2);
 
 
-                        const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
-                        for(let i = 0; i < d8Connections.length; i++) {
-                            if(d8Connections[i].innerText === userJSON.d8) {
-                                $("#s2id_kabel_d8_podlaczenie_id").select2('val', d8Connections[i].value).trigger('change.select2');
-                                break;
-                            };
-                        };
+							const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
+							for(let i = 0; i < d8Connections.length; i++) {
+								if(d8Connections[i].innerText === userJSON.d8) {
+									$("#s2id_kabel_d8_podlaczenie_id").select2('val', d8Connections[i].value).trigger('change.select2');
+									break;
+								};
+							};
 
-                        if(!document.getElementsByName('kabel_d8_c')[0].checked) {
-                            $("#kabel_d8_c").click();
-                        }
-
+							if(!document.getElementsByName('kabel_d8_c')[0].checked) {
+								$("#kabel_d8_c").click();
+							}
+						}
                     }
 
                     //TachoReader
