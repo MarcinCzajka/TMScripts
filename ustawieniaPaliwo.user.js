@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.2
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/settings/*
