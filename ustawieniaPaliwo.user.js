@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.0
+// @version      1.1
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/settings/*
@@ -17,6 +17,8 @@
 	document.getElementById("truckBtn").addEventListener('click', truckSettings);
 	
 	function truckSettings() {
+			$('#invoice_matching').select2('val', 3600).trigger('change.select2');
+		
 			$('#alg_stacyjka_typ1').click();
 			$('#alg_obroty_typ2').click();
 			$('#alg_predkosc_typ2').click();
