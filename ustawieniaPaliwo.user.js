@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 	
-	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', '<td><input type="button" value="Ciężarowy" id="truckBtn"></input></td>');
+	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', '<td><input style="height:23px;width:75px;padding:0;border-radius:10px;" type="button" value="Ciężarowy" id="truckBtn"></input></td>');
 	document.getElementById("truckBtn").addEventListener('click', truckSettings);
 	
 	function truckSettings() {
