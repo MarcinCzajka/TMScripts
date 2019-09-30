@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      1.0
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/settings/*
@@ -12,7 +12,8 @@
 (function() {
     'use strict';
 	
-	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', '<td><input style="height:23px;width:75px;padding:0;border-radius:10px;" type="button" value="Ciężarowy" id="truckBtn"></input></td>');
+	//2019-09-30
+	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', '<td><input style="height:23px;width:75px;padding:0;border-radius:10px;background:#929DA7" type="button" value="Ciężarowy" id="truckBtn"></input></td>');
 	document.getElementById("truckBtn").addEventListener('click', truckSettings);
 	
 	function truckSettings() {
