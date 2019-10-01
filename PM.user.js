@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.6
+// @version      4.7
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -392,7 +392,7 @@
 
             for(let i = 0; i < urzadzenia.length; i++) {
                 if(urzadzenia[i].innerText === urzadzenie) {
-                    $(`#${noweUrzadzenieId}`).select2('val', urzadzenia[i].value).trigger('change.select2');
+                    $(`#${noweUrzadzenieId}`).next().select2('val', urzadzenia[i].value).trigger('change');
                     break;
                 };
             };
@@ -445,7 +445,11 @@
 						.then(res => {
 						let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
 
-						if(editedResponse.includes('Aktywna')) {
+						if(editedResponse.includes(`<td class="datatable_dscr  " style="width:100px; text-align:left;" value="">
+			
+								
+																														${id}									
+			</td>`)) {
 							alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
 							console.log(editedResponse);
 						};
