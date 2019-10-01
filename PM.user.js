@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.4
+// @version      4.5
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -307,6 +307,7 @@
                     if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
                     if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
+					if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) addUrzadzenieDodatkoweInne('TOM-TOM');
 					
                     //Sondy an0
                     if(userJSON.an0numer) {
