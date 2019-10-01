@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.5
+// @version      4.6
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -428,7 +428,7 @@
 
             for(let i = 0; i < urzadzenia.length; i++) {
                 if(urzadzenia[i].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
-                    $(`#${noweUrzadzenieId}`).select2('val', urzadzenia[i].value).trigger('change.select2');
+                    $(`#${noweUrzadzenieId}`).next().select2('val', urzadzenia[i].value).trigger('change');
                     break;
                 };
             };
