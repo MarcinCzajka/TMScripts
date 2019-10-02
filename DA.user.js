@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.20
+	// @version      2.21
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -40,10 +40,8 @@
 
 		function truckProbe(e) {
 			e.preventDefault();
-			uniwersalne();
+			uniwersalne(e.target.id);
 			ciezarowyUniwersalne();
-			
-			$('#truckProbe').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 2).trigger('change.select2');
 			click("#paliwo_z_sondy");
@@ -63,10 +61,8 @@
 
 		function truckFloater(e) {
 			e.preventDefault();
-			uniwersalne();
+			uniwersalne(e.target.id);
 			ciezarowyUniwersalne();
-			
-            $('#truckFloater').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2');
 			unclick("#paliwo_z_sondy");
@@ -112,10 +108,8 @@
 
 		function carFloater(e) {
 			e.preventDefault();
-			uniwersalne();
+			uniwersalne(e.target.id);
 			osobowyUniwersalne();
-			
-            $('#carFloater').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2')
 			unclick("#paliwo_z_sondy");
@@ -148,7 +142,10 @@
 			click("#can_dystans");
 		}
 
-		function uniwersalne() {
+		function uniwersalne(targetElement) {
+			
+            flashButton(targetElement);
+			
 			//Wersja algorytmu
 			if($("#s2id_autogen4")[0].parentNode.previousSibling.previousSibling.innerText === "Wersja algorytmu:") {
 				$("#s2id_autogen4").select2('val', 4);
@@ -191,6 +188,8 @@
 		function odklikajCanFunc(e) {
 			e.preventDefault();
 			
+			flashButton(e.target.id);
+			
             $('#odklikajCan').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$("#sposob_gener_zdarzen1").click();
@@ -209,6 +208,8 @@
 
 		function serwisSondyFunc(e) {
 			e.preventDefault();
+			
+			flashButton(e.target.id);
 			
             $('#serwisSondy').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
@@ -275,6 +276,10 @@
 			if(month < 10) month = "0"+month;
 
 			return `${year}-${month}-${day}`
+		}
+		
+		function flashButton(id) {
+			$(`#${id}`).fadeTo(100, 0.5, function() { $(this).fadeTo(150, 1.0); });
 		}
 		
 	})();
