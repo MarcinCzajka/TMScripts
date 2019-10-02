@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.21
+	// @version      2.22
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -279,7 +279,7 @@
 		}
 		
 		function flashButton(id) {
-			$(`#${id}`).fadeTo(100, 0.5, function() { $(this).fadeTo(150, 1.0); });
+			$(`#${id}`).fadeTo(50, 0.5, function() { $(this).fadeTo(250, 1.0); });
 		}
 		
 	})();
