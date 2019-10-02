@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.1
+// @version      1.2
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/settings/*
@@ -25,7 +25,9 @@
 			
 			$('#fa_trust_voltage_low').val(21);
 			$('#fa_trust_rpm_low').val(0);
-			$('##fa_trust_speed_low').val(0);
+			$('#fa_trust_speed_low').val(0);
+			
+			$('#truckBtn').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 	}
 	
 })();

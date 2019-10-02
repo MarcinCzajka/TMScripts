@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.19
+	// @version      2.20
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -42,6 +42,8 @@
 			e.preventDefault();
 			uniwersalne();
 			ciezarowyUniwersalne();
+			
+			$('#truckProbe').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 2).trigger('change.select2');
 			click("#paliwo_z_sondy");
@@ -63,6 +65,8 @@
 			e.preventDefault();
 			uniwersalne();
 			ciezarowyUniwersalne();
+			
+            $('#truckFloater').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2');
 			unclick("#paliwo_z_sondy");
@@ -110,6 +114,8 @@
 			e.preventDefault();
 			uniwersalne();
 			osobowyUniwersalne();
+			
+            $('#carFloater').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2')
 			unclick("#paliwo_z_sondy");
@@ -184,6 +190,8 @@
 
 		function odklikajCanFunc(e) {
 			e.preventDefault();
+			
+            $('#odklikajCan').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$("#sposob_gener_zdarzen1").click();
 			$("#rejestruj_obroty0").click();
@@ -201,6 +209,8 @@
 
 		function serwisSondyFunc(e) {
 			e.preventDefault();
+			
+            $('#serwisSondy').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			unclick("#paliwo_z_sondy");
 			unclick("#divide");

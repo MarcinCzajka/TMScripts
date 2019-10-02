@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.7
+// @version      4.8
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -18,7 +18,7 @@
 
 
         const myTextbox = document.createElement("div");
-        myTextbox.innerHTML = '<div style="width:100%"><input type="text" id="myTextbox" style="width:100%"><button id="newButton">Wypełnij protokół</button></div>';
+        myTextbox.innerHTML = '<div style="width:100%"><input type="text" id="myTextbox" style="width:100%"><button style="border:1px solid #28bea9" id="newButton" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">Wypełnij protokół</button></div>';
 
         document.getElementById("header").appendChild(myTextbox);
 
