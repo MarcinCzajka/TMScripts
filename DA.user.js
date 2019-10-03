@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.22
+	// @version      2.23
 	// @description  try to take over the world!
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -242,12 +242,17 @@
 		const date = new Date
 		const newVar = `${nrRejestracyjny}/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
 
-		console.log(GM_getValue(newVar))
-
 		function nowyWatekFunc(e) {
 			e.preventDefault();
-			GM_setValue(newVar, 'save');
-			$(".save")[0].click();
+			flashButton(e.target.id);
+			
+			if($("#zakres_do").val() === "") {
+				alert('Wprowadź datę zamknięcia obecnego wątku.');
+			} else {
+				
+				GM_setValue(newVar, 'save');
+				$(".save")[0].click();
+			}
 		}
 
 		if(GM_getValue(newVar) === 'new') {
