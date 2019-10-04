@@ -1,8 +1,8 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.23
-	// @description  try to take over the world!
+	// @version      2.24
+	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
 	// @grant        GM_getValue
@@ -13,35 +13,35 @@
 
 	(function() {
 		'use strict';
-
-	//2019-08-07
 	
 		let fuelCapacity = 0;
 
 		const newBar = document.createElement("td");
         newBar.setAttribute('colspan', '6');
-        newBar.style.width = '100%';
+		newBar.style.width = '100%';
+		
+		const inputStyling = 'style="margin-right:5px;height:90%" type="button"';
 
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Ciężarowy - Sonda" id="truckProbe"></input>');
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Ciężarowy - Pływak" id="truckFloater"></input>');
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="osobowy - Pływak" id="carFloater"></input>');
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Odklikaj CAN" id="odklikajCan"></input>');
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Serwis sondy" id="serwisSondy"></input>');
-		newBar.insertAdjacentHTML('beforeend', '<input style="margin-right:5px;height:90%" type="button" value="Nowy wątek" id="nowyWatek"></input>');
+		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda" id="truckProbe" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="osobowy - Pływak" id="carFloater" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" id="canService" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" id="probeService" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" id="newThread" ${inputStyling}></input>`);
 		
 		$(".break")[0].children[0].append(newBar);
 
 		document.getElementById("truckProbe").addEventListener('click', truckProbe);
 		document.getElementById("truckFloater").addEventListener('click', truckFloater);
 		document.getElementById("carFloater").addEventListener('click', carFloater);
-		document.getElementById("odklikajCan").addEventListener('click', odklikajCanFunc);
-		document.getElementById("serwisSondy").addEventListener('click', serwisSondyFunc);
-		document.getElementById("nowyWatek").addEventListener('click', nowyWatekFunc);
+		document.getElementById("canService").addEventListener('click', canServicePreset);
+		document.getElementById("probeService").addEventListener('click', probeServicePreset);
+		document.getElementById("newThread").addEventListener('click', createNewThread);
 
 		function truckProbe(e) {
 			e.preventDefault();
-			uniwersalne(e.target.id);
-			ciezarowyUniwersalne();
+			generalSettings(e.target.id);
+			generalTruckSettings();
 
 			$('#pomiar_paliwa_id').select2('val', 2).trigger('change.select2');
 			click("#paliwo_z_sondy");
@@ -53,16 +53,13 @@
 			$("#prog_weryfikujacy_paliwa_u").val(litersByPercent(2));
 			$("#prog_wartosci_paliwa_u").val(litersByPercent(2));
 			
-			unclick('#usuwaj_pkt_zerowe');
-			$('#usuwaj_pkt_zerowe_do').val(0);
-			$('#usuwaj2_pkt_zerowe_od').val(0);
-			$('#usuwaj2_pkt_zerowe_do').val(0);
+			usuwajPunktyZerowe(false);
 		}
 
 		function truckFloater(e) {
 			e.preventDefault();
-			uniwersalne(e.target.id);
-			ciezarowyUniwersalne();
+			generalSettings(e.target.id);
+			generalTruckSettings();
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2');
 			unclick("#paliwo_z_sondy");
@@ -75,13 +72,10 @@
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
 			
-			click('#usuwaj_pkt_zerowe');
-			$('#usuwaj_pkt_zerowe_do').val(1);
-			$('#usuwaj2_pkt_zerowe_od').val(103);
-			$('#usuwaj2_pkt_zerowe_do').val(109);
+			usuwajPunktyZerowe(true);
 		}
 
-		function ciezarowyUniwersalne() {
+		function generalTruckSettings() {
 			$("#min_napiecie_stacji").val(21);
 			$("#s2id_poprawnosc_tacho_id").select2('val', 1);
 			$("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
@@ -108,8 +102,8 @@
 
 		function carFloater(e) {
 			e.preventDefault();
-			uniwersalne(e.target.id);
-			osobowyUniwersalne();
+			generalSettings(e.target.id);
+			generalCarSettings();
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2')
 			unclick("#paliwo_z_sondy");
@@ -121,13 +115,10 @@
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
 			
-			click('#usuwaj_pkt_zerowe');
-			$('#usuwaj_pkt_zerowe_do').val(1);
-			$('#usuwaj2_pkt_zerowe_od').val(103);
-			$('#usuwaj2_pkt_zerowe_do').val(109);
+			usuwajPunktyZerowe(true);
 		}
 
-		function osobowyUniwersalne() {
+		function generalCarSettings() {
 			$("#min_napiecie_stacji").val(12);
 			$("#s2id_poprawnosc_tacho_id").select2('val', 1);
 			$("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
@@ -142,7 +133,21 @@
 			click("#can_dystans");
 		}
 
-		function uniwersalne(targetElement) {
+		function usuwajPunktyZerowe(bool) {
+			if (bool) {
+				click('#usuwaj_pkt_zerowe');
+				$('#usuwaj_pkt_zerowe_do').val(1);
+				$('#usuwaj2_pkt_zerowe_od').val(103);
+				$('#usuwaj2_pkt_zerowe_do').val(109);
+			} else {
+				unclick('#usuwaj_pkt_zerowe');
+				$('#usuwaj_pkt_zerowe_do').val(0);
+				$('#usuwaj2_pkt_zerowe_od').val(0);
+				$('#usuwaj2_pkt_zerowe_do').val(0);
+			}
+		}
+
+		function generalSettings(targetElement) {
 			
             flashButton(targetElement);
 			
@@ -185,12 +190,10 @@
 			}
 		}
 
-		function odklikajCanFunc(e) {
+		function canServicePreset(e) {
 			e.preventDefault();
 			
 			flashButton(e.target.id);
-			
-            $('#odklikajCan').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			$("#sposob_gener_zdarzen1").click();
 			$("#rejestruj_obroty0").click();
@@ -206,12 +209,10 @@
 			unclick("#can_dystans");
 		}
 
-		function serwisSondyFunc(e) {
+		function probeServicePreset(e) {
 			e.preventDefault();
 			
 			flashButton(e.target.id);
-			
-            $('#serwisSondy').fadeTo(100, 0.5, function() { $(this).fadeTo(350, 1.0); });
 
 			unclick("#paliwo_z_sondy");
 			unclick("#divide");
@@ -236,20 +237,23 @@
 			return Math.floor(fuelCapacity * (percent / 100));
 		}
 
+		function flashButton(id) {
+			$(`#${id}`).fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+		}
+
 
 	//Automatyczne zakładanie wątku
 	const nrRejestracyjny = $("#bottom_header")[0].children[1].children[0].innerHTML.trim();
 		const date = new Date
 		const newVar = `${nrRejestracyjny}/${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
 
-		function nowyWatekFunc(e) {
+		function createNewThread(e) {
 			e.preventDefault();
 			flashButton(e.target.id);
 			
-			if($("#zakres_do").val() === "") {
+			if ($("#zakres_do").val() === "") {
 				alert('Wprowadź datę zamknięcia obecnego wątku.');
 			} else {
-				
 				GM_setValue(newVar, 'save');
 				$(".save")[0].click();
 			}
@@ -269,8 +273,8 @@
 			$(".new_button")[0].click();
 		}
 
-		function incrementDate(passedDate) {
-			let d = passedDate;
+		function incrementDate(date) {
+			let d = date;
 			d.setDate(d.getDate() + 1);
 
 			let day = d.getDate();
@@ -281,10 +285,6 @@
 			if(month < 10) month = "0"+month;
 
 			return `${year}-${month}-${day}`
-		}
-		
-		function flashButton(id) {
-			$(`#${id}`).fadeTo(50, 0.5, function() { $(this).fadeTo(250, 1.0); });
 		}
 		
 	})();
