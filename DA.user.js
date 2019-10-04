@@ -22,12 +22,12 @@
 		
 		const inputStyling = 'style="margin-right:5px;height:90%" type="button"';
 
-		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda" id="truckProbe" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
 		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="osobowy - Pływak" id="carFloater" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" id="canService" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" id="probeService" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" id="newThread" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="osobowy - Pływak"   id="carFloater"   ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" 	  id="canService"   ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" 	  id="probeService" ${inputStyling}></input>`);
+		newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" 	      id="newThread"    ${inputStyling}></input>`);
 		
 		$(".break")[0].children[0].append(newBar);
 
@@ -81,6 +81,7 @@
 			$("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
 			$("#s2id_paliwo_z_can_dyst").select2('val', 3);
 			$("#wyjatek_brak_zasilania").val(21);
+
 			click("#paliwo_z_can");
 			click("#dystans_can_pokaz");
 			click("#can_dystans");
@@ -94,9 +95,11 @@
 			click("#gen_zdarzen_predkosc1");
 			
 			if(!fuelCapacity) {
-				$('#pojemnosc_zbiornika_6').val(999);
-				$('#zone_tank_6').val(999);
-				fuelCapacity = 999;
+				const fallbackCapacity = 999
+
+				$('#pojemnosc_zbiornika_6').val(fallbackCapacity);
+				$('#zone_tank_6').val(fallbackCapacity);
+				fuelCapacity = fallbackCapacity;
 			}
 		}
 
