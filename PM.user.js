@@ -18,12 +18,24 @@
 
 
         const myTextbox = document.createElement("div");
-        myTextbox.innerHTML = '<div style="width:100%"><input type="text" id="myTextbox" style="width:100%"><button style="border:1px solid #28bea9" id="newButton" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">Wypełnij protokół</button></div>';
+        myTextbox.innerHTML = `
+            <div style="width:100%">
+                <input 
+                    type="text"
+                    id="myTextbox"
+                    style="width:100%"
+                >
+                <button 
+                    style="border:1px solid #28bea9"
+                    id="newButton"
+                    onmouseover="this.style.opacity=0.8"
+                    onmouseout="this.style.opacity=1">
+                    Wypełnij protokół
+                </button>
+            </div>`;
 
         document.getElementById("header").appendChild(myTextbox);
-
         document.getElementById("newButton").addEventListener('click', fillProtocol);
-		
 
         ///////////////////////////////////////////////////////////////////////////
 
@@ -36,29 +48,30 @@
                     const userJSON = JSON.parse(document.getElementById("myTextbox").value);
 
                     //Wybranie firmy
-                    const firmy = document.getElementById("firma1_id");
-                    for(let i = 0; i < firmy.length; i++) {
-                        if(firmy[i].innerText === (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma)) {
-                            $('#firma1_id').select2('val', firmy[i].value).trigger('change');
+                    const companies = document.getElementById("firma1_id");
+                    for(let company of companies) {
+                        if (company.innerText === (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma)) {
+                            $('#firma1_id').select2('val', company.value).trigger('change');
                             break;
                         };
                     };
-                    const grupyPojazdow = document.getElementById("grupa_pojazdow_id");
-
-                    for(let i = 0; i < grupyPojazdow.length; i++) {
-                        if(grupyPojazdow[i].innerText.toLowerCase() === 'wszystkie') {
-                            $('#s2id_grupa_pojazdow_id').select2('val', grupyPojazdow[i].value).trigger('change');
+ 
+                    const vehicleGroups = document.getElementById("grupa_pojazdow_id");
+                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos'];
+                    for(let group of vehicleGroups) {
+                        if (vehicleGroupNames.indexOf(group.innerText.toLowerCase())) {
+                            $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
                             break;
                         };
                     };
 
                     //Kategoria montażu i monter
                     if(userJSON.monter === "Monter klienta" || !userJSON.monter) {
-                        $("#s2id_kategoria_id").select2('val', 2);
+                        $("#s2id_kategoria_id").select2('val', 2); //Montaż bezpłatny
                     }
                     else {
-                        $("#s2id_kategoria_id").select2('val', 1);
-                    }
+                        $("#s2id_kategoria_id").select2('val', 1); //Montaż płatny
+                    };
 
                     if(userJSON.type === "Montaż") {
 						isInvoiceActiveOnAnotherVehicle(userJSON.id);
@@ -67,7 +80,7 @@
                         $("#type_id").select2('val', 2).trigger('change');
                     } else if(userJSON.type.includes("Przekładka")) {
                         $("#type_id").select2('val', 3).trigger('change');
-                    }
+                    };
 
                     //Nr rejestracyjny
                     if(userJSON.rej) $("#nr_rejestracyjny").val(userJSON.rej);
@@ -79,10 +92,10 @@
                         $("#s2id_vehicle_type_id").select2("val", 1);
                     }
 
-                    const vehicleBrands = $("#marka_id")[0];
-                    for(let i = 0; i < vehicleBrands.length; i++) {
-                        if(vehicleBrands[i].innerText.toLowerCase() === userJSON.marka.toLowerCase()) {
-                            $("#marka_id").select2('val', vehicleBrands[i].value).trigger("change");
+                    const vehicleBrands = $("#marka_id");
+                    for(let brand of vehicleBrands) {
+                        if (brand.innerText.toLowerCase() === userJSON.marka.toLowerCase()) {
+                            $("#marka_id").select2('val', brand.value).trigger("change");
                             break;
                         };
                     };
@@ -104,9 +117,9 @@
                     //Skaut
                     if(userJSON.typRejestratora.substring(0, 2) === "SE") {
                         const blackboxBrands = $("#rodzaj_rejestratora_id")[0];
-                        for(let i = 0; i < blackboxBrands.length; i++) {
-                            if(blackboxBrands[i].innerText === "Setivo") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxBrands[i].value).trigger('change.select2');
+                        for(let brand of blackboxBrands) {
+                            if (brand.innerText === "Setivo") {
+                                $("#s2id_rodzaj_rejestratora_id").select2('val', brand.value).trigger('change.select2');
                                 break;
                             };
                         };
@@ -116,9 +129,9 @@
 
                         const databaseConfigs = document.getElementsByName("config_db_id")[0];
 
-                        for(let i = 0; i < databaseConfigs.length; i++) {
-                            if(databaseConfigs[i].innerText === "[A] gps.ze-it.pl") {
-                                $("#s2id_autogen17").select2('val', databaseConfigs[i].value).trigger('change.select2');
+                        for(let config of databaseConfigs) {
+                            if (config.innerText === "[A] gps.ze-it.pl") {
+                                $("#s2id_autogen17").select2('val', config.value).trigger('change.select2');
                                 break;
                             };
                         };
@@ -126,27 +139,27 @@
                         //Typ rejestratora
                         const blackboxType = $("#typ_rejestratora_id")[0];
 
-                        for(let i = 0; i < blackboxType.length; i++) {
-                            if(blackboxType[i].innerText === userJSON.typRejestratora) {
-                                $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
+                        for(let type of blackboxType) {
+                            if (type.innerText === userJSON.typRejestratora) {
+                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
                                 break;
                             };
                         }
                     } else if(userJSON.typRejestratora === "Albatros" || (parseInt(userJSON.id) > 99999 && parseInt(userJSON.id) < 999999)) {
                         const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
-                        for(let i = 0; i < blackboxProducent.length; i++) {
-                            if(blackboxProducent[i].innerText === "Albatros") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxProducent[i].value).trigger('change.select2');
+                        for(let producent of blackboxProducent) {
+                            if (producent.innerText === "Albatros") {
+                                $("#s2id_rodzaj_rejestratora_id").select2('val', producent.value).trigger('change.select2');
                                 break;
                             };
                         };
 
                         const blackboxType = $("#typ_rejestratora_id")[0];
 
-                        for(let i = 0; i < blackboxType.length; i++) {
-                            if(blackboxType[i].innerText === "Albatros 8.5") {
-                                $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
+                        for(let type of blackboxType) {
+                            if (type.innerText === "Albatros 8.5") {
+                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
                                 break;
                             };
                         };
@@ -155,9 +168,9 @@
                     } else if (userJSON.typRejestratora === "Teltonika" || parseInt(userJSON.id) > 999999) {
                         const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
-                        for(let i = 0; i < blackboxProducent.length; i++) {
-                            if(blackboxProducent[i].innerText === "TELTONIKA") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', blackboxProducent[i].value).trigger('change.select2');
+                        for(let producent of blackboxProducent) {
+                            if (producent.innerText === "TELTONIKA") {
+                                $("#s2id_rodzaj_rejestratora_id").select2('val', producent.value).trigger('change.select2');
                                 break;
                             };
                         };
@@ -166,18 +179,18 @@
 
                         const database = document.getElementsByName("config_db_id")[0];
 
-                        for(let i = 0; i < database.length; i++) {
-                            if(database[i].innerText === "[A] gps.ze-it.pl") {
-                                $("#s2id_autogen17").select2('val', database[i].value).trigger('change.select2');
+                        for (let config of databaseConfigs) {
+                            if (config.innerText === "[A] gps.ze-it.pl") {
+                                $("#s2id_autogen17").select2('val', config.value).trigger('change.select2');
                                 break;
                             };
                         };
 
                         const blackboxType = $("#typ_rejestratora_id")[0];
 
-                        for(let i = 0; i < blackboxType.length; i++) {
-                            if(blackboxType[i].innerText === "FMB120") {
-                                $("#s2id_typ_rejestratora_id").select2('val', blackboxType[i].value).trigger('change.select2');
+                        for(let type of blackboxType) {
+                            if (type.innerText === "FMB120") {
+                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
                                 break;
                             };
                         };
@@ -232,9 +245,9 @@
 
 
 							const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
-							for(let i = 0; i < d8Connections.length; i++) {
-								if(d8Connections[i].innerText === userJSON.d8) {
-									$("#s2id_kabel_d8_podlaczenie_id").select2('val', d8Connections[i].value).trigger('change.select2');
+							for(let connection of d8Connections) {
+								if (connection.innerText === userJSON.d8) {
+									$("#s2id_kabel_d8_podlaczenie_id").select2('val', connection.value).trigger('change.select2');
 									break;
 								};
 							};
@@ -264,16 +277,16 @@
                     //Przystawka CAN
                     document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
-                    const noweUrzadzenieId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
-                    const urzadzenia = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
+                    const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
+                    const devices = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
 
                     let rodzajPrzystawki = "Przystawka indukcyjna magistrali CAN";
                     //Jeżeli albatros to CanLogistic
                     if(userJSON.typRejestratora === "Albatros") rodzajPrzystawki = "Przystawka Canlogistic (Albatros)";
 
-                    for(let i = 0; i < urzadzenia.length; i++) {
-                        if(urzadzenia[i].innerText === rodzajPrzystawki || urzadzenia[i].innerText === "safeCAN - CanClick") {
-                            $(`#${noweUrzadzenieId}`).select2('val', urzadzenia[i].value).trigger('change.select2');
+                    for(let device of devices) {
+                        if (device.innerText === rodzajPrzystawki || device.innerText === "safeCAN - CanClick") {
+                            $(`#${newDeviceId}`).select2('val', device.value).trigger('change.select2');
                             break;
                         };
                     };
@@ -359,9 +372,9 @@
 
                     //Monter
                     const monterzy = $("#wykonal")[0];
-                    for(let i = 0; i < monterzy.length; i++) {
-                        if(monterzy[i].innerText === userJSON.monter) {
-                            $("#s2id_wykonal").select2('val', monterzy[i].value).trigger("change");
+                    for(let monter of monterzy) {
+                        if (monter.innerText === userJSON.monter) {
+                            $("#s2id_wykonal").select2('val', monter.value).trigger("change");
                             break;
                         }
                     }
@@ -384,20 +397,20 @@
             }, 0);
         };
 		
-		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, kolor) {
+		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, color) {
 			document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
 
-            const noweUrzadzenieId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
-			const urzadzenia = $(`#${noweUrzadzenieId}`)[0].nextSibling;
+            const newDeviceId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
+			const devices = $(`#${newDeviceId}`)[0].nextSibling;
 
-            for(let i = 0; i < urzadzenia.length; i++) {
-                if(urzadzenia[i].innerText === urzadzenie) {
-                    $(`#${noweUrzadzenieId}`).next().select2('val', urzadzenia[i].value).trigger('change');
+            for(let device of devices) {
+                if (device.innerText === urzadzenie) {
+                    $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
                     break;
                 };
             };
 			
-			const newDinTr = $(`#${noweUrzadzenieId}`)[0].parentNode.nextSibling.nextSibling;
+			const newDinTr = $(`#${newDeviceId}`)[0].parentNode.nextSibling.nextSibling;
 			
 			//nr wejscia
 			newDinTr.children[0].children[2].value = din;
@@ -407,11 +420,11 @@
 			
 			//kolor
 				
-				const dinKolory = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
+				const dinColors = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
-                for(let i = 0; i < dinKolory.length; i++) {
-                    if(dinKolory[i].innerText === kolor) {
-                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', dinKolory[i].value).trigger('change.select2');
+                for (let color of dinColors) {
+                    if (color.innerText === color) {
+                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', color.value).trigger('change.select2');
                         break;
                     };
                 };
@@ -420,15 +433,15 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
 		
-		function addUrzadzenieDodatkoweInne(urzadzenie) {
+		function addUrzadzenieDodatkoweInne(device) {
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
-            const noweUrzadzenieId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
-            const urzadzenia = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
+            const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
+            const devices = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
 
-            for(let i = 0; i < urzadzenia.length; i++) {
-                if(urzadzenia[i].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
-                    $(`#${noweUrzadzenieId}`).next().select2('val', urzadzenia[i].value).trigger('change');
+            for(let device of devices) {
+                if (device.innerText.toLowerCase() === urzadzenie.toLowerCase()) {
+                    $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
                     break;
                 };
             };
@@ -451,7 +464,6 @@
 																														${id}									
 			</td>`)) {
 							alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
-							console.log(editedResponse);
 						};
 					});
 				});
