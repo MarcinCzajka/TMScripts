@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.8
+// @version      4.9
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -92,7 +92,7 @@
                         $("#s2id_vehicle_type_id").select2("val", 1);
                     }
 
-                    const vehicleBrands = $("#marka_id");
+                    const vehicleBrands = $("#marka_id")[0];
                     for(let brand of vehicleBrands) {
                         if (brand.innerText.toLowerCase() === userJSON.marka.toLowerCase()) {
                             $("#marka_id").select2('val', brand.value).trigger("change");
