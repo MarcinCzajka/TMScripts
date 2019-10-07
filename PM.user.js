@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.10
+// @version      4.11
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -177,7 +177,7 @@
 
                         document.getElementById("database-config").style = "width: 260px; display: inline-block";
 
-                        const database = document.getElementsByName("config_db_id")[0];
+                        const databaseConfigs = document.getElementsByName("config_db_id")[0];
 
                         for (let config of databaseConfigs) {
                             if (config.innerText === "[A] gps.ze-it.pl") {
