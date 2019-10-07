@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.9
+// @version      4.10
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -313,6 +313,21 @@
 
                             addUrzadzenieDodatkoweDin('Webasto', webastoDin, 'Wysoki', 'Granatowy');
                         };
+                    };
+					
+					if(userJSON.konfiguracja.toLowerCase().includes("pompa")) {
+                        let pompaString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('pompa')).toLowerCase();
+                        pompaString = pompaString.substr(0, pompaString.indexOf(','));
+
+						let pompaDin = 5;
+						for (let i = 0; i < pompaString.length; i++) {
+							if(parseInt(pompaString.charAt(i))) {
+								pompaDin = parseInt(pompaString.charAt(i));
+								break;
+							};
+						};
+
+						addUrzadzenieDodatkoweDin('Pompa', pompaDin, 'Wysoki', 'Beżowy');
                     };
 
                     //Urządzenia dodatkowe inne
