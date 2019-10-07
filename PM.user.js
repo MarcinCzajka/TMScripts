@@ -437,9 +437,9 @@
 				
 				const dinColors = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
-                for (let color of dinColors) {
-                    if (color.innerText === color) {
-                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', color.value).trigger('change.select2');
+                for (let itemColor of dinColors) {
+                    if (itemColor.innerText === color) {
+                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', itemColor.value).trigger('change.select2');
                         break;
                     };
                 };
