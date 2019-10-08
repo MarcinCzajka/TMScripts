@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.9
+// @version      1.10
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -58,6 +58,7 @@
         calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1, "newTextbox1")});
+		document.getElementById("newTextbox1").addEventListener('change', function() {makePoints(cm1, "newTextbox1")});
     };
 
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
@@ -69,7 +70,9 @@
 		   </div>
 		   <input id="newTextbox2" type"text" style="width:20px;margin:3px"></input>`;
         calibrationToolkit2.insertAdjacentHTML('beforeend', newDiv);
+		
         document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newTextbox2")});
+		document.getElementById("newTextbox2").addEventListener('change', function() {makePoints(cm2, "newTextbox2")});
     }
 
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
@@ -81,7 +84,9 @@
 		   </div>
 		   <input id="newTextbox3" type"text" style="width:20px;margin:3px"></input>`;
         calibrationToolkit3.insertAdjacentHTML('beforeend', newDiv);
+		
         document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3, "newTextbox3")});
+		document.getElementById("newTextbox3").addEventListener('change', function() {makePoints(cm3, "newTextbox3")});
     }
 
 function makePoints(obj, textboxId) {
