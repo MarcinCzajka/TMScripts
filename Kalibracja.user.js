@@ -54,11 +54,14 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox1" type"text" style="width:20px;margin:3px"></input>`;
+		   <input id="newTextbox1" type"text" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>`;
         calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1, "newTextbox1")});
 		document.getElementById("newTextbox1").addEventListener('input', function() {makePoints(cm1, "newTextbox1")});
+		document.getElementById("newTextbox1").addEventListener('click', function() {
+			this.value = "";
+		});
     };
 
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
@@ -68,11 +71,14 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox2" type"text" style="width:20px;margin:3px"></input>`;
+		   <input id="newTextbox2" type"text" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>`;
         calibrationToolkit2.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newTextbox2")});
 		document.getElementById("newTextbox2").addEventListener('input', function() {makePoints(cm2, "newTextbox2")});
+		document.getElementById("newTextbox2").addEventListener('click', function() {
+			this.value = "";
+		});
 		
 		//Guzik do zamiany wielkości zbiorników
 		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki" style="padding:5px;height:25px;float:right;margin:5px"></input>`;
@@ -80,7 +86,7 @@
 		
 		document.getElementById("tankSwap").addEventListener('click', function() {
 			$('#tankSwap').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
-			this.style.background = '#2058da';
+			this.style.background = '#daa520';
 			
 			const firstTankCapacity = cm1.fueltank_capacity;
 			const firstTankVoltage = cm1.fueltank_voltage;
@@ -100,11 +106,14 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox3" type"text" style="width:20px;margin:3px"></input>`;
+		   <input id="newTextbox3" type"text" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>`;
         calibrationToolkit3.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3, "newTextbox3")});
 		document.getElementById("newTextbox3").addEventListener('input', function() {makePoints(cm3, "newTextbox3")});
+		document.getElementById("newTextbox3").addEventListener('click', function() {
+			this.value = "";
+		});
     }
 
 function makePoints(obj, textboxId) {
