@@ -58,7 +58,7 @@
         calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1, "newTextbox1")});
-		document.getElementById("newTextbox1").addEventListener('change', function() {makePoints(cm1, "newTextbox1")});
+		document.getElementById("newTextbox1").addEventListener('input', function() {makePoints(cm1, "newTextbox1")});
     };
 
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
@@ -72,7 +72,7 @@
         calibrationToolkit2.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newTextbox2")});
-		document.getElementById("newTextbox2").addEventListener('change', function() {makePoints(cm2, "newTextbox2")});
+		document.getElementById("newTextbox2").addEventListener('input', function() {makePoints(cm2, "newTextbox2")});
     }
 
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
@@ -86,7 +86,7 @@
         calibrationToolkit3.insertAdjacentHTML('beforeend', newDiv);
 		
         document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3, "newTextbox3")});
-		document.getElementById("newTextbox3").addEventListener('change', function() {makePoints(cm3, "newTextbox3")});
+		document.getElementById("newTextbox3").addEventListener('input', function() {makePoints(cm3, "newTextbox3")});
     }
 
 function makePoints(obj, textboxId) {
