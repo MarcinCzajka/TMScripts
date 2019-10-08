@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.12
+// @version      4.13
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -26,7 +26,7 @@
                     style="width:100%"
                 >
                 <button 
-                    style="border:1px solid #28bea9"
+                    style="border:1px solid #28bea9;cursor:pointer;"
                     id="newButton"
                     onmouseover="this.style.opacity=0.8"
                     onmouseout="this.style.opacity=1">

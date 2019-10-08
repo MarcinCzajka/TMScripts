@@ -81,7 +81,7 @@
 		});
 		
 		//Guzik do zamiany wielkości zbiorników
-		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki" style="padding:5px;height:25px;float:right;margin:5px"></input>`;
+		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki" style="padding:5px;height:25px;float:right;margin:5px;cursor:pointer;"></input>`;
 		calibrationToolkit1.insertAdjacentHTML('beforeend', tankSwapBtn);
 		
 		document.getElementById("tankSwap").addEventListener('click', function() {

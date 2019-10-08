@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.24
+	// @version      2.25
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @match        */api/vehicle/admin/save/*
@@ -20,7 +20,7 @@
         newBar.setAttribute('colspan', '6');
 		newBar.style.width = '100%';
 		
-		const inputStyling = 'style="margin-right:5px;height:90%" type="button"';
+		const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
 
 		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
 		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);

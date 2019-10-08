@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         setServicesToOdebrane
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.2
+// @version      1.3
 // @description  Serwis
 // @author       MAC
 // @match        */api/services*
@@ -13,7 +13,7 @@
     'use strict';
 
     const newDiv = document.createElement("div");
-    const clearBtn = '<input type="button" value="Reset Date" id="clearDateAndChangeCategory"></input>';
+    const clearBtn = '<input type="button" value="Reset Date" id="clearDateAndChangeCategory" style="cursor:pointer;"></input>';
 
     newDiv.innerHTML = clearBtn;
     document.getElementById('problem_from').parentElement.prepend(newDiv);
