@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.10
+// @version      1.11
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -73,6 +73,20 @@
 		
         document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newTextbox2")});
 		document.getElementById("newTextbox2").addEventListener('input', function() {makePoints(cm2, "newTextbox2")});
+		
+		//Guzik do zamiany wielkości zbiorników
+		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki"></input>`;
+		calibrationToolkit1.insertAdjacentHTML('beforeend', tankSwapBtn);
+		document.getElementById("tankSwap").addEventListener('click', function() {
+			const firstTankCapacity = cm1.fueltank_capacity;
+			const firstTankVoltage = cm1.fueltank_voltage;
+			
+			cm1.fueltank_capacity = cm2.fueltank_capacity;
+			cm1.fueltank_voltage = cm2.fueltank_voltage;
+			
+			cm2.fueltank_capacity = firstTankCapacity;
+			cm2.fueltank_voltage = firstTankVoltage;
+		});
     }
 
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
