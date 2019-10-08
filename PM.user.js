@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.11
+// @version      4.12
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -448,7 +448,7 @@
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
 		
-		function addUrzadzenieDodatkoweInne(device) {
+		function addUrzadzenieDodatkoweInne(urzadzenie) {
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
             const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
