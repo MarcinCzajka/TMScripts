@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8
+// @version      1.9
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -88,7 +88,7 @@ function makePoints(obj, textboxId) {
     let p;
     obj.removeAllPoints()
 	
-	const addValue = $("#textboxId".val();
+	const addValue = $("#textboxId".val());
 
     p = obj.makePoint(0, 300);
 					obj.points.push(p);
