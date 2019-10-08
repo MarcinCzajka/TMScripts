@@ -80,7 +80,7 @@
 		
 		document.getElementById("tankSwap").addEventListener('click', function() {
 			$('#tankSwap').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
-			this.background = 'goldenrod';
+			this.style.background = '#2058da';
 			
 			const firstTankCapacity = cm1.fueltank_capacity;
 			const firstTankVoltage = cm1.fueltank_voltage;
