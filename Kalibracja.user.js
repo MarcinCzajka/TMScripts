@@ -88,7 +88,7 @@ function makePoints(obj, textboxId) {
     let p;
     obj.removeAllPoints()
 	
-	const addValue = $("#textboxId".val());
+	const addValue = $("#textboxId").val();
 
     p = obj.makePoint(0, 300);
 					obj.points.push(p);
