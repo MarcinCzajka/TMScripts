@@ -54,10 +54,10 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox1" type"text" style="width:20px"></input>`;
+		   <input id="newTextbox1" type"text" style="width:20px;margin:3px"></input>`;
         calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
 		
-        document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1, "newButton1")});
+        document.getElementById("newButton1").addEventListener('click', function() {makePoints(cm1, "newTextbox1")});
     };
 
     const calibrationToolkit2 = document.getElementsByClassName('canvas-container')[2].nextElementSibling;
@@ -67,9 +67,9 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox2" type"text" style="width:20px"></input>`;
+		   <input id="newTextbox2" type"text" style="width:20px;margin:3px"></input>`;
         calibrationToolkit2.insertAdjacentHTML('beforeend', newDiv);
-        document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newButton2")});
+        document.getElementById("newButton2").addEventListener('click', function() {makePoints(cm2, "newTextbox2")});
     }
 
     const calibrationToolkit3 = document.getElementsByClassName('canvas-container')[4].nextElementSibling;
@@ -79,16 +79,16 @@
 			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
-		   <input id="newTextbox3" type"text" style="width:20px"></input>`;
+		   <input id="newTextbox3" type"text" style="width:20px;margin:3px"></input>`;
         calibrationToolkit3.insertAdjacentHTML('beforeend', newDiv);
-        document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3, "newButton3")});
+        document.getElementById("newButton3").addEventListener('click', function() {makePoints(cm3, "newTextbox3")});
     }
 
 function makePoints(obj, textboxId) {
     let p;
     obj.removeAllPoints()
 	
-	const addValue = $("#textboxId").val();
+	const addValue = parseInt($(`#${textboxId}`).val() || 0);
 
     p = obj.makePoint(0, 300);
 					obj.points.push(p);
@@ -102,7 +102,7 @@ function makePoints(obj, textboxId) {
 					obj.points.push(p);
 					obj.points.sort(compare);
 					obj.canvas.add(p);
-    p = obj.makePoint(225 - addValue, 75);
+    p = obj.makePoint(225, 75 - addValue);
 					obj.points.push(p);
 					obj.points.sort(compare);
 					obj.canvas.add(p);
