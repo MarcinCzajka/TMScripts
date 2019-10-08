@@ -77,7 +77,10 @@
 		//Guzik do zamiany wielkości zbiorników
 		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki" style="padding:5px;height:25px;float:right"></input>`;
 		calibrationToolkit1.insertAdjacentHTML('beforeend', tankSwapBtn);
+		
 		document.getElementById("tankSwap").addEventListener('click', function() {
+			$('#tankSwap').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+			
 			const firstTankCapacity = cm1.fueltank_capacity;
 			const firstTankVoltage = cm1.fueltank_voltage;
 			
