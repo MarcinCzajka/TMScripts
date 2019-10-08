@@ -98,7 +98,7 @@ function makePoints(obj, textboxId) {
 					obj.points.push(p);
 					obj.points.sort(compare);
 					obj.canvas.add(p);
-    p = obj.makePoint(75, 225 + addValue));
+    p = obj.makePoint(75, 225 + addValue);
 					obj.points.push(p);
 					obj.points.sort(compare);
 					obj.canvas.add(p);
