@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.14
+// @version      4.15
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -41,12 +41,6 @@
 
         function fillProtocol() {
             $loader.show();
-			
-			const alertDiv = document.createElement('h1');
-				alertDiv.innerText = "";
-				alertDiv.id = "alertDiv";
-				alertDiv.style = 'position:fixed;top:55%;z-index:100002;width:100%;text-align:center;';
-			document.getElementById('loader').appendChild(alertDiv);
 
             setTimeout(() => {
                 try {
@@ -63,9 +57,9 @@
                     };
  
                     const vehicleGroups = document.getElementById("grupa_pojazdow_id");
-                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos'];
+                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto'];
                     for(let group of vehicleGroups) {
-                        if (vehicleGroupNames.indexOf(group.innerText.toLowerCase())) {
+                        if (vehicleGroupNames.indexOf(group.innerText.toLowerCase()) > -1) {
                             $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
                             break;
                         };
@@ -85,8 +79,6 @@
                     } else if(userJSON.type === "Upgrade") {
                         $("#type_id").select2('val', 2).trigger('change');
                     } else if(userJSON.type.includes("Przekładka")) {
-						alertDiv.innerText = "Szukam pojazdu z którego jest przekładka. Może to chwilę potrwać.";
-						
                         $("#type_id").select2('val', 3).trigger('change');
 
                         const rejPrzekladka = userJSON.type.replace('Przekładka z ', '').toLowerCase();
@@ -99,9 +91,6 @@
 								break;
 							};
 						};
-						
-						alertDiv.innerText = "";
-						document.getElementById('alertDiv').innerText = "fallback text";
                     };
 
                     //Nr rejestracyjny
