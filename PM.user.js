@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.15
+// @version      4.16
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -84,12 +84,19 @@
                         const rejPrzekladka = userJSON.type.replace('Przekładka z ', '').toLowerCase();
 
                         const pojazdyArch = $('#old_reg_number')[0];
+						let valueOfVehicle = '';
 
                         for(let arch of pojazdyArch) {
 							if (arch.innerText.toLowerCase().indexOf(rejPrzekladka) > -1) {
-								$('#old_reg_number').select2('val', arch.value).trigger('change');
+								valueOfVehicle = arch.value;
 								break;
 							};
+						};
+						
+						if(valueOfVehicle) {
+							$('#old_reg_number').select2('val', valueOfVehicle).trigger('change');
+						} else {
+							alert(`Nie znaleziono pojazdu ${userJSON.type.replace('Przekładka z ', '')} na liście pojazdów do przekładki.`);
 						};
                     };
 
