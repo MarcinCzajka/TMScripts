@@ -36,17 +36,17 @@
 
         document.getElementById("header").appendChild(myTextbox);
         document.getElementById("newButton").addEventListener('click', fillProtocol);
-		
-		
-		const alertDiv = document.createElement('h1');
-			alertDiv.innerText = "";
-			alertDiv.style = 'position:fixed;top:55%;z-index:100002;width:100%;text-align:center;';
-		document.getElementById('loader').appendChild(alertDiv);
 
         ///////////////////////////////////////////////////////////////////////////
 
         function fillProtocol() {
             $loader.show();
+			
+			const alertDiv = document.createElement('h1');
+				alertDiv.innerText = "";
+				alertDiv.id = "alertDiv";
+				alertDiv.style = 'position:fixed;top:55%;z-index:100002;width:100%;text-align:center;';
+			document.getElementById('loader').appendChild(alertDiv);
 
             setTimeout(() => {
                 try {
@@ -101,6 +101,7 @@
 						};
 						
 						alertDiv.innerText = "";
+						document.getElementById('alertDiv').innerText = "fallback text";
                     };
 
                     //Nr rejestracyjny
