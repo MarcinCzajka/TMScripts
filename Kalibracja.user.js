@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.11
+// @version      1.12
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -89,13 +89,10 @@
 			this.style.background = '#daa520';
 			
 			const firstTankCapacity = cm1.fueltank_capacity;
-			const firstTankVoltage = cm1.fueltank_voltage;
 			
 			cm1.fueltank_capacity = cm2.fueltank_capacity;
-			cm1.fueltank_voltage = cm2.fueltank_voltage;
 			
 			cm2.fueltank_capacity = firstTankCapacity;
-			cm2.fueltank_voltage = firstTankVoltage;
 		});
     }
 
