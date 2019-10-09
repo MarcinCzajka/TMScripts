@@ -41,7 +41,7 @@
 		const alertDiv = document.createElement('h1');
 			alertDiv.innerText = "";
 			alertDiv.style = 'position:fixed;top:55%;z-index:100002;width:100%;text-align:center;';
-		document.getElementByID('loader').appendChild(alertDiv);
+		document.getElementById('loader').appendChild(alertDiv);
 
         ///////////////////////////////////////////////////////////////////////////
 
