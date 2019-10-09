@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.13
+// @version      4.14
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -36,6 +36,12 @@
 
         document.getElementById("header").appendChild(myTextbox);
         document.getElementById("newButton").addEventListener('click', fillProtocol);
+		
+		
+		const alertDiv = document.createElement('h1');
+			alertDiv.innerText = "";
+			alertDiv.style = 'position:fixed;top:55%;z-index:100002;width:100%;text-align:center;';
+		document.getElementByID('loader').appendChild(alertDiv);
 
         ///////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +85,21 @@
                     } else if(userJSON.type === "Upgrade") {
                         $("#type_id").select2('val', 2).trigger('change');
                     } else if(userJSON.type.includes("Przekładka")) {
+						alertDiv.innerText = "Szukam pojazdu z którego jest przekładka. Może to chwilę potrwać.";
+						
                         $("#type_id").select2('val', 3).trigger('change');
+
+                        const rejPrzekladka = userJSON.type.replace('Przekładka z ', '').toLowerCase();
+
+                        const pojazdyArch = $('#old_reg_number')[0];
+
+                        for(let arch of pojazdyArch) {
+                        if (arch.innerText.toLowerCase().indexOf(rejPrzekladka) > -1) {
+                            $('#old_reg_number').select2('val', arch.value).trigger('change');
+                            break;
+                        };
+						
+						alertDiv.innerText = "";
                     };
 
                     //Nr rejestracyjny
