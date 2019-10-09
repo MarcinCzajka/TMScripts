@@ -94,10 +94,11 @@
                         const pojazdyArch = $('#old_reg_number')[0];
 
                         for(let arch of pojazdyArch) {
-                        if (arch.innerText.toLowerCase().indexOf(rejPrzekladka) > -1) {
-                            $('#old_reg_number').select2('val', arch.value).trigger('change');
-                            break;
-                        };
+							if (arch.innerText.toLowerCase().indexOf(rejPrzekladka) > -1) {
+								$('#old_reg_number').select2('val', arch.value).trigger('change');
+								break;
+							};
+						};
 						
 						alertDiv.innerText = "";
                     };
