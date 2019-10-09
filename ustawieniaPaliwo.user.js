@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.3
+// @version      1.4
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/settings/*
@@ -12,10 +12,22 @@
 (function() {
     'use strict';
 	
-	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', '<td><input style="height:23px;width:75px;padding:0;border-radius:10px;background:#929DA7;cursor:pointer;" type="button" value="Ciężarowy" id="truckBtn"></input></td>');
+	const newTd = `
+		<td>
+			<input 
+				style="height:23px;width:75px;padding:0;border-radius:10px;background:#929DA7;cursor:pointer;" 
+				type="button" 
+				value="Ciężarowy" 
+				id="truckBtn">
+			</input>
+		</td>`;
+	
+	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', newTd);
 	document.getElementById("truckBtn").addEventListener('click', truckSettings);
 	
 	function truckSettings() {
+			$('#points_to_average').val(3).trigger('change');
+		
 			$('#invoice_matching').select2('val', 3600).trigger('change.select2');
 		
 			$('#alg_stacyjka_typ1').click();
