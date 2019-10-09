@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.16
+// @version      4.17
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -49,12 +49,21 @@
 
                     //Wybranie firmy
                     const companies = document.getElementById("firma1_id");
+					const firma = (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma);
+					let companyValue = '';
+					
                     for(let company of companies) {
-                        if (company.innerText === (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma)) {
-                            $('#firma1_id').select2('val', company.value).trigger('change');
+                        if (company.innerText === firma) {
+                            companyValue = company.value;
                             break;
                         };
                     };
+					
+					if (companyValue) {
+						$('#firma1_id').select2('val', companyValue).trigger('change');
+					} else {
+						alert(`Nie znaleziono firmy ${userJSON.firma}`);
+					};
  
                     const vehicleGroups = document.getElementById("grupa_pojazdow_id");
                     const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto'];
@@ -65,7 +74,7 @@
                         };
                     };
 
-                    //Kategoria montażu i monter
+                    //Kategoria montażu
                     if(userJSON.monter === "Monter klienta" || !userJSON.monter) {
                         $("#s2id_kategoria_id").select2('val', 2); //Montaż bezpłatny
                     }
