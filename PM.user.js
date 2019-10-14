@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.18
+// @version      4.19
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -478,9 +478,9 @@
 		
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
 			//Sprawdź czy nie ma już takiego urządzenia w protokole
-			const addedDevices = $('.active.added.dino_tr');
+			const addedDevices = document.getElementsByClassName('active dino_tr');
 			for(let device of addedDevices) {
-				if(device.children[2].children[0].children[0].children[0].id).text().toLowerCase() === urzadzenie.toLowerCase()) {
+				if(device.children[2].children[0].children[0].children[0].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
 					return;
 				}
 			}
