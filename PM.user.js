@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.19
+// @version      4.20
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -302,25 +302,8 @@
                     }
 
                     //Przystawka CAN
-                    document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
-
-                    const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
-                    const devices = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
-
-                    let rodzajPrzystawki = "Przystawka indukcyjna magistrali CAN";
-                    //Jeżeli albatros to CanLogistic
-                    if(userJSON.typRejestratora === "Albatros") rodzajPrzystawki = "Przystawka Canlogistic (Albatros)";
-
-                    for(let device of devices) {
-                        if (device.innerText === rodzajPrzystawki || device.innerText === "safeCAN - CanClick") {
-                            $(`#${newDeviceId}`).select2('val', device.value).trigger('change.select2');
-                            break;
-                        };
-                    };
-
-                    const newCanTr = document.getElementsByClassName("active added dino_tr");
-
-                    newCanTr[newCanTr.length - 1].classList.add("bad");
+						let rodzajPrzystawki = (userJSON.typRejestratora === "Albatros" ? "Przystawka Canlogistic (Albatros)" : "Przystawka indukcyjna magistrali CAN");
+						addUrzadzenieDodatkoweInne(rodzajPrzystawki);
 
                     //Urządzenia dodatkowe Din 1-5
                     if(userJSON.konfiguracja.toLowerCase().includes("webasto")) {
