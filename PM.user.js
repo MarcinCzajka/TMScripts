@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.17
+// @version      4.18
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -365,7 +365,8 @@
 					
                     //Sondy an0
                     if(userJSON.an0numer) {
-                        document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
+						
+                        if(!$('tr[data-number=1]')[0]) document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                         const an0 = document.querySelectorAll("tr[data-number='1']")[0].children[2];
                         an0.children[0].children[2].value = userJSON.an0pojemnosc; //Pojemność
@@ -388,7 +389,7 @@
 
                     //Sondy an1
                     if(userJSON.an1numer) {
-                        document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
+                        if(!$('tr[data-number=2]')[0]) document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                         const an1 = document.querySelectorAll("tr[data-number='2']")[0].children[2];
                         an1.children[0].children[2].value = userJSON.an1pojemnosc; //Pojemność
@@ -476,6 +477,17 @@
 		}
 		
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
+			//Sprawdź czy nie ma już takiego urządzenia w protokole
+			const addedDevices = $('.active.added.dino_tr');
+			for(let device of addedDevices) {
+				if(device.children[2].children[0].children[0].children[0].id).text().toLowerCase() === urzadzenie.toLowerCase()) {
+					return;
+				}
+			}
+			
+			//Jak nie ma to doklikaj
+			$('.active.added.dino_tr')[0].children[0].children[0].children[0].click()
+			
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
             const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
