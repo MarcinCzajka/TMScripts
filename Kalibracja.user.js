@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.12
+// @version      1.13
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -93,6 +93,8 @@
 			cm1.fueltank_capacity = cm2.fueltank_capacity;
 			
 			cm2.fueltank_capacity = firstTankCapacity;
+			
+			$('#save_calibration').css('opacity', 1);
 		});
     }
 
@@ -141,6 +143,8 @@ function makePoints(obj, textboxId) {
 					obj.canvas.add(p);
 
     obj.redrawScreen();
+	
+	$('#save_calibration').css('opacity', 1);
 }
 
 })();
