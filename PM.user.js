@@ -469,8 +469,6 @@
 			}
 			
 			//Jak nie ma to doklikaj
-			$('.active.added.dino_tr')[0].children[0].children[0].children[0].click()
-			
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
             const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
