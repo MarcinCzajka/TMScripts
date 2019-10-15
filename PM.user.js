@@ -448,6 +448,8 @@
 						break;
 					};
 				};
+				const newCanTr = document.getElementsByClassName("active added din_tr");
+				newCanTr[newCanTr.length - 1].classList.add("bad");
 			};
 			
 				const newDinTr = $(`#${newDeviceId}`)[0].parentNode.nextSibling.nextSibling;
@@ -468,12 +470,7 @@
                         break;
                     };
                 };
-
-			if(!deviceExists) {
-				const newCanTr = document.getElementsByClassName("active added din_tr");
-				newCanTr[newCanTr.length - 1].classList.add("bad");
-			};
-		}
+		};
 		
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
 			//Sprawdź czy nie ma już takiego urządzenia w protokole
