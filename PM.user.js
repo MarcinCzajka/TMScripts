@@ -469,8 +469,10 @@
                     };
                 };
 
-            const newCanTr = document.getElementsByClassName("active added din_tr");
-            newCanTr[newCanTr.length - 1].classList.add("bad");
+			if(!deviceExists) {
+				const newCanTr = document.getElementsByClassName("active added din_tr");
+				newCanTr[newCanTr.length - 1].classList.add("bad");
+			};
 		}
 		
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
