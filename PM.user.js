@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.20
+// @version      4.21
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -424,20 +424,34 @@
         };
 		
 		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, color) {
-			document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
-
-            const newDeviceId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
-			const devices = $(`#${newDeviceId}`)[0].nextSibling;
-
-            for(let device of devices) {
-                if (device.innerText === urzadzenie) {
-                    $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
-                    break;
-                };
-            };
+			//Sprawdź czy nie ma takiego urządzenia
+			let deviceExists = false;
+			let newDeviceId = "";
+			const addedDevices = document.getElementsByClassName('din_tr');
+			for(let addedDevice of addedDevices) {
+				if(addedDevice.children[1].children[0].children[0].children[0].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
+					deviceExists = true;
+					newDeviceId = addedDevice.children[1].children[0].id;
+					break;
+				}
+			}
 			
-			const newDinTr = $(`#${newDeviceId}`)[0].parentNode.nextSibling.nextSibling;
+			if(!deviceExists) {
+				document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
+
+				newDeviceId = document.getElementsByClassName("dino-section header-title")[0].previousElementSibling.children[1].children[0].id;
+				const devices = $(`#${newDeviceId}`)[0].nextSibling;
+
+				for(let device of devices) {
+					if (device.innerText === urzadzenie) {
+						$(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
+						break;
+					};
+				};
+			};
 			
+				const newDinTr = $(`#${newDeviceId}`)[0].parentNode.nextSibling.nextSibling;
+				
 			//nr wejscia
 			newDinTr.children[0].children[2].value = din;
 			
