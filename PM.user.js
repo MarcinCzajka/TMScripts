@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.22
+// @version      4.23
 // @description  try to take over the world!
 // @author       MAC
 // @match        http://*/api/installation*
@@ -68,7 +68,7 @@
 					};
  
                     const vehicleGroups = document.getElementById("grupa_pojazdow_id");
-                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto'];
+                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto', 'all_trucks'];
                     for(let group of vehicleGroups) {
                         if (vehicleGroupNames.indexOf(group.innerText.toLowerCase()) > -1) {
                             $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
