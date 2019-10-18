@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.2
 // @description  Change status and owner .then close task
 // @author       MAC
 // @match        *thulium.com/panel/tickets*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    const button = '<div class="button" id="myButton" style="display:inline;margin-left:10px;background-color:#BE1721;color:#f0f2f1;">*Zamknij zadania*</div>';
+    const button = '<div class="button" id="myButton" style="display:inline;margin-left:10px;background-color:#BE1721;color:#f0f2f1;">*Zamknij zadania jako wykonany import paliwa*</div>';
     $(button).insertBefore('#pager');
 
     const baseUrl = window.location.origin + '/panel/panel2.0/tickets';
