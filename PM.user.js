@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.23
-// @description  try to take over the world!
+// @version      4.24
+// @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @match        http://*/api/installation*
 // @grant        none
@@ -160,7 +160,7 @@
 
                         for(let config of databaseConfigs) {
                             if (config.innerText === "[A] gps.ze-it.pl") {
-                                $("#s2id_autogen17").select2('val', config.value).trigger('change.select2');
+                                $('#database-config').find('.select2-container').select2('val', config.value).trigger('change.select2');
                                 break;
                             };
                         };
