@@ -121,23 +121,14 @@ function makePoints(obj, textboxId) {
 	
 	const addValue = parseInt($(`#${textboxId}`).val() || 0);
 
-    p = obj.makePoint(0, 300);
-		obj.points.push(p);
-		obj.canvas.add(p);
-    p = obj.makePoint(150, 150);
-		obj.points.push(p);
-		obj.canvas.add(p);
-    p = obj.makePoint(75, 225 + addValue);
-		obj.points.push(p);
-		obj.canvas.add(p);
-    p = obj.makePoint(225, 75 - addValue);
-		obj.points.push(p);
-		obj.canvas.add(p);
-    p = obj.makePoint(300, 0);
-		obj.points.push(p);
-		obj.canvas.add(p);
+    obj.setPointsXY([
+        [0,300],
+        [75, 225 + addValue],
+        [150, 150],
+        [225, 75 - addValue],
+        [300,0]
+    ]);
 
-	obj.canvas.calcOffset();
     obj.redrawScreen();
 	
 	$('#save_calibration').css('opacity', 1);
