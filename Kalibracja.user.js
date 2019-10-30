@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.13
+// @version      1.14
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -122,26 +122,22 @@ function makePoints(obj, textboxId) {
 	const addValue = parseInt($(`#${textboxId}`).val() || 0);
 
     p = obj.makePoint(0, 300);
-					obj.points.push(p);
-					obj.points.sort(compare);
-					obj.canvas.add(p);
+		obj.points.push(p);
+		obj.canvas.add(p);
     p = obj.makePoint(150, 150);
-					obj.points.push(p);
-					obj.points.sort(compare);
-					obj.canvas.add(p);
+		obj.points.push(p);
+		obj.canvas.add(p);
     p = obj.makePoint(75, 225 + addValue);
-					obj.points.push(p);
-					obj.points.sort(compare);
-					obj.canvas.add(p);
+		obj.points.push(p);
+		obj.canvas.add(p);
     p = obj.makePoint(225, 75 - addValue);
-					obj.points.push(p);
-					obj.points.sort(compare);
-					obj.canvas.add(p);
+		obj.points.push(p);
+		obj.canvas.add(p);
     p = obj.makePoint(300, 0);
-					obj.points.push(p);
-					obj.points.sort(compare);
-					obj.canvas.add(p);
+		obj.points.push(p);
+		obj.canvas.add(p);
 
+	obj.canvas.calcOffset();
     obj.redrawScreen();
 	
 	$('#save_calibration').css('opacity', 1);
