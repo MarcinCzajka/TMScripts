@@ -79,10 +79,11 @@
 			   </div>
 			   <input id="newTextbox${index}" type="text" title="Przesuń skrajne punkty o tyle punktów" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>
 			   <div title="Usuń punkty" id="deletePointsBtn${index}" style="background-color: #D9F4F0;margin:3px 3px 3px 15px;border:1px solid #50C8BB;width: 27px;height: 27px;cursor:pointer;">
-					<div style="background-color:#50C8BB;width: 140%;height: 1px;position:relative;transform: rotate(-45deg);left: -5px;top: 11px;margin: 0;padding: 0;"></div>
-					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
-					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 0;bottom: 0;">
-					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
+					<div style="background-color:#50C8BB;width: 140%;height: 1px;position:relative;transform: rotate(-45deg);left: -5px;top: 11px;margin: 0;padding: 0;">
+						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
+						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 0;bottom: 0;">
+						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
+					</div>
 				</div>
 			</div>`;
 			
