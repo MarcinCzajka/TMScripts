@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.16
+// @version      1.17
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -11,7 +11,6 @@
 
 (function() {
     'use strict';
-
 
     let intervalCount = 1;
     const checkForConfirmedEvents = setInterval(function(){
@@ -44,17 +43,18 @@
 
         intervalCount++;
     }, 2000);
+	
+	
 
-	const nrOfCalibrationWindows = document.getElementsByClassName('canvas-container').length / 2;
-
-	for(let i = 1; i <= nrOfCalibrationWindows; i++) {
+	const fueltanksCount = document.getElementsByClassName('canvas-container').length / 2;
+	for(let i = 1; i <= fueltanksCount; i++) {
 		createInsertpointsButton(i);
 	};
 
-	if(nrOfCalibrationWindows > 1) {
+	if(fueltanksCount === 2) {
 		//Guzik do zamiany wielkości zbiorników
-		const tankSwapBtn = `<input id="tankSwap" type="button" value="Zamień zbiorniki" style="padding:5px;height:25px;float:right;margin:5px;cursor:pointer;"></input>`;
-		calibrationToolkit1.insertAdjacentHTML('beforeend', tankSwapBtn);
+		const tankSwapBtn = `<input id="tankSwap" type="button" title="Zamień pojemność zbiorników miejscami" value="Zamień zbiorniki" style="padding:5px;height:25px;margin:5px 8px 0 auto;cursor:pointer;"></input>`;
+		document.getElementById('toolkit1').insertAdjacentHTML('beforeend', tankSwapBtn);
 
 		document.getElementById("tankSwap").addEventListener('click', function() {
 			$('#tankSwap').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
@@ -72,30 +72,35 @@
 
 	function createInsertpointsButton(index) {
 		const newDiv =
-		  `<div id='newButton${index}' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;float:left'>
-			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
-			  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
-		   </div>
-		   <input id="newTextbox${index}" type"text" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>`;
-
-        console.log(index, (index * 2))
+			`<div id='toolkit${index}' style="position: relative;display: flex;flex-direction: row;">
+				<div id='newButton${index}' title='Dodaj 3 punkty' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
+				  <div style='position:absolute;width:27px;height:27px;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
+				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
+			   </div>
+			   <input id="newTextbox${index}" type="text" title="Przesuń skrajne punkty o tyle punktów" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>
+			   <div title="Usuń punkty" id="deletePointsBtn${index}" style="background-color: #D9F4F0;margin:3px 3px 3px 15px;border:1px solid #50C8BB;width: 27px;height: 27px;cursor:pointer;">
+					<div style="background-color:#50C8BB;width: 140%;height: 1px;position:relative;transform: rotate(-45deg);left: -5px;top: 11px;margin: 0;padding: 0;"></div>
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 0;bottom: 0;">
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
+				</div>
+			</div>`;
+			
         document.getElementsByClassName('canvas-container')[(index * 2) -2].nextElementSibling.insertAdjacentHTML('beforeend', newDiv);
 
-		let calibrationManager;
-		if(index === 1) calibrationManager = cm1;
-		if(index === 2) calibrationManager = cm2;
-		if(index === 3) calibrationManager = cm3;
+		const calibrationManager = eval('cm' + index);
 
         document.getElementById(`newButton${index}`).addEventListener('click', function() {makePoints(calibrationManager, `newTextbox${index}`)});
 		document.getElementById(`newTextbox${index}`).addEventListener('input', function() {makePoints(calibrationManager, `newTextbox${index}`)});
 		document.getElementById(`newTextbox${index}`).addEventListener('click', function() {
 			this.value = "";
 		});
+		document.getElementById(`deletePointsBtn${index}`).addEventListener('click', function() {removePoints(calibrationManager)});
 	};
 
 function makePoints(obj, textboxId) {
-    let p;
-    obj.removeAllPoints()
+    
+    obj.removeAllPoints();
 
 	const addValue = parseInt($(`#${textboxId}`).val() || 0);
 
@@ -110,6 +115,19 @@ function makePoints(obj, textboxId) {
     obj.redrawScreen();
 
 	$('#save_calibration').css('opacity', 1);
-}
+};
+
+function removePoints(obj) {
+	obj.removeAllPoints();
+	
+	obj.setPointsXY([
+        [0,300],
+        [300,0]
+    ]);
+	
+	obj.redrawScreen();
+	
+	$('#save_calibration').css('opacity', 1);
+};
 
 })();
