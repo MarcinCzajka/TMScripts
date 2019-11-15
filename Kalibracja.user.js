@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.17
+// @version      1.18
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -78,13 +78,13 @@
 				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 			   </div>
 			   <input id="newTextbox${index}" type="text" title="Przesuń skrajne punkty o tyle punktów" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>
-			   <div title="Usuń punkty" id="deletePointsBtn${index}" style="background-color: #D9F4F0;margin:3px 3px 3px 15px;border:1px solid #50C8BB;width: 27px;height: 27px;cursor:pointer;">
-					<div style="background-color:#50C8BB;width: 140%;height: 1px;position:relative;transform: rotate(-45deg);left: -5px;top: 11px;margin: 0;padding: 0;">
-						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
-						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 0;bottom: 0;">
-						<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
-					</div>
-				</div>
+				<div title="Usuń punkty" id="deletePointsBtn${index}" style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 15px;cursor:pointer;'>
+				  <div style='position:absolute;width:27px;height:27px;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:left top'></div>
+				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:right top'></div>
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 0;bottom: 0;">
+					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
+			   </div>
 			</div>`;
 			
         document.getElementsByClassName('canvas-container')[(index * 2) -2].nextElementSibling.insertAdjacentHTML('beforeend', newDiv);
