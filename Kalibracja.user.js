@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.14
+// @version      1.15
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -51,8 +51,8 @@
     if(calibrationToolkit1) {
 		const newDiv =
 		  `<div id='newButton1' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;float:left'>
-			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
-			  <div style='position:absolute;width:50%;height:27px;right:0px;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
+			  <div style='position:absolute;width:27px;height:27px;float:left;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
+			  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 		   </div>
 		   <input id="newTextbox1" type"text" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>`;
         calibrationToolkit1.insertAdjacentHTML('beforeend', newDiv);
