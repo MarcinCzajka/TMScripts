@@ -36,23 +36,31 @@
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
-		function* AsyncCounter() {
-			for(let i = 1; i <= 2; i++) {
+		function* AsyncCounter(nrOfOperations) {
+			for(let i = 1; i < nrOfOperations; i++) {
+				btn.value = `Working... ${i}/${nrOfOperations}`;
 				yield i;
 			}
 
 			btn.style.background = '#28bea9';
-			btn.value = "Konfiguracja wstępna";
+			btn.value = "Uzupełniono kartotekę.";
 			$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+			
+			setTimeout(() => {
+				btn.value = "Konfiguracja wstępna";
+			}, 5000);
+			
 			return false;
 		};
-		
-		const asyncCounter = AsyncCounter();
+
+		const asyncCounter = AsyncCounter(3);
 
 		downloadFrames(vehicleId, baseUrl, asyncCounter)
 
         setPaliwo(vehicleId, baseUrl, asyncCounter);
-	}
+	};
+	
+
 
     async function setPaliwo(vehicleId, baseUrl, asyncCounter) {
         const nrKartoteki = await getNrKartoteki(vehicleId, baseUrl).then((result) => {
