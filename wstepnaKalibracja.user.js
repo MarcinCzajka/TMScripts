@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.7
+// @version      1.8
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -152,7 +152,7 @@
     };
 
 	function downloadFrames(vehicleId, baseUrl, asyncCounter) {
-		const dateTime = $('#kiedy2').val() + " " + $('#kiedy2hour').val() + ":" + $('#kiedy2minute').val() + ":00";
+		const dateTime = $('#kiedy2').val() + " " + $('#kiedy2hour').val() + ":" + ($('#kiedy2minute').val().length === 1 ? "0"+$('#kiedy2minute').val() : $('#kiedy2minute').val()) + ":00";
 		const data = {"vehicleId":parseInt(vehicleId),"datetimeFrom":dateTime,"datetimeTo":""};
 
 		$.ajax({
