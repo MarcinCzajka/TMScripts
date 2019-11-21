@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.6
+// @version      1.7
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -219,7 +219,7 @@
 		const generalData = {
 			'aktywny': 1,
 			'rodzaj_rejestratora_id': markaRejestratora,
-            'zakres_od': '2019-11-18',
+            'zakres_od': $('#kiedy2').val(),
             'zakres_do': '',
 			'stacyjka': 1,
 			'gen_zdarzen_predkosc': (isChecked('spn84_c') ? 2 : 1),
