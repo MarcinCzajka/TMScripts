@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.4
+// @version      1.5
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -141,8 +141,8 @@
 			};
 
 			const all_calibration_points = [
-				["0.00", "0.00", 1],
-				["103.00", tankCapacity, 1]
+				["0.00", "0.00", 6],
+				["103.00", tankCapacity, 6]
 			];
 
 			return all_calibration_points;
@@ -172,9 +172,8 @@
 
 		const data = {
 			'comment': '',
-			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
 			'pojazd_id': vehicleId,
-			'pomiar_paliwa_id': 2,
+			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
 			'pojazd_admin_multi_id': nrKartoteki,
 			'date_from': dateFrom,
 			'date_to': dateTo,
@@ -282,6 +281,7 @@
 			'rodzaj_sondy_zbiornika_1': ($('.tanks_tr').length >= 1 ? document.getElementsByName('producent_sondy[]')[0].value : 0),
 			'rodzaj_sondy_zbiornika_2': ($('.tanks_tr').length >= 2 ? document.getElementsByName('producent_sondy[]')[1].value : 0),
 			'rodzaj_sondy_zbiornika_3': ($('.tanks_tr').length >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
+			'pojemnosc_zbiornika_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
 			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
 		};
 
