@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.5
+// @version      1.6
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -258,15 +258,17 @@
 			pomiarPaliwa = 1;
 		};
 		
+		const fuelCapacity = tanksCapacity();
+		
 		const fuelSpecificData = {
 			'pomiar_paliwa_id': pomiarPaliwa,
 			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" ? 1 : 0),
 			'paliwo_z_can': (isChecked('spn96_c') ? 1 : 0),
 			'min_odchylenie': minOdchylenie,
-			'prog_weryfikujacy_paliwa': 33,
-			'prog_wartosci_paliwa': 33,
-			'prog_weryfikujacy_paliwa_u': 22,
-			'prog_wartosci_paliwa_u': 22,
+			'prog_weryfikujacy_paliwa': (fuelType !== "can" ? litersByPercent(fuelCapacity, 3.5) : (litersByPercent(fuelCapacity, 5) > 50 ? 50 : litersByPercent(fuelCapacity, 5))),
+			'prog_wartosci_paliwa': (fuelType !== "can" ? litersByPercent(fuelCapacity, 3.5) : (litersByPercent(fuelCapacity, 5) > 50 ? 50 : litersByPercent(fuelCapacity, 5))),
+			'prog_weryfikujacy_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelCapacity, 2) : 0),
+			'prog_wartosci_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelCapacity, 2) : 0),
 			'ilosc_punktow_drogi': 5,
 			'ilosc_punktow_drogi_u': 5,
 			'odchylenie_standardowe': 1,
@@ -306,6 +308,27 @@
 			success : function() {asyncCounter.next()},
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');}
 		});
+	};
+	
+	function tanksCapacity() {
+		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
+		if(tanksTr.length > 0) {
+			let capacity = 0;
+			for(let tr of tanksTr) {
+				capacity += parseInt(tr.children[2].children[0].children[2].value);
+			};
+			return capacity
+		} else {
+			if(document.getElementsByName('spn96_amount')[0].value) {
+				return parseInt(document.getElementsByName('spn96_amount')[0].value);
+			} else {
+				return 999;
+			};
+		};
+	};
+	
+	function litersByPercent(fuelCapacity, percent) {
+		return Math.floor(fuelCapacity * (percent / 100));
 	};
 
 	function isChecked(id) {
