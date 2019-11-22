@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8
+// @version      1.9
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -36,9 +36,7 @@
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
-		const asyncCounter = AsyncCounter(4, btn);
-
-		downloadFrames(vehicleId, baseUrl, asyncCounter);
+		const asyncCounter = AsyncCounter(5, btn);
 
 		getNrKartoteki(vehicleId, baseUrl).then((nrKartoteki) => {
 			fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter);
@@ -46,6 +44,8 @@
 		}).catch(err => {
 			alert(err);
 		});
+        getVinNr(vehicleId, baseUrl, asyncCounter);
+        downloadFrames(vehicleId, baseUrl, asyncCounter);
 	};
 
 	function* AsyncCounter(nrOfOperations, btnToUpdate) {
@@ -118,7 +118,7 @@
     };
 
     function createCalibrationPoints() {
-		
+
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
 		if(tanksTr.length > 0) { //Paliwo z Sond/Pływaka
 
@@ -205,7 +205,7 @@
 				fuelType = "can";
 				minOdchylenie = 100;
 			};
-			
+
 		let markaRejestratora = 0;
 		const selectedBlackbox = $('#rodzaj_rejestratora_id').find('[selected]').text();
 		if(selectedBlackbox === "Setivo") {
@@ -257,9 +257,9 @@
 		} else if(fuelType === "") {
 			pomiarPaliwa = 1;
 		};
-		
+
 		const fuelCapacity = tanksCapacity();
-		
+
 		const fuelSpecificData = {
 			'pomiar_paliwa_id': pomiarPaliwa,
 			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" ? 1 : 0),
@@ -309,7 +309,51 @@
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');}
 		});
 	};
-	
+
+    function getVinNr(vehicleId, baseUrl, asyncCounter){
+		$.ajax({
+			url: '/api/vehicle/data/ajax_getVinNumber',
+			type: 'POST',
+			data: {
+				pojazd_id: parseInt(vehicleId)
+			},
+			dataType: 'json',
+			success: function(result){
+				const vin = result.vin;
+
+				if(vin != '') {
+					if (vin.length == 17 && vin.match(/^[0-9a-z]+$/i)) {
+						fillExtendedData(vin, vehicleId, baseUrl, asyncCounter);
+					} else {
+						alert('Niepoprawny numer VIN' + ': ' + vin);
+                        asyncCounter.next();
+					};
+				};
+
+			},
+			error: function(){
+				asyncCounter.next();
+			}
+		});
+	};
+
+    function fillExtendedData(vin, vehicleId, baseUrl, asyncCounter) {
+        const data = {
+            'typ_pojazdu_wg_producenta_id': ($('#vehicle_type_id').val() == "1" ? 2 : ''),
+            'ustawowe_rozliczanie_pojazd': ($('#kabel_d8_podlaczenie_id').val() == "5" ? 1 : ''),
+            'nr_podwozia': vin
+        };
+
+        $.ajax({
+			url: `${baseUrl}/api/vehicle/data/data_extended/${vehicleId}`,
+			type: 'POST',
+			data: data,
+			dataType: 'text',
+			success: function() {asyncCounter.next()},
+			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');}
+        });
+    };
+
 	function tanksCapacity() {
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
 		if(tanksTr.length > 0) {
@@ -326,7 +370,7 @@
 			};
 		};
 	};
-	
+
 	function litersByPercent(fuelCapacity, percent) {
 		return Math.floor(fuelCapacity * (percent / 100));
 	};
