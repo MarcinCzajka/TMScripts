@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.9
+// @version      1.10
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -25,6 +25,12 @@
 
 			confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
 			document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
+			
+		const successFeed = document.createElement('div');
+			successFeed.id = 'successFeed';
+			successFeed.style.display = 'none';
+			
+			kalibracjaWstepnaBtn.parentNode.insertBefore(successFeed, kalibracjaWstepnaBtn.nextSibling);
 	};
 
 	function kalibracjaWstepna() {
@@ -32,6 +38,8 @@
 		btn.style.background = '#ce2305';
 		btn.value = 'Working...';
 		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+		document.getElementById('successFeed').innerHTML = '<p>Uzupełniono:</p>';
+		document.getElementById('successFeed').style.display = 'none';
 
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
@@ -75,7 +83,7 @@
 				type: "POST",
 				data: { 'data': all_calibration_points,'comment':'Kalibracja wstępna' },
 				dataType: 'text',
-				success : function() {asyncCounter.next()},
+				success : function() {appendToSuccessFeed('Kalibracja paliwa'); asyncCounter.next()},
 				error : function(err) {console.log(err); alert('Wystąpił błąd podczas zmiany kalibracji paliwa. Spróbuj ręcznie.');}
 			});
 
@@ -86,7 +94,7 @@
 				type: "POST",
 				data: data,
 				dataType: 'text',
-				success : function() {asyncCounter.next()},
+				success : function() {appendToSuccessFeed('Kalibracja paliwa: Ustawienia'); asyncCounter.next()},
 				error : function(err) {console.log(err); alert('Wystąpił błąd podczas zmiany ustawień paliwa. Spróbuj ręcznie.');}
 			});
 		} else {
@@ -159,7 +167,7 @@
 			url: `${baseUrl}/api/vehicle/gps/ajaxReloadVehicleFrames`,
 			type: "POST",
 			data: data,
-			success : function() {asyncCounter.next();},
+			success : function() {appendToSuccessFeed('Pobrano dane źródłowe'); asyncCounter.next();},
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');}
 		});
 	};
@@ -305,7 +313,7 @@
 			type: "POST",
 			data: data,
 			dataType: 'text',
-			success : function() {asyncCounter.next()},
+			success : function() {appendToSuccessFeed('Dane administracyjne'); asyncCounter.next()},
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');}
 		});
 	};
@@ -349,10 +357,17 @@
 			type: 'POST',
 			data: data,
 			dataType: 'text',
-			success: function() {asyncCounter.next()},
+			success: function() {appendToSuccessFeed('Dane rozszerzone'); asyncCounter.next()},
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');}
         });
     };
+	
+	function appendToSuccessFeed(message) {
+		const successFeed = document.getElementById('successFeed');
+		successFeed.style.display = 'block';
+		
+		successFeed.innerHTML = successFeed.innerHTML + `<p>${message}</p>`;
+	};
 
 	function tanksCapacity() {
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
