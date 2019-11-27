@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.10
+// @version      1.11
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -336,7 +336,9 @@
 						alert('Niepoprawny numer VIN' + ': ' + vin);
                         asyncCounter.next();
 					};
-				};
+				} else {
+					asyncCounter.next();
+				}
 
 			},
 			error: function(){
