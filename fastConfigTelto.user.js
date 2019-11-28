@@ -37,6 +37,7 @@
 		} else if (!config.cpureset) {
 			config[key] = '';
 		} else {
+			config[key] = value;
 			config.cpureset = false;
 		};
 		
