@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.1
+// @version      1.2
 // @description  Szybka konfiguracja przy użyciu guzików
 // @author       MAC
 // @match        http://*/api/installation*
@@ -75,7 +75,7 @@
         const newBtn = document.createElement('button');
 			newBtn.id = 'customBtn' + id;
 			newBtn.type = 'button';
-			newBtn.style = "margin-right: 0.4rem;" + customStyle;
+			newBtn.style = "margin-right: 0.4rem;margin-top:5px;" + customStyle;
 			newBtn.innerText = innerText;
 			
 
@@ -93,11 +93,11 @@
     function init() {
         createBtn('CAN 1', 'CAN1Btn', () => {handleChange('can', '1')}, customDiv, 'can', '1', 'grid-column:3/6;grid-row:1');
         createBtn('CAN 2', 'CAN2Btn', () => {handleChange('can', '2')}, customDiv, 'can', '2', 'grid-column:6/9;grid-row:1');
-		createBtn('FMS 0', 'FMS0Btn', () => {handleChange('fms', '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2;margin-top:5px');
-        createBtn('FMS 250', 'FMS250Btn', () => {handleChange('fms', '250')}, customDiv, 'fms', '250', 'grid-column:5/7;grid-row:2;margin-top:5px');
-        createBtn('FMS 500', 'FMS500Btn', () => {handleChange('fms', '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2;margin-top:5px');
-        createBtn('TACHOCHECK', 'tachocheckBtn', () => {handleChange('tachocheck', 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/7;grid-row:3;margin-top:5px');
-        createBtn('CPURESET', 'cpuresetBtn', () => {textbox.value = 'CPURESET'; triggerInput(); config.cpureset = true}, customDiv, '', '', 'grid-column:7/9;grid-row:3;margin-top:5px');
+		createBtn('FMS 0', 'FMS0Btn', () => {handleChange('fms', '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2');
+        createBtn('FMS 250', 'FMS250Btn', () => {handleChange('fms', '250')}, customDiv, 'fms', '250', 'grid-column:5/7;grid-row:2');
+        createBtn('FMS 500', 'FMS500Btn', () => {handleChange('fms', '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2');
+        createBtn('TACHOCHECK', 'tachocheckBtn', () => {handleChange('tachocheck', 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/7;grid-row:3');
+        createBtn('CPURESET', 'cpuresetBtn', () => {textbox.value = 'CPURESET'; triggerInput(); config.cpureset = true}, customDiv, '', '', 'grid-column:7/9;grid-row:3');
     };
 	
 	function changeBtnColor(dataType, dataValue) {
