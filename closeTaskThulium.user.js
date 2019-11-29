@@ -11,17 +11,28 @@
 
 (function() {
     'use strict';
-	
+
 	const baseUrl = window.location.origin + '/panel/panel2.0/tickets';
+
 	const basicButtonStyle = 'display:inline;font-size:14px;margin-left:10px;background-color:#BE1721;color:#f0f2f1;';
 
-    const closeTasksBtn = `<div class="button" id="closeTasks" style="${basicButtonStyle}background-color:#f75126;">*Zamknij zadania jako wykonany import paliwa*</div>`;
-    $(closeTasksBtn).insertBefore('#pager');
-	
-	const moveToTrashBtn = `<div class="button" id="moveToTrash" style="${basicButtonStyle}background-color:#BE1721;">*Przenieś do TRASH*</div>`;
-    $(moveToTrashBtn).insertBefore('#pager');
+    const closeTasksBtn = `
+		<div class="button"
+			style="${basicButtonStyle}background-color:#f75126;"
+			>
+			*Zamknij zadania jako wykonany import paliwa*
+		</div>`;
+    $(closeTasksBtn).insertBefore('#pager').on('click', closeTasks);
 
-    document.getElementById('closeTasks').addEventListener('click', function() {
+	const moveToTrashBtn = `
+		<div class="button"
+			style="${basicButtonStyle}background-color:#BE1721;"
+			>
+			*Move To TRASH*
+		</div>`;
+    $(moveToTrashBtn).insertBefore('#pager').on('click', moveToTrash);
+
+    function closeTasks() {
         const tickets = getCheckedTickets();
 
         if(tickets) {
@@ -34,10 +45,9 @@
         } else {
             alert('Zaznacz jakieś zadania');
         };
+    };
 
-    });
-	
-	document.getElementById('moveToTrash').addEventListener('click', function() {
+	function moveToTrash() {
         const tickets = getCheckedTickets();
 
         if(tickets) {
@@ -47,8 +57,7 @@
         } else {
             alert('Zaznacz jakieś zadania');
         };
-
-    });
+    };
 
     function getCheckedTickets() {
         let tickets = '';
@@ -61,7 +70,6 @@
                 tickets += '&tickets[]=' + id;
             };
         };
-
         return tickets;
     };
 
@@ -94,11 +102,11 @@
             data: data
         });
     };
-	
+
 	function assignInbox(tickets, inboxName) {
 		const inboxId = findInboxId(inboxName);
 		if(!inboxId) return;
-		
+
 		let data = `inbox_id=${inboxId}${tickets}`;
 
         ajaxWithProgressIndicator({
@@ -107,16 +115,16 @@
             data: data
         });
     };
-	
+
 	function findInboxId(inboxName) {
 		const inboxIds = document.getElementById('inbox_id');
-		
+
 		for(let inbox of inboxIds) {
 			if(inbox.text === inboxName) {
 				return inbox.value;
 			};
 		};
-		
+
 		alert('Nie znaleziono kolejki o nazwie: ' + inboxName);
 		return false;
 	};
