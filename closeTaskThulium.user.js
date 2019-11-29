@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.3
+// @version      0.4
 // @description  Change status and owner .then close task
 // @author       MAC
 // @match        *thulium.com/panel/tickets*
@@ -24,6 +24,7 @@
             assignUser(tickets);
             assignCategory(tickets);
             assignStatus(tickets);
+			assignInbox(tickets);
 
             eventBus.trigger('refresh-tickets-grid');
         } else {
