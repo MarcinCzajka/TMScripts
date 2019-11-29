@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      0.3
 // @description  Change status and owner .then close task
 // @author       MAC
 // @match        *thulium.com/panel/tickets*
@@ -73,6 +73,16 @@
         ajaxWithProgressIndicator({
             type: "POST",
             url: baseUrl + "/change_mass_status",
+            data: data
+        });
+    };
+	
+	function assignInbox(tickets) {
+        let data = 'inbox_id=53' + tickets;
+
+        ajaxWithProgressIndicator({
+            type: "POST",
+            url: baseUrl + "/change_mass_inbox",
             data: data
         });
     };
