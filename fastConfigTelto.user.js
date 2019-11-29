@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.2
+// @version      1.3
 // @description  Szybka konfiguracja przy użyciu guzików
 // @author       MAC
 // @match        http://*/api/installation*
@@ -13,19 +13,30 @@
     'use strict';
 
 	const basicButtonStyle = 'btn-outline-secondary';
+	const buttonChecked = 'btn-success';
+	const buttonCheckedInactive = 'btn-outline-success';
+	const buttonCpureset = 'btn-warning';
+	const buttonCpuresetInactive = 'btn-outline-warning';
+	const buttonWarning = 'btn-outline-danger';
+	
+	let textbox;
 
 	const customDiv = document.createElement('div');
 	  customDiv.id = 'customDiv';
 	  customDiv.style = 'display:grid; grid-template-columns: repeat(10,10%); grid-template-rows: repeat(3, auto)';
+	  
 	init();
-	let textbox;
 
 	const config = {
 		'can': '',
+		'configureCan': false,
 		'fms': '',
 		'tachocheck': '',
+		'result': '',
 		'cpureset': false
 	};
+	
+	//Append new container to inexistent (at document.ready) element. Timeout at 0 is not enough
     setTimeout(() => {
         document.getElementsByClassName('btn-secondary')[0].addEventListener('click', () => {
             textbox = document.getElementById('exampleInputPassword1');
@@ -33,34 +44,94 @@
 			textbox.style.height = '140px';
         });
     }, 1000);
-
-	function handleChange(key, value) {
-		if (config[key] !== value && !config.cpureset) {
-			config[key] = value;
-		} else if (!config.cpureset) {
-			config[key] = '';
+	
+	function canChange(e, value) {
+		if (config.can === value) {
+			if(!config.cpureset) {
+				config.configureCan = !config.configureCan;
+			} else {
+				config.cpureset = false;
+			};
 		} else {
-			config[key] = value;
+			config.can = value;
+			config.configureCan = true;
+			
 			config.cpureset = false;
 		};
 		
-		let configString = '';
-		
-		if (config.can) {
-			configString += (config.can === '1' ? "setparam 209:0" : "setparam 209:1") + '\n';
+		handleChange(e);
+	};	
+	
+	function fmsChange(e, value) {
+		if (!config.can) {
+			e.target.classList.add(buttonWarning);
+			e.target.classList.remove(basicButtonStyle);
+			
+			setTimeout(() => {
+				e.target.classList.add(basicButtonStyle);
+				e.target.classList.remove(buttonWarning);
+			}, 250);
+			
+			return
 		};
 		
-		if (config.fms) {
-			configString += `setparam ${(config.can === '1' ? '205' : '207')}:${config.fms}\n`;
+		if(!config.cpureset) {
+			config.fms = (config.fms === value ? '' : value);
+		} else {
+			config.fms = value;
+			config.cpureset = false;
 		};
+		
+		config.cpureset = false;
+		handleChange(e);
+	};
+	
+	function tachocheckChange(e, value) {
+		if(!config.cpureset) {
+			config.tachocheck = (config.tachocheck === value ? '' : value);
+		} else {
+			config.tachocheck = value;
+			config.cpureset = false;
+		};
+		
+		config.cpureset = false;
+		handleChange(e);
+	};
+	
+	function cpuresetChange(e) {
+		config.cpureset = !config.cpureset;
+		
+		handleChange(e);
+	};
 
-		configString += config.tachocheck
+	function handleChange(e) {
+		if (config.cpureset) {
+			config.result = 'CPURESET';
+		} else {
+			config.result = '';
+			
+			if(config.configureCan) {
+				config.result = (config.can === '1' ? "setparam 209:0" : "setparam 209:1");
+			};
+			
+			if(config.fms) {
+				const fmsParam = `${(config.can === '1' ? '205' : '207')}:${config.fms}`;
+				
+				if(config.configureCan) {
+					config.result += `;${fmsParam}`;
+				} else {
+					config.result += `setparam ${fmsParam}`;
+				};
+				
+			};
 
-		textbox.value = configString;
+			config.result += (config.result === '' ? '' : '\n') + config.tachocheck
+		};
+		
+		updateBtnColors();
 
+		textbox.value = config.result;
 		triggerInput();
-		
-		changeBtnColor(key, value);
 	};
 
     function triggerInput() {
@@ -71,15 +142,14 @@
 		textbox.dispatchEvent(event);
     };
 
-    function createBtn(innerText, id, eventHandler, container, dataType, dataValue, customStyle) {
+    function createBtn(innerText, eventHandler, container, dataType, dataValue, customStyle) {
         const newBtn = document.createElement('button');
-			newBtn.id = 'customBtn' + id;
 			newBtn.type = 'button';
-			newBtn.style = "margin-right: 0.4rem;margin-top:5px;" + customStyle;
+			newBtn.style = "margin-right: 0.4rem;margin-top:5px;font-size:1.2em;border-width:0.1em;" + customStyle;
 			newBtn.innerText = innerText;
 			
 
-        newBtn.classList.add('btn', (innerText !== 'CPURESET' ? basicButtonStyle : 'btn-warning'));
+        newBtn.classList.add('btn', 'customBtn', (innerText !== 'CPURESET' ? basicButtonStyle : buttonCpuresetInactive));
 
 		newBtn.addEventListener('click', eventHandler);
 		
@@ -91,26 +161,41 @@
     };
 
     function init() {
-        createBtn('CAN 1', 'CAN1Btn', () => {handleChange('can', '1')}, customDiv, 'can', '1', 'grid-column:3/6;grid-row:1');
-        createBtn('CAN 2', 'CAN2Btn', () => {handleChange('can', '2')}, customDiv, 'can', '2', 'grid-column:6/9;grid-row:1');
-		createBtn('FMS 0', 'FMS0Btn', () => {handleChange('fms', '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2');
-        createBtn('FMS 250', 'FMS250Btn', () => {handleChange('fms', '250')}, customDiv, 'fms', '250', 'grid-column:5/7;grid-row:2');
-        createBtn('FMS 500', 'FMS500Btn', () => {handleChange('fms', '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2');
-        createBtn('TACHOCHECK', 'tachocheckBtn', () => {handleChange('tachocheck', 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/7;grid-row:3');
-        createBtn('CPURESET', 'cpuresetBtn', () => {textbox.value = 'CPURESET'; triggerInput(); config.cpureset = true}, customDiv, '', '', 'grid-column:7/9;grid-row:3');
+        createBtn('CAN 1', (e) => {canChange(e, '1')}, customDiv, 'can', '1', 'grid-column:3/6;grid-row:1');
+        createBtn('CAN 2', (e) => {canChange(e, '2')}, customDiv, 'can', '2', 'grid-column:6/9;grid-row:1');
+		createBtn('FMS 0', (e) => {fmsChange(e, '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2');
+        createBtn('FMS 250', (e) => {fmsChange(e, '250')}, customDiv, 'fms', '250', 'grid-column:5/7;grid-row:2');
+        createBtn('FMS 500', (e) => {fmsChange(e, '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2');
+        createBtn('TACHOCHECK', (e) => {tachocheckChange(e, 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/7;grid-row:3');
+        createBtn('CPURESET', (e) => {cpuresetChange(e)}, customDiv, 'cpureset', '1', 'grid-column:7/9;grid-row:3');
     };
 	
-	function changeBtnColor(dataType, dataValue) {
-		const buttons = document.querySelectorAll(`[data-${dataType}]`);
+	function updateBtnColors() {
+		const currentSuccessBtn = (config.cpureset ? buttonCheckedInactive : buttonChecked);
+		const toRemoveBtn = (config.cpureset ? buttonChecked : buttonCheckedInactive);
 		
+		const buttons = document.getElementsByClassName('customBtn');
 		for (let btn of buttons) {
-			if (btn.dataset[dataType] === dataValue && config[dataType] !== '') {
-				btn.classList.add('btn-success');
-				btn.classList.remove(basicButtonStyle);
+			const btnDataType = Object.keys(btn.dataset)[0];
+			
+			if(btn.innerText === 'CPURESET') {
+				btn.classList.add((config.cpureset ? buttonCpureset : buttonCpuresetInactive));
+				btn.classList.remove((config.cpureset ? buttonCpuresetInactive : buttonCpureset));
+			} else if(btnDataType === 'can' && btn.dataset[btnDataType] === config[btnDataType] && !config.configureCan) {
+				
+					btn.classList.add(buttonCheckedInactive);
+					btn.classList.remove(basicButtonStyle, buttonChecked);
+				
 			} else {
-				btn.classList.add(basicButtonStyle);
-				btn.classList.remove('btn-success');
+				if(config[btnDataType] == btn.dataset[btnDataType]) {
+					btn.classList.add(currentSuccessBtn);
+					btn.classList.remove(basicButtonStyle, toRemoveBtn);
+				} else {
+					btn.classList.add(basicButtonStyle);
+					btn.classList.remove(currentSuccessBtn, toRemoveBtn);
+				};
 			};
 		};
 	};
+	
 })();
