@@ -16,6 +16,8 @@
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
 
+	const timer = new Timer();
+
 	if(confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
 		const kalibracjaWstepnaBtn = document.createElement('input');
 			kalibracjaWstepnaBtn.type = "button";
@@ -25,20 +27,22 @@
 
 			confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
 			document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
-			
+
 		const successFeed = document.createElement('div');
 			successFeed.id = 'successFeed';
 			successFeed.style.display = 'none';
-			
+
 			kalibracjaWstepnaBtn.parentNode.insertBefore(successFeed, kalibracjaWstepnaBtn.nextSibling);
 	};
 
 	function kalibracjaWstepna() {
+		timer.start();
+
 		const btn = document.getElementById('kalibracjaWstepnaBtn');
 		btn.style.background = '#ce2305';
 		btn.value = 'Working...';
 		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
-		document.getElementById('successFeed').innerHTML = '<p>Uzupełniono:</p>';
+		document.getElementById('successFeed').innerHTML = '<p><b>Uzupełniono:</b><br></p>';
 		document.getElementById('successFeed').style.display = 'none';
 
 		const baseUrl = window.location.origin;
@@ -61,6 +65,8 @@
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
 			yield i;
 		};
+
+		appendToSuccessFeed(`<br><b>Wypełnianie zajęło: ${timer.getTime()}s</b>`);
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
@@ -363,11 +369,11 @@
 			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');}
         });
     };
-	
+
 	function appendToSuccessFeed(message) {
 		const successFeed = document.getElementById('successFeed');
 		successFeed.style.display = 'block';
-		
+
 		successFeed.innerHTML = successFeed.innerHTML + `<p>${message}</p>`;
 	};
 
@@ -394,6 +400,26 @@
 
 	function isChecked(id) {
 		return document.getElementById(id).checked;
+	};
+
+	//Im using function instead of class for hoisting
+	function Timer() {
+		this.timeStart = null;
+		this.timeEnd = null;
+
+		this.start = () => {
+			this.timeStart = new Date();
+		};
+
+		this.getTime = () => {
+			this.timeEnd = new Date();
+			return this.toSeconds(this.timeEnd - this.timeStart);
+		};
+
+		this.toSeconds = (miliseconds) => {
+			const seconds = miliseconds /= 1000;
+			return Math.round(seconds);
+		};
 	};
 
 })();
