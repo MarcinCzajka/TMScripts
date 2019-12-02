@@ -6,7 +6,6 @@
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
 	// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
-	// @supportURL  https://github.com/MarcinCzajka/TMScripts/issues
 	// @match        */api/vehicle/admin/save/*
 	// @grant        GM_getValue
 	// @grant        GM_setValue

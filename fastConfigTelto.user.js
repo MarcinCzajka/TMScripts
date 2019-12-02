@@ -4,6 +4,8 @@
 // @version      1.3
 // @description  Szybka konfiguracja przy użyciu guzików
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include *.pl/session/*

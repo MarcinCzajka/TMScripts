@@ -4,6 +4,8 @@
 // @version      1.4
 // @description  Serwis
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/resetServicesDate.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/resetServicesDate.user.js
 // @match        */api/services*
 // @grant        none
 // @include      */api/services*

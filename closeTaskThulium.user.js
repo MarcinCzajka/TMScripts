@@ -2,8 +2,11 @@
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
 // @version      0.6
-// @description  Change status and owner .then close task
+// @description  Change status, inbox and owner .then close task
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
+// @supportURL   https://github.com/MarcinCzajka/TMScripts/issues
 // @match        *thulium.com/panel/tickets*
 // @grant        none
 // @include      *thulium.com/panel/tickets*

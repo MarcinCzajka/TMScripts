@@ -4,6 +4,8 @@
 // @version      4.25
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include */api/installation*

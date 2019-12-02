@@ -4,6 +4,8 @@
 // @version      1.0
 // @description  Raport statystyk
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/reportDate.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/reportDate.user.js
 // @match        */api/raports/stat*
 // @grant        none
 // @include      */api/raports/stat*

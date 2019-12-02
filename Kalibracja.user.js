@@ -4,6 +4,8 @@
 // @version      1.18
 // @description  Kalibracja
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
 // @match        */api/fuel/main/calibration/*
 // @grant        none
 // @include      */api/fuel/main/calibration/*

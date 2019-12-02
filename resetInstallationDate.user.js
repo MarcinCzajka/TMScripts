@@ -4,6 +4,8 @@
 // @version      1.3
 // @description  Montaż
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/resetInstallationDate.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/resetInstallationDate.user.js
 // @match        */api/installation/main/index/*
 // @grant        none
 // @include      */api/installation/main/index/*
