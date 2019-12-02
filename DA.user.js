@@ -4,6 +4,9 @@
 	// @version      2.25
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
+	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
+	// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
+	// @supportURL  https://github.com/MarcinCzajka/TMScripts/issues
 	// @match        */api/vehicle/admin/save/*
 	// @grant        GM_getValue
 	// @grant        GM_setValue
@@ -17,7 +20,7 @@
 		let fuelCapacity = 0;
 
 		const newBar = document.createElement("td");
-        newBar.setAttribute('colspan', '6');
+        	newBar.setAttribute('colspan', '6');
 		newBar.style.width = '100%';
 		
 		const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
