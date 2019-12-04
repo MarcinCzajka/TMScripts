@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.18
+// @version      1.19
 // @description  Kalibracja
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
 // @match        */api/fuel/main/calibration/*
 // @grant        none
 // @include      */api/fuel/main/calibration/*
@@ -49,8 +47,16 @@
 	
 
 	const fueltanksCount = document.getElementsByClassName('canvas-container').length / 2;
-	for(let i = 1; i <= fueltanksCount; i++) {
-		createInsertpointsButton(i);
+	for(let index = 1, panelsCount = 1; index <= 6; index++) {
+        try {
+            if (eval('cm' + index)) {
+				createButtonPanel(index, panelsCount++);
+            }
+        } catch(err) {
+            if(err.name !== 'ReferenceError') {
+                console.log(err);
+            }
+        }
 	};
 
 	if(fueltanksCount === 2) {
@@ -72,15 +78,15 @@
 		});
     };
 
-	function createInsertpointsButton(index) {
+	function createButtonPanel(index, panelsCount) {
 		const newDiv =
-			`<div id='toolkit${index}' style="position: relative;display: flex;flex-direction: row;">
-				<div id='newButton${index}' title='Dodaj 3 punkty' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
+			`<div id='toolkit${panelsCount}' style="position: relative;display: flex;flex-direction: row;">
+				<div id='newButton${panelsCount}' title='Dodaj 3 punkty' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
 				  <div style='position:absolute;width:27px;height:27px;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>
 			   </div>
-			   <input id="newTextbox${index}" type="text" title="Przesuń skrajne punkty o tyle punktów" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>
-				<div title="Usuń punkty" id="deletePointsBtn${index}" style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 15px;cursor:pointer;'>
+			   <input id="newTextbox${panelsCount}" type="text" title="Przesuń skrajne punkty o tyle punktów" style="width:20px;margin:3px;border:1px solid #50C8BB;"></input>
+				<div title="Usuń punkty" id="deletePointsBtn${panelsCount}" style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 15px;cursor:pointer;'>
 				  <div style='position:absolute;width:27px;height:27px;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:left top'></div>
 				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:right top'></div>
 					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 11px;left: calc(50% - 5px);top: calc(50% - 5px);">
@@ -89,16 +95,16 @@
 			   </div>
 			</div>`;
 			
-        document.getElementsByClassName('canvas-container')[(index * 2) -2].nextElementSibling.insertAdjacentHTML('beforeend', newDiv);
+        document.getElementsByClassName('canvas-container')[(panelsCount * 2) -2].nextElementSibling.insertAdjacentHTML('beforeend', newDiv);
 
 		const calibrationManager = eval('cm' + index);
 
-        document.getElementById(`newButton${index}`).addEventListener('click', function() {makePoints(calibrationManager, `newTextbox${index}`)});
-		document.getElementById(`newTextbox${index}`).addEventListener('input', function() {makePoints(calibrationManager, `newTextbox${index}`)});
-		document.getElementById(`newTextbox${index}`).addEventListener('click', function() {
+        document.getElementById(`newButton${panelsCount}`).addEventListener('click', function() {makePoints(calibrationManager, `newTextbox${panelsCount}`)});
+		document.getElementById(`newTextbox${panelsCount}`).addEventListener('input', function() {makePoints(calibrationManager, `newTextbox${panelsCount}`)});
+		document.getElementById(`newTextbox${panelsCount}`).addEventListener('click', function() {
 			this.value = "";
 		});
-		document.getElementById(`deletePointsBtn${index}`).addEventListener('click', function() {removePoints(calibrationManager)});
+		document.getElementById(`deletePointsBtn${panelsCount}`).addEventListener('click', function() {removePoints(calibrationManager)});
 	};
 
 function makePoints(obj, textboxId) {
