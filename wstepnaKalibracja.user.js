@@ -1,40 +1,38 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.11
+// @version      1.12
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include */api/installation*
 // @exclude */api/installation/main/index/*
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+	'use strict';
 
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
 
 	const timer = new Timer();
 
-	if(confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
+	if (confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
 		const kalibracjaWstepnaBtn = document.createElement('input');
-			kalibracjaWstepnaBtn.type = "button";
-			kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
-			kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
-			kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
+		kalibracjaWstepnaBtn.type = "button";
+		kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
+		kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
+		kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
 
-			confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
-			document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
+		confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
+		document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
 
 		const successFeed = document.createElement('div');
-			successFeed.id = 'successFeed';
-			successFeed.style.display = 'none';
+		successFeed.id = 'successFeed';
+		successFeed.style.display = 'none';
 
-			kalibracjaWstepnaBtn.parentNode.insertBefore(successFeed, kalibracjaWstepnaBtn.nextSibling);
+		kalibracjaWstepnaBtn.parentNode.insertBefore(successFeed, kalibracjaWstepnaBtn.nextSibling);
 	};
 
 	function kalibracjaWstepna() {
@@ -43,7 +41,9 @@
 		const btn = document.getElementById('kalibracjaWstepnaBtn');
 		btn.style.background = '#ce2305';
 		btn.value = 'Working...';
-		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () {
+			$(this).fadeTo(250, 1.0);
+		});
 		document.getElementById('successFeed').innerHTML = '<p><b>Uzupełniono:</b><br></p>';
 		document.getElementById('successFeed').style.display = 'none';
 
@@ -58,12 +58,12 @@
 		}).catch(err => {
 			alert(err);
 		});
-        getVinNr(vehicleId, baseUrl, asyncCounter);
-        downloadFrames(vehicleId, baseUrl, asyncCounter);
+		getVinNr(vehicleId, baseUrl, asyncCounter);
+		downloadFrames(vehicleId, baseUrl, asyncCounter);
 	};
 
 	function* AsyncCounter(nrOfOperations, btnToUpdate) {
-		for(let i = 1; i < nrOfOperations; i++) {
+		for (let i = 1; i < nrOfOperations; i++) {
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
 			yield i;
 		};
@@ -72,7 +72,9 @@
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
-		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () {
+			$(this).fadeTo(250, 1.0);
+		});
 
 		setTimeout(() => {
 			btnToUpdate.value = "Konfiguracja wstępna";
@@ -81,67 +83,82 @@
 		return false;
 	};
 
-    function setPaliwo(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
+	function setPaliwo(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
 		const all_calibration_points = createCalibrationPoints();
 
-		if(all_calibration_points) { //Jeżeli są zaklikane sondy albo paliwo z CAN
-		//Kalibracja paliwa
+		if (all_calibration_points) { //Jeżeli są zaklikane sondy albo paliwo z CAN
+			//Kalibracja paliwa
 			$.ajax({
 				url: `${baseUrl}/api/fuel/main/calibrationsave/${vehicleId}/${nrKartoteki}`,
 				type: "POST",
-				data: { 'data': all_calibration_points,'comment':'Kalibracja wstępna' },
+				data: {
+					'data': all_calibration_points,
+					'comment': 'Kalibracja wstępna'
+				},
 				dataType: 'text',
-				success : function() {appendToSuccessFeed('Kalibracja paliwa'); asyncCounter.next()},
-				error : function(err) {console.log(err); alert('Wystąpił błąd podczas zmiany kalibracji paliwa. Spróbuj ręcznie.');}
+				success: function () {
+					appendToSuccessFeed('Kalibracja paliwa');
+					asyncCounter.next()
+				},
+				error: function (err) {
+					console.log(err);
+					alert('Wystąpił błąd podczas zmiany kalibracji paliwa. Spróbuj ręcznie.');
+				}
 			});
 
-		//ustawienia paliwa
+			//ustawienia paliwa
 			const data = createFuelSettingsData(vehicleId, nrKartoteki);
 			$.ajax({
 				url: `${baseUrl}/api/fuel/main/settingssave`,
 				type: "POST",
 				data: data,
 				dataType: 'text',
-				success : function() {appendToSuccessFeed('Kalibracja paliwa: Ustawienia'); asyncCounter.next()},
-				error : function(err) {console.log(err); alert('Wystąpił błąd podczas zmiany ustawień paliwa. Spróbuj ręcznie.');}
+				success: function () {
+					appendToSuccessFeed('Kalibracja paliwa: Ustawienia');
+					asyncCounter.next()
+				},
+				error: function (err) {
+					console.log(err);
+					alert('Wystąpił błąd podczas zmiany ustawień paliwa. Spróbuj ręcznie.');
+				}
 			});
 		} else {
 			asyncCounter.next();
 			asyncCounter.next();
 		};
-    };
+	};
 
-    function getNrKartoteki(vehicleId, baseUrl) {
-        const url = baseUrl + '/api/vehicle/admin/index/' + vehicleId;
-        return new Promise((resolve, reject) => {
-            fetch(url)
-                .then(res => {
+	function getNrKartoteki(vehicleId, baseUrl) {
+		const url = baseUrl + '/api/vehicle/admin/index/' + vehicleId;
+		return new Promise((resolve, reject) => {
+			fetch(url)
+				.then(res => {
 					if (!res.ok) {
 						reject('Wystąpił błąd podczas pobierania nr kartoteki. Uzupełnij kartotekę ręcznie.');
 					} else {
 						res.text()
 							.then(res => {
-							let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
-							editedResponse = editedResponse.slice(editedResponse.indexOf('</td>') + 10);
-							editedResponse = editedResponse.slice(0, editedResponse.indexOf('</td>'));
-							editedResponse = editedResponse.slice(editedResponse.indexOf('value="') + 7, editedResponse.indexOf('">'));
+								let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8);
+								editedResponse = editedResponse.slice(editedResponse.indexOf('</td>') + 10);
+								editedResponse = editedResponse.slice(0, editedResponse.indexOf('</td>'));
+								editedResponse = editedResponse.slice(editedResponse.indexOf('value="') + 7, editedResponse.indexOf('">'));
 
-							resolve(editedResponse);
-						});
+								resolve(editedResponse);
+							});
 					};
-            });
-        });
-    };
+				});
+		});
+	};
 
-    function createCalibrationPoints() {
+	function createCalibrationPoints() {
 
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
-		if(tanksTr.length > 0) { //Paliwo z Sond/Pływaka
+		if (tanksTr.length > 0) { //Paliwo z Sond/Pływaka
 
 			let index = 1;
 			const all_calibration_points = [];
 
-			for(let tr of tanksTr) {
+			for (let tr of tanksTr) {
 				const tankCapacity = tr.children[2].children[0].children[2].value + ".00";
 				all_calibration_points.push(["0.00", "0.00", index])
 				all_calibration_points.push(["244.00", tankCapacity, index])
@@ -149,10 +166,10 @@
 				index++;
 			};
 			return all_calibration_points;
-		} else if(isChecked('spn96_c')) { //Paliwo z CAN
+		} else if (isChecked('spn96_c')) { //Paliwo z CAN
 			let tankCapacity = "999.00";
 
-			if(document.getElementsByName('spn96_amount')[0].value !== "") {
+			if (document.getElementsByName('spn96_amount')[0].value !== "") {
 				tankCapacity = document.getElementsByName('spn96_amount')[0].value + ".00";
 			};
 
@@ -165,18 +182,28 @@
 		} else {
 			return false;
 		};
-    };
+	};
 
 	function downloadFrames(vehicleId, baseUrl, asyncCounter) {
-		const dateTime = $('#kiedy2').val() + " " + $('#kiedy2hour').val() + ":" + ($('#kiedy2minute').val().length === 1 ? "0"+$('#kiedy2minute').val() : $('#kiedy2minute').val()) + ":00";
-		const data = {"vehicleId":parseInt(vehicleId),"datetimeFrom":dateTime,"datetimeTo":""};
+		const dateTime = $('#kiedy2').val() + " " + $('#kiedy2hour').val() + ":" + ($('#kiedy2minute').val().length === 1 ? "0" + $('#kiedy2minute').val() : $('#kiedy2minute').val()) + ":00";
+		const data = {
+			"vehicleId": parseInt(vehicleId),
+			"datetimeFrom": dateTime,
+			"datetimeTo": ""
+		};
 
 		$.ajax({
 			url: `${baseUrl}/api/vehicle/gps/ajaxReloadVehicleFrames`,
 			type: "POST",
 			data: data,
-			success : function() {appendToSuccessFeed('Pobrano dane źródłowe'); asyncCounter.next();},
-			error : function(err) {console.log(err); alert('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');}
+			success: function () {
+				appendToSuccessFeed('Pobrano dane źródłowe');
+				asyncCounter.next();
+			},
+			error: function (err) {
+				console.log(err);
+				alert('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');
+			}
 		});
 	};
 
@@ -209,40 +236,41 @@
 	function fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
 		let fuelType = '';
 		let minOdchylenie = 0;
-			if(document.getElementsByClassName('tanks_tr').length > 0) {
-				if(document.getElementsByClassName('tanks_tr')[0].children[2].children[1].children[2].checked) {
-					fuelType = "sonda";
-					minOdchylenie = 1.5;
-				} else {
-					fuelType = "plywak";
-					minOdchylenie = 5;
-				};
-			} else if(isChecked('spn96_c')) {
-				fuelType = "can";
-				minOdchylenie = 100;
+		if (document.getElementsByClassName('tanks_tr').length > 0) {
+			if (document.getElementsByClassName('tanks_tr')[0].children[2].children[1].children[2].checked) {
+				fuelType = "sonda";
+				minOdchylenie = 1.5;
+			} else {
+				fuelType = "plywak";
+				minOdchylenie = 5;
 			};
+		} else if (isChecked('spn96_c')) {
+			fuelType = "can";
+			minOdchylenie = 100;
+		};
 
 		let markaRejestratora = 0;
 		const selectedBlackbox = $('#rodzaj_rejestratora_id').find('[selected]').text();
-		if(selectedBlackbox === "Setivo") {
+		if (selectedBlackbox === "Setivo") {
 			markaRejestratora = 4;
-		} else if(selectedBlackbox === "Albatros") {
+		} else if (selectedBlackbox === "Albatros") {
 			markaRejestratora = 7;
-		} else if(selectedBlackbox === "TELTONIKA") {
+		} else if (selectedBlackbox === "TELTONIKA") {
 			markaRejestratora = 6;
 		};
 
 		const generalData = {
 			'aktywny': 1,
 			'rodzaj_rejestratora_id': markaRejestratora,
-            'zakres_od': $('#kiedy2').val(),
-            'zakres_do': '',
+			'dscr': $('input[name=dscr]').val(),
+			'zakres_od': $('#kiedy2').val(),
+			'zakres_do': '',
 			'stacyjka': 1,
 			'gen_zdarzen_predkosc': (isChecked('spn84_c') ? 2 : 1),
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
 			'min_napiecie_stacji': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
-			'corector_can_distance':(isChecked('spn917_c') ? 1 : 0),
+			'corector_can_distance': (isChecked('spn917_c') ? 1 : 0),
 			'corector_can_speed': (isChecked('spn84_c') ? 1 : 0),
 			'corector_can_rotation': (isChecked('spn190_c') ? 1 : 0),
 			'paliwo_z_sondy_dyst': (isChecked('spn917_c') ? 3 : 1),
@@ -266,11 +294,11 @@
 		};
 
 		let pomiarPaliwa = 0;
-		if(fuelType === "sonda") {
+		if (fuelType === "sonda") {
 			pomiarPaliwa = 2;
-		} else if(fuelType === "plywak") {
+		} else if (fuelType === "plywak") {
 			pomiarPaliwa = 3;
-		} else if(fuelType === "") {
+		} else if (fuelType === "") {
 			pomiarPaliwa = 1;
 		};
 
@@ -306,14 +334,21 @@
 		const wtf = {
 			'saveexitwindow': '',
 			'saveexit': '',
-            'norma_godzina_postoju': 0
+			'norma_godzina_postoju': 0
 		};
 
 		let data = {};
-		if(fuelType !== '') {
-			data = {...generalData, ...fuelSpecificData, ...wtf};
+		if (fuelType !== '') {
+			data = {
+				...generalData,
+				...fuelSpecificData,
+				...wtf
+			};
 		} else {
-			data = {...generalData, ...wtf};
+			data = {
+				...generalData,
+				...wtf
+			};
 		};
 
 		$.ajax({
@@ -321,12 +356,18 @@
 			type: "POST",
 			data: data,
 			dataType: 'text',
-			success : function() {appendToSuccessFeed('Dane administracyjne'); asyncCounter.next()},
-			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');}
+			success: function () {
+				appendToSuccessFeed('Dane administracyjne');
+				asyncCounter.next()
+			},
+			error: function (err) {
+				console.log(err);
+				alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');
+			}
 		});
 	};
 
-    function getVinNr(vehicleId, baseUrl, asyncCounter){
+	function getVinNr(vehicleId, baseUrl, asyncCounter) {
 		$.ajax({
 			url: '/api/vehicle/data/ajax_getVinNumber',
 			type: 'POST',
@@ -334,43 +375,49 @@
 				pojazd_id: parseInt(vehicleId)
 			},
 			dataType: 'json',
-			success: function(result){
+			success: function (result) {
 				const vin = result.vin;
 
-				if(vin != '') {
+				if (vin != '') {
 					if (vin.length == 17 && vin.match(/^[0-9a-z]+$/i)) {
 						fillExtendedData(vin, vehicleId, baseUrl, asyncCounter);
 					} else {
 						alert('Niepoprawny numer VIN' + ': ' + vin);
-                        asyncCounter.next();
+						asyncCounter.next();
 					};
 				} else {
 					asyncCounter.next();
 				}
 
 			},
-			error: function(){
+			error: function () {
 				asyncCounter.next();
 			}
 		});
 	};
 
-    function fillExtendedData(vin, vehicleId, baseUrl, asyncCounter) {
-        const data = {
-            'typ_pojazdu_wg_producenta_id': ($('#vehicle_type_id').val() == "1" ? 2 : ''),
-            'ustawowe_rozliczanie_pojazd': ($('#kabel_d8_podlaczenie_id').val() == "5" ? 1 : ''),
-            'nr_podwozia': vin
-        };
+	function fillExtendedData(vin, vehicleId, baseUrl, asyncCounter) {
+		const data = {
+			'typ_pojazdu_wg_producenta_id': ($('#vehicle_type_id').val() == "1" ? 2 : ''),
+			'ustawowe_rozliczanie_pojazd': ($('#kabel_d8_podlaczenie_id').val() == "5" ? 1 : ''),
+			'nr_podwozia': vin
+		};
 
-        $.ajax({
+		$.ajax({
 			url: `${baseUrl}/api/vehicle/data/data_extended/${vehicleId}`,
 			type: 'POST',
 			data: data,
 			dataType: 'text',
-			success: function() {appendToSuccessFeed('Dane rozszerzone'); asyncCounter.next()},
-			error : function(err) {console.log(err); alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');}
-        });
-    };
+			success: function () {
+				appendToSuccessFeed('Dane rozszerzone');
+				asyncCounter.next()
+			},
+			error: function (err) {
+				console.log(err);
+				alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');
+			}
+		});
+	};
 
 	function appendToSuccessFeed(message) {
 		const successFeed = document.getElementById('successFeed');
@@ -381,14 +428,14 @@
 
 	function tanksCapacity() {
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
-		if(tanksTr.length > 0) {
+		if (tanksTr.length > 0) {
 			let capacity = 0;
-			for(let tr of tanksTr) {
+			for (let tr of tanksTr) {
 				capacity += parseInt(tr.children[2].children[0].children[2].value);
 			};
 			return capacity
 		} else {
-			if(document.getElementsByName('spn96_amount')[0].value) {
+			if (document.getElementsByName('spn96_amount')[0].value) {
 				return parseInt(document.getElementsByName('spn96_amount')[0].value);
 			} else {
 				return 999;
