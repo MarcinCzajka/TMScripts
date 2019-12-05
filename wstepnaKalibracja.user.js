@@ -266,7 +266,7 @@
 			'zakres_od': $('#kiedy2').val(),
 			'zakres_do': '',
 			'stacyjka': 1,
-			'gen_zdarzen_predkosc': (isChecked('spn84_c') ? 2 : 1),
+			'gen_zdarzen_predkosc': 1,
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
 			'min_napiecie_stacji': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
