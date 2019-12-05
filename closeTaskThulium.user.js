@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.7
+// @version      0.8
 // @description  Change status, inbox and owner .then close task
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
@@ -66,7 +66,7 @@
         let tickets = '';
         for(let item of $('input[checked]')) {
             if(item.parentElement.nodeName !== 'SPAN') {
-                let id = item.parentElement.nextSibling.children[2].children[0].innerText;
+                let id = $(item).parent().parent().find('.ticket-subject').text();
                 id = id.split(" ")[0].replace('(#', '');
                 id = id.replace(')', '');
 
