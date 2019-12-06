@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         clearDatesInReport
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.2
 // @description  Czyści daty i filtry w raporcie
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/clearDatesInReport.user.js
@@ -21,11 +21,20 @@
     });
 
     function clearFilters() {
-        for (let i = 1; i <= 4; i++) {
-            $('#table_calendar_input' + (i !== 1 ? i : '')).val('');
-            $('select[name="show_invoice"]').select2('val', 2);
-            $('#submit_filter').trigger('click');
+        let d = new Date();
+        d.setDate(d.getDate()-60);
+        d = d.toISOString().slice(0,10);
+
+        $('#table_calendar_input').val(d);
+
+        for (let i = 2; i <= 4; i++) {
+            $('#table_calendar_input' + i).val('');
         }
+
+        $('select[name="show_invoice"]').select2('val', 2);
+        $('#submit_filter').trigger('click');
     }
+
+
 
 })();
