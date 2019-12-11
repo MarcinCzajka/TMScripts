@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.25
+// @version      4.26
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -136,11 +136,8 @@
                     //Nr SIM
                     document.getElementsByName('nr_karty_sim')[0].value = userJSON.sim;
 
-                    //Podłączenia
-                    //Rejestrator
-                    if(!document.getElementsByName('rej')[0].checked) {
-                        document.getElementsByName('rej')[0].click();
-                    }
+                    //Zaklikaj Rejestrator
+                    click('[name=rej]')
 
 
                     //Typ rejestratora
@@ -228,11 +225,9 @@
                     };
 
                     //Id rejestratora
-                    document.getElementsByName('dscr')[0].value = userJSON.id;
+                    $('[name=dscr]').val(userJSON.id);
 
-                    if(!document.getElementsByName('rej_c')[0].checked) {
-                        document.getElementsByName('rej_c')[0].click();
-                    }
+                    click('[name=rej_c]');
 
                     //CAN
                     const canConfig = userJSON.canConfig;
@@ -283,17 +278,13 @@
 								};
 							};
 
-							if(!document.getElementsByName('kabel_d8_c')[0].checked) {
-								$("#kabel_d8_c").click();
-							}
+                            click('#kabel_d8_c');
 						}
                     }
 
                     //TachoReader
                     if(userJSON.d8 === "Tachoreader") {
-                        if(!document.getElementsByName('tachoreader')[0].checked) {
-                            $("#tachoreader").click();
-                        }
+                        click('#tachoreader');
 
                         if(userJSON.modelTacho === "Siemens")
                             $("#s2id_tachoreader_model_id").select2('val', 1);
@@ -302,7 +293,7 @@
 
                         $("#tachoreader_status").val(2);
 
-                        document.getElementById("tachoreader_nr_firmware").value = userJSON.wersjaTacho;
+                        $('#tachoreader_nr_firmware').val(userJSON.wersjaTacho);
                     }
 
                     //Przystawka CAN
@@ -349,7 +340,8 @@
                     if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
 					if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) addUrzadzenieDodatkoweInne('TOM-TOM');
-					
+                    if(userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
+                    
                     //Sondy an0
                     if(userJSON.an0numer) {
 						
@@ -397,8 +389,8 @@
                     }
 
                     //Informacje końcowe
-                    document.getElementsByName("miejsce_rejestratora")[0].value = userJSON.gdzieRejestrator || ".";
-                    document.getElementsByName("stan_licznika")[0].value = userJSON.przebieg || ".";
+                    $('[name=miejsce_rejestratora]').val(userJSON.gdzieRejestrator || ".");
+                    $('[name=stan_licznika]').val(userJSON.przebieg || ".");
 
                     //Monter
                     const monterzy = $("#wykonal")[0];
