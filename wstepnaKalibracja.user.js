@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.12
+// @version      1.13
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -262,10 +262,16 @@
 		const generalData = {
 			'aktywny': 1,
 			'rodzaj_rejestratora_id': markaRejestratora,
+			'typ_rejestratora_id': $('#typ_rejestratora_id').val(),
 			'dscr': $('input[name=dscr]').val(),
+			'nr_gsm': $('#nr_karty_sim').val(),
+			'config_db_id': $('[name=config_db_id]').val(),
+			'data_instalacji': $('#kiedy2').val(),
 			'zakres_od': $('#kiedy2').val(),
 			'zakres_do': '',
+			'generuj_zdarzenia': 0,
 			'stacyjka': 1,
+			'algorithm_version': 4,
 			'gen_zdarzen_predkosc': 1,
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
@@ -334,7 +340,8 @@
 		const wtf = {
 			'saveexitwindow': '',
 			'saveexit': '',
-			'norma_godzina_postoju': 0
+			'norma_godzina_postoju': 0,
+			'sposob_gener_zdarzen': 4
 		};
 
 		let data = {};
