@@ -7,9 +7,9 @@
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
 // @supportURL   https://github.com/MarcinCzajka/TMScripts/issues
-// @match        *thulium.com/panel/tickets*
+// @match        *thulium.com*
 // @grant        none
-// @include      *thulium.com/panel/tickets*
+// @include      */tickets*
 // ==/UserScript==
 
 (function() {
@@ -17,7 +17,7 @@
 
 	const baseUrl = window.location.origin + '/panel/panel2.0/tickets';
 
-	const basicButtonStyle = 'display:inline;font-size:12px;padding:3px 8px 2px 8px;margin-left:10px;color:#f0f2f1;border-radius:10px';
+	const basicButtonStyle = 'display:inline;font-size:12px;padding:3px 8px 2px 8px;margin-left:10px;color:#f0f2f1;border-radius:10px;';
 
     const closeTasksBtn = `
 		<div class="button"
