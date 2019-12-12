@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8
+// @version      0.9
 // @description  Change status, inbox and owner .then close task
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
@@ -17,7 +17,7 @@
 
 	const baseUrl = window.location.origin + '/panel/panel2.0/tickets';
 
-	const basicButtonStyle = 'display:inline;font-size:14px;margin-left:10px;background-color:#BE1721;color:#f0f2f1;';
+	const basicButtonStyle = 'display:inline;font-size:12px;padding:3px 10px;margin-left:10px;color:#f0f2f1;';
 
     const closeTasksBtn = `
 		<div class="button"
