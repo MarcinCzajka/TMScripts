@@ -17,13 +17,13 @@
 
 	const baseUrl = window.location.origin + '/panel/panel2.0/tickets';
 
-	const basicButtonStyle = 'display:inline;font-size:12px;padding:3px 8px 2px 8px;margin-left:10px;color:#f0f2f1;border-radius:10px;';
+	const basicButtonStyle = 'display:inline;font-size:12px;font-weight:400;padding:3px 8px 2px 8px;margin-left:10px;color:#f0f2f1;border-radius:10px;';
 
     const closeTasksBtn = `
 		<div class="button"
 			style="${basicButtonStyle}background-color:#f75126;"
 			>
-			*Zamknij zadania jako wykonany import paliwa*
+			Zamknij zadania jako wykonany import paliwa
 		</div>`;
     $(closeTasksBtn).insertBefore('#pager').on('click', closeTasks);
 
@@ -31,7 +31,7 @@
 		<div class="button"
 			style="${basicButtonStyle}background-color:#BE1721;"
 			>
-			*Move To TRASH*
+			Move To TRASH
 		</div>`;
     $(moveToTrashBtn).insertBefore('#pager').on('click', moveToTrash);
 
