@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10
+// @version      0.11
 // @description  Change status, inbox and owner .then close task
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
@@ -21,7 +21,7 @@
 
     const closeTasksBtn = `
 		<div class="button"
-			style="${basicButtonStyle}background-color:#f75126;"
+			style="${basicButtonStyle}background-color:#516691;"
 			>
 			Zamknij zadania jako wykonany import paliwa
 		</div>`;
