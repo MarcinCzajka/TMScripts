@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.26
+// @version      4.27
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -22,12 +22,12 @@
         const myTextbox = document.createElement("div");
         myTextbox.innerHTML = `
             <div style="width:100%">
-                <input 
+                <input
                     type="text"
                     id="myTextbox"
                     style="width:100%"
                 >
-                <button 
+                <button
                     style="border:1px solid #28bea9;cursor:pointer;"
                     id="newButton"
                     onmouseover="this.style.opacity=0.8"
@@ -38,6 +38,16 @@
 
         document.getElementById("header").appendChild(myTextbox);
         document.getElementById("newButton").addEventListener('click', fillProtocol);
+
+        myTextbox.addEventListener('input', fixExcelMultilineCopy);
+
+        function fixExcelMultilineCopy(e) {
+            const inputJson = e.target.value;
+            if(inputJson.substring(0,1) === '"') {
+                const fixedJson = inputJson.replace(/""/g, '"').slice(1, -1);
+                e.target.value = fixedJson;
+            }
+        }
 
         ///////////////////////////////////////////////////////////////////////////
 
@@ -54,21 +64,21 @@
 						const companies = document.getElementById("firma1_id");
 						const firma = (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma);
 						let companyValue = '';
-						
+
 						for(let company of companies) {
 							if (company.innerText === firma) {
 								companyValue = company.value;
 								break;
 							};
 						};
-						
+
 						if (companyValue) {
 							$('#firma1_id').select2('val', companyValue).trigger('change');
 						} else {
 							alert(`Nie znaleziono firmy ${userJSON.firma}`);
 						};
 					};
- 
+
                     const vehicleGroups = document.getElementById("grupa_pojazdow_id");
                     const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto', 'all_trucks'];
                     for(let group of vehicleGroups) {
@@ -105,7 +115,7 @@
 								break;
 							};
 						};
-						
+
 						if(valueOfVehicle) {
 							$('#old_reg_number').select2('val', valueOfVehicle).trigger('change');
 						} else {
@@ -252,13 +262,13 @@
 						if(userJSON.d8 === "TMR") {
 							click("#tmr");
 							$("#tmr_status").val(userJSON.tmrResponse);
-							
+
 							if(userJSON.modelTacho === "Siemens") {
 								$("#tmr_model_id").select2('val', 1);
 							} else if(userJSON.modelTacho === "Stonerige") {
 								$("#tmr_model_id").select2('val', 2);
 							}
-							
+
 							$("#tmr_nr_firmware").val(userJSON.wersjaTacho);
 						} else {
 							if(!document.getElementsByName('kabel_d8')[0].checked) {
@@ -319,7 +329,7 @@
                             addUrzadzenieDodatkoweDin('Webasto', webastoDin, 'Wysoki', 'Granatowy');
                         };
                     };
-					
+
 					if(userJSON.konfiguracja.toLowerCase().includes("pompa")) {
                         let pompaString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('pompa')).toLowerCase();
                         pompaString = pompaString.substr(0, pompaString.indexOf(','));
@@ -341,10 +351,10 @@
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
 					if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) addUrzadzenieDodatkoweInne('TOM-TOM');
                     if(userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
-                    
+
                     //Sondy an0
                     if(userJSON.an0numer) {
-						
+
                         if(!$('tr[data-number=1]')[0]) document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                         const an0 = document.querySelectorAll("tr[data-number='1']")[0].children[2];
@@ -418,7 +428,7 @@
                 }
             }, 0);
         };
-		
+
 		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, color) {
 			//Sprawdź czy nie ma takiego urządzenia
 			let deviceExists = false;
@@ -431,7 +441,7 @@
 					break;
 				}
 			}
-			
+
 			if(!deviceExists) {
 				document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
 
@@ -447,17 +457,17 @@
 				const newCanTr = document.getElementsByClassName("active added din_tr");
 				newCanTr[newCanTr.length - 1].classList.add("bad");
 			};
-			
+
 				const newDinTr = $(`#${newDeviceId}`)[0].parentNode.nextSibling.nextSibling;
-				
+
 			//nr wejscia
 			newDinTr.children[0].children[2].value = din;
-			
+
 			//stan
 			$(`#${newDinTr.children[1].children[2].id}`).select2('val', (stan === 'Wysoki' ? 1 : 0));
-			
+
 			//kolor
-				
+
 				const dinColors = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
                 for (let itemColor of dinColors) {
@@ -467,7 +477,7 @@
                     };
                 };
 		};
-		
+
 		function addUrzadzenieDodatkoweInne(urzadzenie) {
 			//Sprawdź czy nie ma już takiego urządzenia w protokole
 			const addedDevices = document.getElementsByClassName('active dino_tr');
@@ -476,7 +486,7 @@
 					return;
 				}
 			}
-			
+
 			//Jak nie ma to doklikaj
 			document.getElementsByClassName("dino plus fl-tipsy-bottom-right")[0].click();
 
@@ -493,7 +503,7 @@
             const newCanTr = document.getElementsByClassName("active added dino_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
 		}
-		
+
 		async function isInvoiceActiveOnAnotherVehicle(id) {
             const baseUrl = `/api/invoice/vehicle?current_page=1&current_limit=10&form_action=search&form_search=${id}&form_filter=filter_enabled%3D1%26firma1_id%3D%26company_user_vehicle_groups%3D%26status_sim%3D1%26mapa_typ%3D0%26table_calendar_input%3D%26table_calendar_input2%3D%26table_calendar_input3%3D%26table_calendar_input4%3D%26table_calendar_input5%3D%26table_calendar_input6%3D&mod-sidemenu-val=`
             await fetch(baseUrl)
@@ -503,9 +513,9 @@
 						let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
 
 						if(editedResponse.includes(`<td class="datatable_dscr  " style="width:100px; text-align:left;" value="">
-			
-								
-																														${id}									
+
+
+																														${id}
 			</td>`)) {
 							alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
 						};
@@ -513,11 +523,11 @@
 				});
 
         };
-		
+
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-		
+
 		function click(element) {
 			if(!$(element)[0].checked) $(element).click();
     }
