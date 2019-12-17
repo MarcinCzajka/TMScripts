@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.27
+// @version      4.28
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -313,7 +313,8 @@
                     //Urządzenia dodatkowe Din 1-5
                     if(userJSON.konfiguracja.toLowerCase().includes("webasto")) {
                         let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
-                        webastoString = webastoString.substr(0, webastoString.indexOf(','));
+                        const separator = webastoString.indexOf(',') === -1 ? undefined : webastoString.indexOf(',');
+                        webastoString = webastoString.slice(0, separator);
 
                         if(webastoString.includes("can")) {
                             click("#webasto_can_c")
@@ -332,7 +333,8 @@
 
 					if(userJSON.konfiguracja.toLowerCase().includes("pompa")) {
                         let pompaString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('pompa')).toLowerCase();
-                        pompaString = pompaString.substr(0, pompaString.indexOf(','));
+                        const separator = pompaString.indexOf(',') === -1 ? undefined : pompaString.indexOf(',');
+                        pompaString = pompaString.slice(0, separator);
 
 						let pompaDin = 5;
 						for (let i = 0; i < pompaString.length; i++) {
@@ -349,8 +351,16 @@
                     if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
                     if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
-					if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) addUrzadzenieDodatkoweInne('TOM-TOM');
                     if(userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
+
+                    if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) {
+                        let tomtomString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('tomtom')).toLowerCase();
+                        const separator = tomtomString.indexOf(',') === -1 ? undefined : tomtomString.indexOf(',');
+                        tomtomString = tomtomString.slice(tomtomString.indexOf(' '), separator);
+
+                        addUrzadzenieDodatkoweInne('TOM-TOM');
+                        document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[4].children[0].value = parseInt(tomtomString);
+                    }
 
                     //Sondy an0
                     if(userJSON.an0numer) {
