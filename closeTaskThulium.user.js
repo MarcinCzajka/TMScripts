@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         closeTask
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.11
+// @version      0.12
 // @description  Change status, inbox and owner .then close task
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/closeTaskThulium.user.js
@@ -29,7 +29,7 @@
 
 	const moveToTrashBtn = `
 		<div class="button"
-			style="${basicButtonStyle}background-color:#BE1721;"
+			style="${basicButtonStyle}background-color:#bb4112;"
 			>
 			Move To TRASH
 		</div>`;
