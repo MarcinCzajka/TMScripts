@@ -356,10 +356,10 @@
                     if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) {
                         let tomtomString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('tomtom')).toLowerCase();
                         const separator = tomtomString.indexOf(',') === -1 ? undefined : tomtomString.indexOf(',');
-                        tomtomString = tomtomString.slice(tomtomString.indexOf(' '), separator);
+                        tomtomString = parseInt(tomtomString.slice(tomtomString.indexOf(' '), separator));
 
                         addUrzadzenieDodatkoweInne('TOM-TOM');
-                        document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[4].children[0].value = parseInt(tomtomString);
+                        if(tomtomString) document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[4].children[0].value = tomtomString;
                     }
 
                     //Sondy an0
