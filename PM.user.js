@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.28
+// @version      4.29
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -203,7 +203,7 @@
                         };
 
 
-                    } else if (userJSON.typRejestratora === "Teltonika" || parseInt(userJSON.id) > 999999) {
+                    } else if (userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
                         const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
                         for(let producent of blackboxProducent) {
@@ -227,8 +227,8 @@
                         const blackboxType = $("#typ_rejestratora_id")[0];
 
                         for(let type of blackboxType) {
-                            if (type.innerText === "FMB120") {
-                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
+                            if (type.innerText === userJSON.typRejestratora) {
+                                $("#typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
                                 break;
                             };
                         };
