@@ -271,6 +271,7 @@
 			'zakres_do': '',
 			'generuj_zdarzenia': 0,
 			'stacyjka': 1,
+			'sposob_gener_zdarzen': (isChecked('can_c') ? 4 : 1),
 			'algorithm_version': 4,
 			'gen_zdarzen_predkosc': 1,
 			'wywlaszczenie_zdarzenia': 1000,

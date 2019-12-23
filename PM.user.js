@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.29
+// @version      4.30
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
 // @match        http://*/api/installation*
 // @grant        none
-// @include */api/installation*
-// @exclude */api/installation/main/index/*
+// @include      */api/installation*
+// @exclude      */api/installation/main/index/*
 // ==/UserScript==
 
 (function() {
