@@ -341,8 +341,7 @@
 		const wtf = {
 			'saveexitwindow': '',
 			'saveexit': '',
-			'norma_godzina_postoju': 0,
-			'sposob_gener_zdarzen': 4
+			'norma_godzina_postoju': 0
 		};
 
 		let data = {};
