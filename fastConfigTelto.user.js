@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.3
+// @version      1.4
 // @description  Szybka konfiguracja przy użyciu guzików
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -34,6 +34,7 @@
 		'configureCan': false,
 		'fms': '',
 		'tachocheck': '',
+		'scanfms': '',
 		'result': '',
 		'cpureset': false
 	};
@@ -99,6 +100,18 @@
 		config.cpureset = false;
 		handleChange(e);
 	};
+
+	function scanfmsChange(e, value) {
+		if(!config.cpureset) {
+			config.scanfms = (config.scanfms === value ? '' : value);
+		} else {
+			config.scanfms = value;
+			config.cpureset = false;
+		};
+		
+		config.cpureset = false;
+		handleChange(e);
+	}
 	
 	function cpuresetChange(e) {
 		config.cpureset = !config.cpureset;
@@ -127,7 +140,7 @@
 				
 			};
 
-			config.result += (config.result === '' ? '' : '\n') + config.tachocheck
+			config.result += (config.result === '' ? '' : '\n') + config.tachocheck + (config.tachocheck && config.scanfms ? '\n' : '') + config.scanfms
 		};
 		
 		updateBtnColors();
@@ -168,7 +181,8 @@
 		createBtn('FMS 0', (e) => {fmsChange(e, '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2');
         createBtn('FMS 250', (e) => {fmsChange(e, '250')}, customDiv, 'fms', '250', 'grid-column:5/7;grid-row:2');
         createBtn('FMS 500', (e) => {fmsChange(e, '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2');
-        createBtn('TACHOCHECK', (e) => {tachocheckChange(e, 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/7;grid-row:3');
+		createBtn('TACHOCHECK', (e) => {tachocheckChange(e, 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/5;grid-row:3');
+		createBtn('SCANFMS', (e) => {scanfmsChange(e, 'SCANFMS')}, customDiv, 'scanfms', 'SCANFMS', 'grid-column:5/7;grid-row:3');
         createBtn('CPURESET', (e) => {cpuresetChange(e)}, customDiv, 'cpureset', '1', 'grid-column:7/9;grid-row:3');
     };
 	
