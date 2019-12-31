@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.25
+	// @version      2.26
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -18,27 +18,31 @@
 	
 		let fuelCapacity = 0;
 
-		const newBar = document.createElement("td");
-        	newBar.setAttribute('colspan', '6');
-		newBar.style.width = '100%';
-		
-		const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
+		if(!document.getElementById('newBar')) {
+			const newBar = document.createElement("td");
+				newBar.setAttribute('colspan', '6');
+				newBar.id = 'newBar';
+			newBar.style.width = '100%';
+			
+			const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
 
-		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="osobowy - Pływak"   id="carFloater"   ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" 	  id="canService"   ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" 	  id="probeService" ${inputStyling}></input>`);
-		newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" 	      id="newThread"    ${inputStyling}></input>`);
-		
-		$(".break")[0].children[0].append(newBar);
+			newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
+			newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);
+			newBar.insertAdjacentHTML('beforeend', `<input value="osobowy - Pływak"   id="carFloater"   ${inputStyling}></input>`);
+			newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" 	  id="canService"   ${inputStyling}></input>`);
+			newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" 	  id="probeService" ${inputStyling}></input>`);
+			newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" 	      id="newThread"    ${inputStyling}></input>`);
+			
+			$(".break")[0].children[0].append(newBar);
 
-		document.getElementById("truckProbe").addEventListener('click', truckProbe);
-		document.getElementById("truckFloater").addEventListener('click', truckFloater);
-		document.getElementById("carFloater").addEventListener('click', carFloater);
-		document.getElementById("canService").addEventListener('click', canServicePreset);
-		document.getElementById("probeService").addEventListener('click', probeServicePreset);
-		document.getElementById("newThread").addEventListener('click', createNewThread);
+			document.getElementById("truckProbe").addEventListener('click', truckProbe);
+			document.getElementById("truckFloater").addEventListener('click', truckFloater);
+			document.getElementById("carFloater").addEventListener('click', carFloater);
+			document.getElementById("canService").addEventListener('click', canServicePreset);
+			document.getElementById("probeService").addEventListener('click', probeServicePreset);
+			document.getElementById("newThread").addEventListener('click', createNewThread);
+
+		}
 
 		function truckProbe(e) {
 			e.preventDefault();

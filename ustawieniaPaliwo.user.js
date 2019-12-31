@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.4
+// @version      1.5
 // @description  Kalibracja
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/ustawieniaPaliwo.user.js
@@ -14,19 +14,22 @@
 (function() {
     'use strict';
 	
-	const newTd = `
-		<td>
-			<input 
-				style="height:23px;width:75px;padding:0;border-radius:10px;background:#929DA7;cursor:pointer;" 
-				type="button" 
-				value="Ciężarowy" 
-				id="truckBtn">
-			</input>
-		</td>`;
-	
-	const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', newTd);
-	document.getElementById("truckBtn").addEventListener('click', truckSettings);
-	
+	if(!document.getElementById('truckBtn')) {}
+		const newTd = `
+			<td>
+				<input 
+					style="height:23px;width:75px;padding:0;border-radius:10px;background:#929DA7;cursor:pointer;" 
+					type="button" 
+					value="Ciężarowy" 
+					id="truckBtn">
+				</input>
+			</td>`;
+		
+		const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', newTd);
+		document.getElementById("truckBtn").addEventListener('click', truckSettings);
+		
+	}
+
 	function truckSettings() {
 			$('#points_to_average').val(3).trigger('change');
 		
