@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  This script will prepare data to copy to online google sheet
 // @author       You
 // @match        http://*/api/services*
@@ -69,7 +69,9 @@
     function getCreationMonthName() {
         const date = new Date($('.break')[0].children[0].children[0].children[0].innerText);
 
-        return date.toLocaleString('pl-pl', { month: "long" });
+        let locale = 'pl-pl';
+        if(window.location.origin === "http://kj.framelogic.pl") locale = 'en-gb';
+        return date.toLocaleString(locale, { month: "long" });
     }
 
     function copyToClipboard() {
