@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  This script will prepare data to copy to online google sheet
-// @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/logServiceInWorksheet.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/logServiceInWorksheet.user.js
+// @author       You
 // @match        http://*/api/services*
 // @grant        none
 // @include      */api/services*
@@ -19,9 +17,9 @@
         const newBar = document.createElement("td");
         newBar.id = 'newBar';
 
-        const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
+        const inputStyling = 'style="height:2.5em;cursor:pointer;padding: 0.1em 1em 0.1em 1em;" type="button"';
 
-        newBar.insertAdjacentHTML('beforeend', `<td><input value="copy" id="copyBtn" type="button"></input></td>`);
+        newBar.insertAdjacentHTML('beforeend', `<td><input value="Copy to Excel" id="copyBtn" ${inputStyling} ></input></td>`);
 
         $("#bottom_header")[0].children[0].children[0].children[0].append(newBar);
 
