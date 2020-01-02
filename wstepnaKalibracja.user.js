@@ -261,15 +261,14 @@
 
 		const generalData = {
 			'aktywny': 1,
-            'datetime_from': `${$('#kiedy2').val()} 00:00:00`,
+			'datetime_from': `${$('#kiedy2').val()} 00:00:00`,
+			'datetime_to': '',
 			'rodzaj_rejestratora_id': markaRejestratora,
 			'typ_rejestratora_id': $('#typ_rejestratora_id').val(),
 			'dscr': $('input[name=dscr]').val(),
 			'nr_gsm': $('#nr_karty_sim').val(),
 			'config_db_id': $('[name=config_db_id]').val(),
 			'data_instalacji': $('#kiedy2').val(),
-			'zakres_od': $('#kiedy2').val(),
-			'zakres_do': '',
 			'generuj_zdarzenia': 0,
 			'stacyjka': 1,
 			'sposob_gener_zdarzen': (isChecked('can_c') ? 4 : 1),
