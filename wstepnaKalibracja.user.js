@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.14
+// @version      1.15
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -261,6 +261,7 @@
 
 		const generalData = {
 			'aktywny': 1,
+            'datetime_from': `${$('#kiedy2').val()} 00:00:00`,
 			'rodzaj_rejestratora_id': markaRejestratora,
 			'typ_rejestratora_id': $('#typ_rejestratora_id').val(),
 			'dscr': $('input[name=dscr]').val(),
