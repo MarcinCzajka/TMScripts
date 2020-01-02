@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.27
+	// @version      2.28
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -258,7 +258,7 @@
 			e.preventDefault();
 			flashButton(e.target.id);
 			
-			if ($("#zakres_do").val() === "") {
+			if ($("input[name=datetime_to]").val() === "") {
 				alert('Wprowadź datę zamknięcia obecnego wątku.');
 			} else {
 				GM_setValue(newVar, 'save');
@@ -267,10 +267,10 @@
 		}
 
 		if(GM_getValue(newVar) === 'new') {
-			let newDate = new Date($("#zakres_do").val());
+			let newDate = new Date($("input[name=datetime_to]").val());
 
-			$("#zakres_od").val(incrementDate(newDate));
-			$("#zakres_do").val('');
+			$("input[name=datetime_from]").val(incrementDate(newDate));
+			$("input[name=datetime_to]").val('');
 			GM_deleteValue(newVar);
 			$(".save")[0].click();
 		}
@@ -282,7 +282,7 @@
 
 		function incrementDate(date) {
 			let d = date;
-			d.setDate(d.getDate() + 1);
+			d.setSeconds(d.getSeconds() + 1)
 
 			let day = d.getDate();
 			let month = d.getMonth() + 1;
@@ -291,7 +291,7 @@
 			if(day < 10) day = "0"+day;
 			if(month < 10) month = "0"+month;
 
-			return `${year}-${month}-${day}`
+			return `${year}-${month}-${day} ${d.toLocaleTimeString()}`
 		}
 		
 	})();

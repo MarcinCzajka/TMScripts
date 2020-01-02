@@ -364,7 +364,8 @@
 			type: "POST",
 			data: data,
 			dataType: 'text',
-			success: function () {
+			success: function (res) {
+				console.log(res)
 				appendToSuccessFeed('Dane administracyjne');
 				asyncCounter.next()
 			},
