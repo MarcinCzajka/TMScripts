@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  This script will prepare data to copy to online google sheet
-// @author       You
+// @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/logServiceInWorksheet.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/logServiceInWorksheet.user.js
 // @match        http://*/api/services*
 // @grant        none
 // @include      */api/services*
