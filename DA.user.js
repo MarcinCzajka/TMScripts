@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.26
+	// @version      2.27
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -161,9 +161,7 @@
             flashButton(targetElement);
 			
 			//Wersja algorytmu
-			if($("#s2id_autogen4")[0].parentNode.previousSibling.previousSibling.innerText === "Wersja algorytmu:") {
-				$("#s2id_autogen4").select2('val', 4);
-			}
+			$('[name=algorithm_version').select2('val', 5);
 			
 			$("#wywlaszczenie_zdarzenia").val(1000);
 
