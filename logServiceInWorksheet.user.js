@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.5
 // @description  This script will prepare data to copy to online google sheet
 // @author       You
 // @match        http://*/api/services*
@@ -34,14 +34,19 @@
         const rodzajRejestratora = getDataFromTable('Rodzaj rejestratora / Typ rejestratora') + '\t';
         const dataUtworzenia = getCreationMonthName() + '\t';
         const gwarancja = ( getDataFromTable('Kategoria') === 'Pogwarancyjny' ? 'FAŁSZ' : 'PRAWDA' ) + '\t';
+
+        const godzinaUsterki = $('[name=problem_hour]').val();
+        const godzina = (godzinaUsterki < 10 ? "0" + godzinaUsterki : godzinaUsterki);
+        const minutaUsterki = $('[name=problem_minute]').val();
+        const minuta = (minutaUsterki < 10 ? "0" + minutaUsterki : minutaUsterki);
+        const dataUsterki = `${$('#problem_date').val()} ${godzina}:${minuta}:00` + '\t';
+
         const przyczyna = getPrzyczyna() + '\t';
 
         const statusSerwisu = getDataFromTable('Status');
         const wykonano = (statusSerwisu === 'Odebrano' || statusSerwisu === 'Potwierdzono' ? 'PRAWDA' : 'FAŁSZ');
 
-        console.log(getDataFromTable('Kategoria'))
-
-        return firma + rejAndModel + sim + rodzajRejestratora + dataUtworzenia + gwarancja + przyczyna + wykonano;
+        return firma + rejAndModel + sim + rodzajRejestratora + dataUtworzenia + gwarancja + dataUsterki + przyczyna + wykonano;
     }
 
     function getPrzyczyna() {
