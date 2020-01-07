@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja-Ustawienia
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.5
+// @version      1.6
 // @description  Kalibracja
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/ustawieniaPaliwo.user.js
@@ -27,8 +27,6 @@
 		
 		const truckBtn = document.getElementById('bottom_header').children[0].children[0].children[0].insertAdjacentHTML('beforeend', newTd);
 		document.getElementById("truckBtn").addEventListener('click', truckSettings);
-		
-	}
 
 	function truckSettings() {
 			$('#points_to_average').val(3).trigger('change');
