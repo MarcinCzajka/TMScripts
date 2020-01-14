@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/MarcinCzajka
 // @version      0.7
 // @description  This script will prepare data to copy to online google sheet
 // @author       MAC

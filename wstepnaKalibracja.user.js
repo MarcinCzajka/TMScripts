@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.15
+// @version      1.16
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @match        http://*/api/installation*
@@ -221,6 +221,7 @@
 			'date_from': dateFrom,
 			'date_to': dateTo,
 			'data[points_to_average]': 3,
+			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
 			'data[invoice_matching]': 3600,
 			'data[fa_trust_voltage_low]': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
