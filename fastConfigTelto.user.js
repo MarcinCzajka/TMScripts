@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.4
-// @description  Szybka konfiguracja przy użyciu guzików
+// @version      1.5
+// @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -36,7 +36,8 @@
 		'tachocheck': '',
 		'scanfms': '',
 		'result': '',
-		'cpureset': false
+		'cpureset': false,
+		'frame': 1
 	};
 	
 	//Append new container to inexistent (at document.ready) element. Timeout at 0 is not enough
@@ -150,12 +151,33 @@
 	};
 
     function triggerInput() {
-		var event = new Event('input', {
+		const event = new Event('input', {
 		  bubbles: true,
 		  cancelable: true,
 		});
 		textbox.dispatchEvent(event);
-    };
+	};
+
+	function triggerEvent(e, element) {
+		const event = new Event(e, {
+			bubbles: true,
+			cancelable: true,
+		  });
+		  element.dispatchEvent(event);
+	}
+	
+	function forceFrame() {
+		const temp = textbox.value;
+
+		textbox.value = 'GETRECORD';
+		triggerInput();
+
+		const sendBtn = document.getElementsByClassName('btn-primary')[0];
+		triggerEvent('click', sendBtn);
+
+		textbox.value = temp;
+		triggerInput();
+	}
 
     function createBtn(innerText, eventHandler, container, dataType, dataValue, customStyle) {
         const newBtn = document.createElement('button');
@@ -183,7 +205,9 @@
         createBtn('FMS 500', (e) => {fmsChange(e, '500')}, customDiv, 'fms', '500', 'grid-column:7/9;grid-row:2');
 		createBtn('TACHOCHECK', (e) => {tachocheckChange(e, 'TACHOCHECK')}, customDiv, 'tachocheck', 'TACHOCHECK', 'grid-column:3/5;grid-row:3');
 		createBtn('SCANFMS', (e) => {scanfmsChange(e, 'SCANFMS')}, customDiv, 'scanfms', 'SCANFMS', 'grid-column:5/7;grid-row:3');
-        createBtn('CPURESET', (e) => {cpuresetChange(e)}, customDiv, 'cpureset', '1', 'grid-column:7/9;grid-row:3');
+		createBtn('CPURESET', (e) => {cpuresetChange(e)}, customDiv, 'cpureset', '1', 'grid-column:7/9;grid-row:3');
+
+		createBtn('Wymuś ramkę', forceFrame, customDiv, 'frame', '0', 'grid-column:9/11;grid-row:1');
     };
 	
 	function updateBtnColors() {
