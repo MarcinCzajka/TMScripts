@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.19
+// @version      1.20
 // @description  Kalibracja
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
@@ -57,10 +57,14 @@
                 console.log(err);
             }
         }
-	};
+    };
+    
+    const changeVolateInput = `<input id="changeVoltage" title="Zmień napięcia dla wszystkich zbiorników" style="width:22px;width:20px;margin:3px 3px 3px 14%;border:1px solid #50C8BB"></input>`
+    document.getElementById('toolkit1').insertAdjacentHTML('beforeend', changeVolateInput);
+    document.getElementById("changeVoltage").addEventListener('change', function(e) {setVoltageForAllTanks(e.target.value)});
 
 	if(fueltanksCount === 2) {
-		//Guzik do zamiany wielkości zbiorników
+        //Guzik do zamiany wielkości zbiorników
 		const tankSwapBtn = `<input id="tankSwap" type="button" title="Zamień pojemność zbiorników miejscami" value="Zamień zbiorniki" style="padding:5px;height:25px;margin:5px 8px 0 auto;cursor:pointer;"></input>`;
 		document.getElementById('toolkit1').insertAdjacentHTML('beforeend', tankSwapBtn);
 
@@ -105,7 +109,19 @@
 			this.value = "";
 		});
 		document.getElementById(`deletePointsBtn${panelsCount}`).addEventListener('click', function() {removePoints(calibrationManager)});
-	};
+    };
+    
+    function setVoltageForAllTanks(val) {
+        for(let i = 0; i < fueltanksCount; i++) {
+            const calibrationManager = eval(`cm${i + 1}`);
+            calibrationManager.showPoints();
+            calibrationManager.calibrateChart([
+                [0, 0],
+                [Number(val), Number($('[name=fuel]')[i + (i + 1)].value)]
+            ]);
+            $('.fl_message').hide();
+        };
+    }
 
 function makePoints(obj, textboxId) {
     
