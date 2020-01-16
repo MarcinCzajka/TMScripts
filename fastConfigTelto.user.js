@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.5
+// @version      1.6
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -20,13 +20,13 @@
 	const buttonCpureset = 'btn-warning';
 	const buttonCpuresetInactive = 'btn-outline-warning';
 	const buttonWarning = 'btn-outline-danger';
-	
+
 	let textbox;
 
 	const customDiv = document.createElement('div');
 	  customDiv.id = 'customDiv';
 	  customDiv.style = 'display:grid; grid-template-columns: repeat(10,10%); grid-template-rows: repeat(3, auto)';
-	  
+
 	init();
 
 	const config = {
@@ -39,16 +39,19 @@
 		'cpureset': false,
 		'frame': 1
 	};
-	
+
 	//Append new container to inexistent (at document.ready) element. Timeout at 0 is not enough
     setTimeout(() => {
-        document.getElementsByClassName('btn-secondary')[0].addEventListener('click', () => {
-            textbox = document.getElementById('exampleInputPassword1');
-            textbox.parentNode.insertBefore(customDiv, textbox.nextSibling);
-			textbox.style.height = '140px';
-        });
+        const IMEI = document.querySelectorAll('input')[0].value;
+        if(Number(IMEI) > 999999999) {
+            document.getElementsByClassName('btn-secondary')[0].addEventListener('click', () => {
+                textbox = document.getElementById('exampleInputPassword1');
+                textbox.parentNode.insertBefore(customDiv, textbox.nextSibling);
+                textbox.style.height = '140px';
+            });
+        }
     }, 1000);
-	
+
 	function canChange(e, value) {
 		if (config.can === value) {
 			if(!config.cpureset) {
@@ -59,37 +62,37 @@
 		} else {
 			config.can = value;
 			config.configureCan = true;
-			
+
 			config.cpureset = false;
 		};
-		
+
 		handleChange(e);
-	};	
-	
+	};
+
 	function fmsChange(e, value) {
 		if (!config.can) {
 			e.target.classList.add(buttonWarning);
 			e.target.classList.remove(basicButtonStyle);
-			
+
 			setTimeout(() => {
 				e.target.classList.add(basicButtonStyle);
 				e.target.classList.remove(buttonWarning);
 			}, 250);
-			
+
 			return
 		};
-		
+
 		if(!config.cpureset) {
 			config.fms = (config.fms === value ? '' : value);
 		} else {
 			config.fms = value;
 			config.cpureset = false;
 		};
-		
+
 		config.cpureset = false;
 		handleChange(e);
 	};
-	
+
 	function tachocheckChange(e, value) {
 		if(!config.cpureset) {
 			config.tachocheck = (config.tachocheck === value ? '' : value);
@@ -97,7 +100,7 @@
 			config.tachocheck = value;
 			config.cpureset = false;
 		};
-		
+
 		config.cpureset = false;
 		handleChange(e);
 	};
@@ -109,14 +112,14 @@
 			config.scanfms = value;
 			config.cpureset = false;
 		};
-		
+
 		config.cpureset = false;
 		handleChange(e);
 	}
-	
+
 	function cpuresetChange(e) {
 		config.cpureset = !config.cpureset;
-		
+
 		handleChange(e);
 	};
 
@@ -125,25 +128,25 @@
 			config.result = 'CPURESET';
 		} else {
 			config.result = '';
-			
+
 			if(config.configureCan) {
 				config.result = (config.can === '1' ? "setparam 209:0" : "setparam 209:1");
 			};
-			
+
 			if(config.fms) {
 				const fmsParam = `${(config.can === '1' ? '205' : '207')}:${config.fms}`;
-				
+
 				if(config.configureCan) {
 					config.result += `;${fmsParam}`;
 				} else {
 					config.result += `setparam ${fmsParam}`;
 				};
-				
+
 			};
 
 			config.result += (config.result === '' ? '' : '\n') + config.tachocheck + (config.tachocheck && config.scanfms ? '\n' : '') + config.scanfms
 		};
-		
+
 		updateBtnColors();
 
 		textbox.value = config.result;
@@ -165,7 +168,7 @@
 		  });
 		  element.dispatchEvent(event);
 	}
-	
+
 	function forceFrame() {
 		const temp = textbox.value;
 
@@ -184,12 +187,12 @@
 			newBtn.type = 'button';
 			newBtn.style = "margin-right: 0.4rem;margin-top:5px;font-size:1.2em;border-width:0.1em;" + customStyle;
 			newBtn.innerText = innerText;
-			
+
 
         newBtn.classList.add('btn', 'customBtn', (innerText !== 'CPURESET' ? basicButtonStyle : buttonCpuresetInactive));
 
 		newBtn.addEventListener('click', eventHandler);
-		
+
 		if (dataType) {
 			newBtn.dataset[dataType] = dataValue;
 		};
@@ -209,23 +212,23 @@
 
 		createBtn('Wymuś ramkę', forceFrame, customDiv, 'frame', '0', 'grid-column:9/11;grid-row:1');
     };
-	
+
 	function updateBtnColors() {
 		const currentSuccessBtn = (config.cpureset ? buttonCheckedInactive : buttonChecked);
 		const toRemoveBtn = (config.cpureset ? buttonChecked : buttonCheckedInactive);
-		
+
 		const buttons = document.getElementsByClassName('customBtn');
 		for (let btn of buttons) {
 			const btnDataType = Object.keys(btn.dataset)[0];
-			
+
 			if(btn.innerText === 'CPURESET') {
 				btn.classList.add((config.cpureset ? buttonCpureset : buttonCpuresetInactive));
 				btn.classList.remove((config.cpureset ? buttonCpuresetInactive : buttonCpureset));
 			} else if(btnDataType === 'can' && btn.dataset[btnDataType] === config[btnDataType] && !config.configureCan) {
-				
+
 					btn.classList.add(buttonCheckedInactive);
 					btn.classList.remove(basicButtonStyle, buttonChecked);
-				
+
 			} else {
 				if(config[btnDataType] == btn.dataset[btnDataType]) {
 					btn.classList.add(currentSuccessBtn);
@@ -237,5 +240,5 @@
 			};
 		};
 	};
-	
+
 })();
