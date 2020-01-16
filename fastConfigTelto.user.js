@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.6
+// @version      1.7
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -172,7 +172,7 @@
 	function forceFrame() {
 		const temp = textbox.value;
 
-		textbox.value = 'GETRECORD';
+		textbox.value = 'getrecord';
 		triggerInput();
 
 		const sendBtn = document.getElementsByClassName('btn-primary')[0];
