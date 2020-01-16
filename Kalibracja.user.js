@@ -59,7 +59,7 @@
         }
     };
     
-    const changeVolateInput = `<input id="changeVoltage" title="Zmień napięcia dla wszystkich zbiorników" style="width:22px;width:20px;margin:3px 3px 3px 14%;border:1px solid #50C8BB"></input>`
+    const changeVolateInput = `<input id="changeVoltage" title="Zmień napięcia dla wszystkich zbiorników" style="width:22px;margin:3px 3px 3px 14%;border:1px solid #50C8BB"></input>`
     document.getElementById('toolkit1').insertAdjacentHTML('beforeend', changeVolateInput);
     document.getElementById("changeVoltage").addEventListener('change', function(e) {setVoltageForAllTanks(e.target.value)});
 
