@@ -16,22 +16,24 @@
 
     const topLeft = {topLeft: `right:0;bottom:0;cursor:se-resize;`};
     const topRight = {topRight: `left:0;bottom:0;cursor:sw-resize;`};
+    const bottomLeft = {bottomLeft: `right:0;top:0;cursor:ne-resize;`};
+    const bottomRight = {bottomRight: `left:0;top:0;cursor:nw-resize;`};
 
-    const dot = (position) => `<div
-id=${Object.keys(position)[0]}
-class='dragDot'
-style='
-z-index: 5;
-background-color: gray;
-opacity: 0.4;
-width: ${size}px;
-height: ${size}px;
-border-radius: ${size / 2}px;
-position: absolute;
-${position[Object.keys(position)[0]]}
-'
-draggable='true'
-></div>`;
+    const dot = (position) => `
+        <div
+            id=${Object.keys(position)[0]}
+            class='dragDot'
+            style='
+            z-index: 5;
+            background-color: gray;
+            opacity: 0.4;
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: ${size / 2}px;
+            position: absolute;
+            ${position[Object.keys(position)[0]]}
+            draggable='true'
+        ></div>`;
 
 
     window.setTimeout(() => {
@@ -47,6 +49,8 @@ draggable='true'
 
         const topLeftWindow = document.getElementsByClassName('window top left')[0];
         const topRightWindow = document.getElementsByClassName('window top right')[0];
+        const bottomLeftWindow = document.getElementsByClassName('window bottom left')[0];
+        const bottomRightWindow = document.getElementsByClassName('window bottom right')[0];
 
         topLeftWindow.insertAdjacentHTML('afterbegin', dot(topLeft));
         document.getElementById('topLeft').addEventListener('mousedown', function(e){drag(e)});
@@ -54,6 +58,11 @@ draggable='true'
         topRightWindow.insertAdjacentHTML('afterbegin', dot(topRight));
         document.getElementById('topRight').addEventListener('mousedown', function(e){drag(e)});
 
+        bottomLeftWindow.insertAdjacentHTML('afterbegin', dot(bottomLeft));
+        document.getElementById('bottomLeft').addEventListener('mousedown', function(e){drag(e)});
+
+        bottomRightWindow.insertAdjacentHTML('afterbegin', dot(bottomRight));
+        document.getElementById('bottomRight').addEventListener('mousedown', function(e){drag(e)});
 
     }, 500);
 
