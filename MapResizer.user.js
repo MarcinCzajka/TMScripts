@@ -47,22 +47,30 @@
         }
 
 
-        const topLeftWindow = document.getElementsByClassName('window top left')[0];
-        const topRightWindow = document.getElementsByClassName('window top right')[0];
-        const bottomLeftWindow = document.getElementsByClassName('window bottom left')[0];
-        const bottomRightWindow = document.getElementsByClassName('window bottom right')[0];
+        let topLeftWindow;
+        let topRightWindow;
+        let bottomLeftWindow;
+        let bottomRightWindow;
 
-        topLeftWindow.insertAdjacentHTML('afterbegin', dot(topLeft));
-        document.getElementById('topLeft').addEventListener('mousedown', function(e){drag(e)});
+        if(topLeftWindow = document.getElementsByClassName('window top left')[0]) {
+            topLeftWindow.insertAdjacentHTML('afterbegin', dot(topLeft));
+            document.getElementById('topLeft').addEventListener('mousedown', function(e){drag(e)});
+        }
 
-        topRightWindow.insertAdjacentHTML('afterbegin', dot(topRight));
-        document.getElementById('topRight').addEventListener('mousedown', function(e){drag(e)});
+        if(topRightWindow = document.getElementsByClassName('window top right')[0]) {
+            topRightWindow.insertAdjacentHTML('afterbegin', dot(topRight));
+            document.getElementById('topRight').addEventListener('mousedown', function(e){drag(e)});
+        }
 
-        bottomLeftWindow.insertAdjacentHTML('afterbegin', dot(bottomLeft));
-        document.getElementById('bottomLeft').addEventListener('mousedown', function(e){drag(e)});
+        if(bottomLeftWindow = document.getElementsByClassName('window bottom left')[0]) {
+            bottomLeftWindow.insertAdjacentHTML('afterbegin', dot(bottomLeft));
+            document.getElementById('bottomLeft').addEventListener('mousedown', function(e){drag(e)});
+        }
 
-        bottomRightWindow.insertAdjacentHTML('afterbegin', dot(bottomRight));
-        document.getElementById('bottomRight').addEventListener('mousedown', function(e){drag(e)});
+        if(bottomRightWindow = document.getElementsByClassName('window bottom right')[0]) {
+            bottomRightWindow.insertAdjacentHTML('afterbegin', dot(bottomRight));
+            document.getElementById('bottomRight').addEventListener('mousedown', function(e){drag(e)});
+        }
 
     }, 500);
 
@@ -70,6 +78,7 @@
 
         const windows = JSON.parse(window.localStorage['map.vehiclesLocation.windowsLocation']);
         const windowName = target.id;
+        const sizeOffset = size / 2;
 
         window.addEventListener('mousemove', resize);
 
@@ -81,8 +90,8 @@
         function resize({clientX, clientY}) {
             if(clientX === 0) return
 
-            const offsetX = ( windowName.indexOf('Left') !== -1 ? clientX : window.innerWidth - clientX );
-            const offsetY = ( windowName.indexOf('top') !== -1 ? clientY : window.innerHeight - clientY );
+            const offsetX = ( windowName.indexOf('Left') !== -1 ? clientX : window.innerWidth - clientX ) + sizeOffset;
+            const offsetY = ( windowName.indexOf('top') !== -1 ? clientY: window.innerHeight - clientY ) - sizeOffset;
 
             window.localStorage[`map.vehiclesLocation.${windows[windowName]}.width`] = offsetX;
             window.localStorage[`map.vehiclesLocation.${windows[windowName]}.height`] = offsetY;
