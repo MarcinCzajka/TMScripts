@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MapResizer
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.2
 // @description  Add simultaneous vertical and horizontal resize
 // @author       MAC
 // @match        */api/map/leaflet/index*
@@ -12,7 +12,7 @@
 (function() {
     'use strict';
 
-    const size = 10;
+    const size = 10; //Global size of resizers
 
     const topLeft = {topLeft: `right:0;bottom:0;cursor:se-resize;`};
     const topRight = {topRight: `left:0;bottom:0;cursor:sw-resize;`};
@@ -72,6 +72,11 @@
             document.getElementById('bottomRight').addEventListener('mousedown', function(e){drag(e)});
         }
 
+        $('.window-resizable-bar').remove();
+
+        //$('.window').css('max-width', '');
+        //$('.window').css('max-height', '');
+
     }, 500);
 
     function drag({ target }) {
@@ -80,25 +85,63 @@
         const windowName = target.id;
         const sizeOffset = size / 2;
 
+        const isLeft = windowName.indexOf('Left') !== -1;
+        const isTop = windowName.indexOf('top') !== -1;
+
+        const thisHorizontalLocation = isLeft ? 'left' : 'right';
+        const thisVerticalLocation = isTop ? 'top' : 'bottom';
+        const oppositeHorizontally = isLeft ? 'right' : 'left';
+        const oppositeVertically = isTop ? 'bottom' : 'top';
+
+        const oppositeWidth = $(`.${thisVerticalLocation}.${oppositeHorizontally}`).width();
+        const oppositeHeight = $(`.${thisHorizontalLocation}.${oppositeVertically}`).height();
+
+        const diagonal = $(`.${oppositeVertically}.${oppositeHorizontally}`);
+        const diagonalWidth = window.innerWidth - diagonal.width();
+        const diagonalHeight = window.innerHeight - diagonal.height() - 20;
+
         window.addEventListener('mousemove', resize);
 
         window.addEventListener('mouseup', function onMouseUp() {
             window.removeEventListener('mousemove', resize);
             window.removeEventListener('mouseup', onMouseUp);
-        });
 
-        function resize({clientX, clientY}) {
-            if(clientX === 0) return
+            const width = $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).width();
+            const height = $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).height();
 
-            const offsetX = ( windowName.indexOf('Left') !== -1 ? clientX : window.innerWidth - clientX ) + sizeOffset;
-            const offsetY = ( windowName.indexOf('top') !== -1 ? clientY: window.innerHeight - clientY ) - sizeOffset;
+            $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).css('width', width + 'px');
+            $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).css('height', height + 'px');
 
-            window.localStorage[`map.vehiclesLocation.${windows[windowName]}.width`] = offsetX;
-            window.localStorage[`map.vehiclesLocation.${windows[windowName]}.height`] = offsetY;
-            target.parentElement.style.width = offsetX + 'px';
-            target.parentElement.style.height = offsetY + 'px';
+            $(`.${thisHorizontalLocation}.${oppositeVertically}`).css('max-height', `calc((100% - ${height}px) - 20px)`);
+            $(`.${thisVerticalLocation}.${oppositeHorizontally}`).css('max-width', `calc((100% - ${width}px))`);
+
+            window.localStorage[`map.vehiclesLocation.${windows[windowName]}.width`] = width;
+            window.localStorage[`map.vehiclesLocation.${windows[windowName]}.height`] = height;
 
             $('.vehicle-list-table').trigger('reflow');
+
+        });
+
+        function resize(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const {clientX, clientY} = e;
+
+            if(clientX === 0) return
+
+
+
+            const offsetX = ( isLeft ? clientX : window.innerWidth - clientX ) + sizeOffset;
+            const offsetY = ( isTop ? clientY: window.innerHeight - clientY ) - sizeOffset;
+
+            if(offsetX < diagonalWidth || offsetY < diagonalHeight) {
+                target.parentElement.style.width = offsetX + 'px';
+                target.parentElement.style.height = offsetY + 'px';
+            } else {
+                console.log( diagonalWidth, diagonalHeight)
+            }
+
         };
 
     };
