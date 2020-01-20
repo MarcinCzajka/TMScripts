@@ -132,10 +132,12 @@
             const offsetX = ( isLeft ? clientX : window.innerWidth - clientX ) + sizeOffset;
             const offsetY = ( isTop ? clientY: window.innerHeight - clientY ) - sizeOffset;
 
-            if(( offsetX < oppositeWidth && offsetY < oppositeHeight) && (offsetX < diagonalWidth || offsetY < diagonalHeight)) {
+            if(offsetX < oppositeWidth && ( offsetY < diagonalHeight || offsetX < diagonalWidth )) {
                 target.parentElement.style.width = offsetX + 'px';
+            }
+            if(offsetY < oppositeHeight && (offsetY < diagonalHeight || offsetX < diagonalWidth )) {
                 target.parentElement.style.height = offsetY + 'px';
-            };
+            }
 
         };
 
