@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MapResizer
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      0.1
 // @description  Add simultaneous vertical and horizontal resize
 // @author       MAC
 // @match        */api/map/leaflet/index*
@@ -74,8 +74,8 @@
 
         $('.window-resizable-bar').remove();
 
-        //$('.window').css('max-width', '');
-        //$('.window').css('max-height', '');
+        $('.window').css('max-width', '');
+        $('.window').css('max-height', '');
 
     }, 500);
 
@@ -93,8 +93,8 @@
         const oppositeHorizontally = isLeft ? 'right' : 'left';
         const oppositeVertically = isTop ? 'bottom' : 'top';
 
-        const oppositeWidth = $(`.${thisVerticalLocation}.${oppositeHorizontally}`).width();
-        const oppositeHeight = $(`.${thisHorizontalLocation}.${oppositeVertically}`).height();
+        const oppositeWidth = window.innerWidth - $(`.${thisVerticalLocation}.${oppositeHorizontally}`).width();
+        const oppositeHeight = window.innerHeight - $(`.${thisHorizontalLocation}.${oppositeVertically}`).height() - 20;
 
         const diagonal = $(`.${oppositeVertically}.${oppositeHorizontally}`);
         const diagonalWidth = window.innerWidth - diagonal.width();
@@ -111,9 +111,6 @@
 
             $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).css('width', width + 'px');
             $(`.${thisHorizontalLocation}.${thisVerticalLocation}`).css('height', height + 'px');
-
-            $(`.${thisHorizontalLocation}.${oppositeVertically}`).css('max-height', `calc((100% - ${height}px) - 20px)`);
-            $(`.${thisVerticalLocation}.${oppositeHorizontally}`).css('max-width', `calc((100% - ${width}px))`);
 
             window.localStorage[`map.vehiclesLocation.${windows[windowName]}.width`] = width;
             window.localStorage[`map.vehiclesLocation.${windows[windowName]}.height`] = height;
@@ -135,12 +132,10 @@
             const offsetX = ( isLeft ? clientX : window.innerWidth - clientX ) + sizeOffset;
             const offsetY = ( isTop ? clientY: window.innerHeight - clientY ) - sizeOffset;
 
-            if(offsetX < diagonalWidth || offsetY < diagonalHeight) {
+            if(( offsetX < oppositeWidth && offsetY < oppositeHeight) && (offsetX < diagonalWidth || offsetY < diagonalHeight)) {
                 target.parentElement.style.width = offsetX + 'px';
                 target.parentElement.style.height = offsetY + 'px';
-            } else {
-                console.log( diagonalWidth, diagonalHeight)
-            }
+            };
 
         };
 
