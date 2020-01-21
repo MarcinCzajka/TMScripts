@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MapResizer
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.2
 // @description  Add simultaneous vertical and horizontal resize
 // @author       MAC
 // @match        */api/map/leaflet/index*
