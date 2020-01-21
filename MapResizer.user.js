@@ -4,6 +4,8 @@
 // @version      0.2
 // @description  Add simultaneous vertical and horizontal resize
 // @author       MAC
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/MapResizer.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/MapResizer.user.js
 // @match        */api/map/leaflet/index*
 // @grant        none
 // @include      */api/map/leaflet/index*
