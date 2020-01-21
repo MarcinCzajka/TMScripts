@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MapResizer
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      0.3
 // @description  Add simultaneous vertical and horizontal resize
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/MapResizer.user.js
@@ -87,6 +87,8 @@
         const windowName = target.id;
         const sizeOffset = size / 2;
 
+        const targetElementStyle = target.parentElement.style;
+
         const isLeft = windowName.indexOf('Left') !== -1;
         const isTop = windowName.indexOf('top') !== -1;
 
@@ -129,17 +131,16 @@
 
             if(clientX === 0) return
 
-
-
             const offsetX = ( isLeft ? clientX : window.innerWidth - clientX ) + sizeOffset;
             const offsetY = ( isTop ? clientY: window.innerHeight - clientY ) - sizeOffset;
 
             if(offsetX < oppositeWidth && ( offsetY < diagonalHeight || offsetX < diagonalWidth )) {
-                target.parentElement.style.width = offsetX + 'px';
-            }
+                targetElementStyle.width = offsetX + 'px';
+            };
+
             if(offsetY < oppositeHeight && (offsetY < diagonalHeight || offsetX < diagonalWidth )) {
-                target.parentElement.style.height = offsetY + 'px';
-            }
+                targetElementStyle.height = offsetY + 'px';
+            };
 
         };
 
