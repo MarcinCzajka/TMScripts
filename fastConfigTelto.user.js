@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.7
+// @version      1.8
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -125,7 +125,7 @@
 
 	function handleChange(e) {
 		if (config.cpureset) {
-			config.result = 'CPURESET';
+			config.result = 'cpureset';
 		} else {
 			config.result = '';
 
@@ -189,7 +189,7 @@
 			newBtn.innerText = innerText;
 
 
-        newBtn.classList.add('btn', 'customBtn', (innerText !== 'CPURESET' ? basicButtonStyle : buttonCpuresetInactive));
+        newBtn.classList.add('btn', 'customBtn', (innerText !== 'cpureset' ? basicButtonStyle : buttonCpuresetInactive));
 
 		newBtn.addEventListener('click', eventHandler);
 
