@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      0.3
 // @description  Zaznacz kolorami komórkę w tabeli według określonych kryteriów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -11,17 +11,23 @@
 // @include *.pl/record/*
 // ==/UserScript==
 
+const coloredElements = [];
+
+const timeToWait = 3000;
+
 (function() {
     'use strict';
 
-    const headers = [];
+	const headers = [];
 
     setTimeout(() => {
         for(let button of document.getElementsByClassName('btn')) {
             if(button.innerText === "Filtruj" || button.innerText === "Resetuj") {
-                button.addEventListener('click', () => {setTimeout(() => {checkData()}, 5000)});
+                button.addEventListener('click', () => {setTimeout(() => {checkData()}, timeToWait)});
             }
-        }
+		}
+
+		document.getElementById('per-page').addEventListener('change', () => {setTimeout(() => {checkData()}, timeToWait)});
 
         for(let item of document.getElementsByTagName('th')) {
             headers.push(item.children[0].innerText)
@@ -32,11 +38,13 @@
     }, 5000);
 
     function checkData() {
+		clearElements();
+
 		loopThroughColumn("Szerokość", pozycja);
 		loopThroughColumn("Długość", pozycja);
         loopThroughColumn("Satelity", satelity);
         loopThroughColumn("Stacyjka", stacyjka);
-        loopThroughColumn("Nap. aku.", napAku);
+		loopThroughColumn("Nap. aku.", napAku);
     }
 
     function loopThroughColumn(columnName, callback) {
@@ -73,13 +81,24 @@ function stacyjka(el) {
 }
 
 function napAku(el) {
-    if(+el.innerText < 10) markError(el);
+    if(+el.innerText < 9) markError(el);
 }
 
 function markError(el) {
-    el.style.backgroundColor = '#ff697d';
+	el.style.backgroundColor = '#ff697d';
+	coloredElements.push(el);
 }
 
 function markAlert(el) {
-    el.style.backgroundColor = '#f2c329';
+	el.style.backgroundColor = '#f2c329';
+	coloredElements.push(el);
+}
+
+function clearElements() {
+	coloredElements.forEach(function(el, index, object) {
+		el.style = '';
+		object.splice(index, 1);
+	});
+
+
 }
