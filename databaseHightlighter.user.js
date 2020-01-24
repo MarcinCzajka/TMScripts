@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.1
+// @version      0.6.2
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -14,7 +14,6 @@
 
 const headers = [];
 const coloredElements = [];
-const timeToWait = 250;
 
 let blackboxProducer = '';
 
@@ -26,11 +25,11 @@ let blackboxProducer = '';
 
         for(let button of document.getElementsByClassName('btn')) {
             if(button.innerText === "Filtruj" || button.innerText === "Resetuj") {
-                button.addEventListener('click', () => {setTimeout(() => {checkData()}, timeToWait)});
+                button.addEventListener('click', () => {setTimeout(() => {checkData()}, 250)});
             }
 		}
 
-		document.getElementById('per-page').addEventListener('change', () => {setTimeout(() => {checkData()}, timeToWait)});
+		document.getElementById('per-page').addEventListener('change', () => {setTimeout(() => {checkData()}, 4000)});
 
         for(let item of document.getElementsByTagName('th')) {
             headers.push(item.children[0].innerText)
