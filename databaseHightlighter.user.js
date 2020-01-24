@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.2
+// @version      0.7
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -23,23 +23,23 @@ let blackboxProducer = '';
     setTimeout(() => {
         blackboxProducer = guessBlackbox();
 
-        for(let button of document.getElementsByClassName('btn')) {
-            if(button.innerText === "Filtruj" || button.innerText === "Resetuj") {
-                button.addEventListener('click', () => {setTimeout(() => {checkData()}, 250)});
-            }
-		}
-
-		document.getElementById('per-page').addEventListener('change', () => {setTimeout(() => {checkData()}, 4000)});
-
         for(let item of document.getElementsByTagName('th')) {
             headers.push(item.children[0].innerText)
         }
 
-        checkData();
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutationRecord) {
+                if(mutationRecord.target.style.display !== 'none') checkData();
+            });
+        });
 
-    }, 5000);
+        observer.observe(document.getElementsByTagName('table')[0], { attributes : true, attributeFilter : ['style'] });
+
+    }, 1000);
 
     function checkData() {
+        console.log('Checking table - MAC');
+
 		clearElements();
 
 		loopThroughColumn("Szerokość", pozycja);
@@ -88,7 +88,7 @@ function ignitionMatchVoltage(el) {
     if(el.innerText === 'Wył.') {
         const voltage = +el.nextElementSibling.innerText;
         const errorMsg = 'Stacyjka wyłączona pomimo, że jest włączony silnik.';
-        if(voltage > 26) {
+        if(voltage > 27) {
             markAlert(el, errorMsg);
             markAlert(el.nextElementSibling, errorMsg);
         } else if(voltage > 14 && voltage < 20) {
