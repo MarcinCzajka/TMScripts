@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9.2
+// @version      0.10
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -112,13 +112,22 @@ function ignitionMatchVoltage(el) {
 }
 
 function ignitionMatchDigital(el) {
-    if(blackboxProducer === 'setivo') {
-        const firstBinChar = decToBin(offset(el, 6).innerText).slice(-1);
+    const firstBinChar = decToBin(offset(el, 6).innerText).slice(-1);
+    const errorMsg = 'Stacyjka wyłączona ale wejście cyfrowe pokazuje włączoną.';
 
+    if(blackboxProducer === 'setivo') {
         if(el.innerText === 'Wył.' && firstBinChar !== '0') {
-            markError(el, 'Stacyjka wyłączona ale wejście cyfrowe pokazuje włączoną.');
+            if(blackboxProducer === 'setivo') {
+                markError(el, errorMsg);
+            } else if(decToBin(offset(next(el), 6)).slice(-1) !== 0) {
+                markError(el, errorMsg);
+            }
         } else if(el.innerText === 'Wł.' && firstBinChar !== '1') {
-            markError(el, 'Stacyjka włączona ale wejście cyfrowe pokazuje wyłączoną.');
+            if(blackboxProducer === 'setivo') {
+                markError(el, errorMsg);
+            } else if(decToBin(offset(next(el), 6)).slice(-1) !== 1) {
+                markError(el, errorMsg);
+            }
         }
     }
 }
