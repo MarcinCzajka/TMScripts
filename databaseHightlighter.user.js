@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9
+// @version      0.9.1
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
 // @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
 // @match        http://*.pl/record/*
 // @grant        none
-// @include *.pl/record/*
+// @include      *.pl/record/*
 // ==/UserScript==
 
 
@@ -64,7 +64,7 @@ function lokalizacja(el) {
     const szerokosc = el.innerText;
     const dlugosc = el.nextElementSibling.innerText;
 
-    if(szerokosc > 51.0930 && szerokosc < 51.0990) {
+    if(szerokosc > 51.0935 && szerokosc < 51.0988) {
         if(dlugosc > 17.0044 && dlugosc < 17.0136) {
             markError(el, 'Pozycja wskazuje Jemiołową.');
             markError(el.nextElementSibling, 'Pozycja wskazuje Jemiołową.');
@@ -142,13 +142,13 @@ function loopThroughColumn(columnName, callback) {
 }
 
 function markError(el, msg) {
-    el.style.backgroundColor = '#ff697d';
+    el.style.backgroundColor = 'rgba(255, 105, 100, 0.3)';
     el.title = msg;
 	coloredElements.push(el);
 }
 
 function markAlert(el, msg) {
-    el.style.backgroundColor = '#f2c329';
+    el.style.backgroundColor = 'rgba(242, 195, 41, 0.5)';
     el.title = msg;
 	coloredElements.push(el);
 }
