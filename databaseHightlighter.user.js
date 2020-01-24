@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8
+// @version      0.9
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -41,7 +41,8 @@ let blackboxProducer = '';
 
 		clearElements();
 
-		loopThroughColumn("Szerokość", pozycja);
+        loopThroughColumn("Szerokość", pozycja);
+        loopThroughColumn("Szerokość", lokalizacja);
 		loopThroughColumn("Długość", pozycja);
         loopThroughColumn("Satelity", satelity);
         loopThroughColumn("Stacyjka", ignitionMatchVoltage);
@@ -57,6 +58,18 @@ let blackboxProducer = '';
 
 function pozycja(el) {
     if(+el.innerText === 0) markError(el, 'Brak pozycji GPS');
+}
+
+function lokalizacja(el) {
+    const szerokosc = el.innerText;
+    const dlugosc = el.nextElementSibling.innerText;
+
+    if(szerokosc > 51.0930 && szerokosc < 51.0990) {
+        if(dlugosc > 17.0044 && dlugosc < 17.0136) {
+            markError(el, 'Pozycja wskazuje Jemiołową.');
+            markError(el.nextElementSibling, 'Pozycja wskazuje Jemiołową.');
+        }
+    }
 }
 
 function satelity(el) {
