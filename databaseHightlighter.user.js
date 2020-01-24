@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9.3
+// @version      0.9.4
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -171,15 +171,21 @@ function clearElements() {
 }
 
 function guessBlackbox() {
-    const id = document.getElementById('__BVID__37').value;
-    const left = id.slice(0,2);
+    try {
+        const id = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value;
+        const left = id.slice(0,2);
 
-    if(left === 'H1_' || left === 'H3_' || +id < 99999) {
+        if(left === 'H1_' || left === 'H3_' || +id < 99999) {
+            return 'setivo'
+        } else if(+id > 9999999) {
+            return 'teltonika'
+        } else {
+            return 'albatros'
+        }
+    } catch(err) {
+        console.log(err);
+    } finally {
         return 'setivo'
-    } else if(+id > 9999999) {
-        return 'teltonika'
-    } else {
-        return 'albatros'
     }
 }
 
