@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.3
+// @version      0.4
 // @description  Zaznacz kolorami komórkę w tabeli według określonych kryteriów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -13,7 +13,9 @@
 
 const coloredElements = [];
 
-const timeToWait = 3000;
+const timeToWait = 2000;
+
+let blackboxProducer = '';
 
 (function() {
     'use strict';
@@ -21,6 +23,8 @@ const timeToWait = 3000;
 	const headers = [];
 
     setTimeout(() => {
+        blackboxProducer = guessBlackbox();
+
         for(let button of document.getElementsByClassName('btn')) {
             if(button.innerText === "Filtruj" || button.innerText === "Resetuj") {
                 button.addEventListener('click', () => {setTimeout(() => {checkData()}, timeToWait)});
@@ -44,7 +48,9 @@ const timeToWait = 3000;
 		loopThroughColumn("Długość", pozycja);
         loopThroughColumn("Satelity", satelity);
         loopThroughColumn("Stacyjka", stacyjka);
-		loopThroughColumn("Nap. aku.", napAku);
+        loopThroughColumn("Nap. aku.", napAku);
+        loopThroughColumn("Status kierowcy", incorrectStatus);
+        loopThroughColumn("Status kierowcy 2", incorrectStatus);
     }
 
     function loopThroughColumn(columnName, callback) {
@@ -67,6 +73,14 @@ function satelity(el) {
     if(+el.innerText < 4) markError(el);
 }
 
+function antenaStatus(el) {
+    if(blackboxProducer === 'setivo') {
+        if(+el.innerText !== 1) markError(el);
+    } else if(blackboxProducer === 'teltonika') {
+        if(+el.innerText < 2 && +el.innerText > 3) markError(el);
+    }
+}
+
 function stacyjka(el) {
     if(el.innerText === 'Wył.') {
         const voltage = +el.nextElementSibling.innerText;
@@ -84,6 +98,10 @@ function napAku(el) {
     if(+el.innerText < 9) markError(el);
 }
 
+function incorrectStatus(el) {
+    if(+el.innerText > 3) markError(el);
+}
+
 function markError(el) {
 	el.style.backgroundColor = '#ff697d';
 	coloredElements.push(el);
@@ -99,4 +117,17 @@ function clearElements() {
 		el.style = '';
 		object.splice(index, 1);
 	});
+}
+
+function guessBlackbox() {
+    const id = document.getElementById('__BVID__37').value;
+    const left = id.slice(0,2);
+
+    if(left === 'H1_' || left === 'H3_' || +id < 99999) {
+        return 'setivo'
+    } else if(+id > 999999) {
+        return 'teltonika'
+    } else {
+        return 'albatros'
+    }
 }
