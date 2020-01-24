@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6
+// @version      0.6.1
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -178,7 +178,7 @@ function offset(el, offset) {
     let result = el;
 
     for(let i = 1; i <= offset; i++) {
-        result = el.nextElementSibling;
+        result = result.nextElementSibling;
     }
 
     return result;
