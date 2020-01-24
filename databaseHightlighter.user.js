@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.7
+// @version      0.8
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -34,7 +34,6 @@ let blackboxProducer = '';
         });
 
         observer.observe(document.getElementsByTagName('table')[0], { attributes : true, attributeFilter : ['style'] });
-
     }, 1000);
 
     function checkData() {
@@ -57,7 +56,7 @@ let blackboxProducer = '';
 // <--   Tests... --!>
 
 function pozycja(el) {
-    if(+el.innerText === 0) markAlert(el, 'Brak pozycji GPS');
+    if(+el.innerText === 0) markError(el, 'Brak pozycji GPS');
 }
 
 function satelity(el) {
@@ -85,9 +84,10 @@ function antenaStatus(el) {
 }
 
 function ignitionMatchVoltage(el) {
-    if(el.innerText === 'Wył.') {
+    if(el.innerText === 'Wył.' && next(el).innerText === 'Wył') {
         const voltage = +el.nextElementSibling.innerText;
         const errorMsg = 'Stacyjka wyłączona pomimo, że jest włączony silnik.';
+
         if(voltage > 27) {
             markAlert(el, errorMsg);
             markAlert(el.nextElementSibling, errorMsg);
@@ -181,4 +181,13 @@ function offset(el, offset) {
     }
 
     return result;
+}
+
+function next(el) {
+    let i = 0;
+    let node = el;
+
+    while( (node = node.previousElementSibling) != null ) i++;
+
+    return el.parentElement.nextElementSibling.children[i];
 }
