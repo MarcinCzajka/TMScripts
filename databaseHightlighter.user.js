@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10
+// @version      0.9.3
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -42,7 +42,6 @@ let blackboxProducer = '';
 		clearElements();
 
         loopThroughColumn("Szerokość", lokalizacja);
-		loopThroughColumn("Długość", pozycja);
         loopThroughColumn("Satelity", satelity);
         loopThroughColumn("Stacyjka", ignitionMatchVoltage);
         loopThroughColumn("Stacyjka", ignitionMatchDigital);
@@ -58,6 +57,7 @@ let blackboxProducer = '';
 function lokalizacja(el) {
     if(+el.innerText === 0) {
         markError(el, 'Brak pozycji GPS');
+        markError(el.nextElementSibling, 'Brak pozycji GPS');
         return
     }
 
