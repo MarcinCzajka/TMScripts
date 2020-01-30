@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9.5
+// @version      0.10.0
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -48,6 +48,7 @@ let blackboxProducer = '';
         loopThroughColumn("Nap. aku.", napAku);
         loopThroughColumn("Status kierowcy", incorrectTachoStatus);
         loopThroughColumn("Status kierowcy 2", incorrectTachoStatus);
+        markEmptyCanValues();
     }
 
 })();
@@ -140,6 +141,21 @@ function incorrectTachoStatus(el) {
     if(+el.innerText > 3) markError(el, 'Błędny status tachografu.');
 }
 
+function markEmptyCanValues() {
+    const canHeaders = ['Poziom paliwa', 'Zuż. paliwa', 'Dystans (CAN)', 'Prędkość (CAN)', 'Obroty silnika (CAN)'];
+
+    for(let header of canHeaders) {
+        if(isHexDataAvailable(header)) {
+            loopThroughColumn(header, (el) => {
+                if(el.children[0].title.split('').every(char => char === 'F')) {
+                    console.log(getCellInRowByColumn(el, 'Stacyjka'))
+                    if(getCellInRowByColumn(el, 'Stacyjka').innerText === 'Wł.') markMissingCanData(el, `${el.children[0].title} - Ramka przepisana`);
+                }
+            });
+        }
+    }
+}
+
 // <--  Helper functions... --!>
 
 function loopThroughColumn(columnName, callback) {
@@ -152,13 +168,19 @@ function loopThroughColumn(columnName, callback) {
 
 function markError(el, msg) {
     el.style.backgroundColor = 'rgba(255, 105, 100, 0.3)';
-    el.title = msg;
+    if(msg) el.title = msg;
 	coloredElements.push(el);
 }
 
 function markAlert(el, msg) {
     el.style.backgroundColor = 'rgba(242, 195, 41, 0.5)';
-    el.title = msg;
+    if(msg) el.title = msg;
+	coloredElements.push(el);
+}
+
+function markMissingCanData(el, msg) {
+    el.style.backgroundColor = 'rgba(255, 0, 0, 0.08)';
+    if(msg) el.title = msg;
 	coloredElements.push(el);
 }
 
@@ -185,8 +207,18 @@ function guessBlackbox() {
     } catch(err) {
         console.log(err);
     }
+}
 
-    console.log(blackboxProducer)
+function isHexDataAvailable(columnName) {
+    try {
+        if(document.getElementsByTagName('tbody')[0].children[0].children[ headers.indexOf(columnName) ].children[0].title !== '') {
+            return true
+        } else {
+            return false
+        }
+    } catch(err) {
+        return false
+    }
 }
 
 function decToBin(num) {
@@ -201,6 +233,10 @@ function decToBin(num) {
     return result;
 }
 
+function getCellInRowByColumn(el, columnName) {
+    return document.getElementsByTagName('tbody')[0].children[getRowIndex(el)].children[headers.indexOf(columnName)];
+}
+
 function offset(el, offset) {
     let result = el;
 
@@ -211,11 +247,19 @@ function offset(el, offset) {
     return result;
 }
 
-function next(el) {
+function getRowIndex(el) {
+    return +el.parentElement.getAttribute('item-index');
+}
+
+function getColumnIndex(el) {
     let i = 0;
     let node = el;
 
     while( (node = node.previousElementSibling) != null ) i++;
+    return i;
+}
 
-    return el.parentElement.nextElementSibling.children[i];
+function next(el) {
+
+    return el.parentElement.nextElementSibling.children[getColumnIndex(el)];
 }
