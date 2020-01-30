@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9.4
+// @version      0.9.5
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -21,8 +21,6 @@ let blackboxProducer = '';
     'use strict';
 
     setTimeout(() => {
-        blackboxProducer = guessBlackbox();
-
         for(let item of document.getElementsByTagName('th')) {
             headers.push(item.children[0].innerText)
         }
@@ -38,6 +36,8 @@ let blackboxProducer = '';
 
     function checkData() {
         console.log('Checking table - MAC');
+
+        if(!blackboxProducer) blackboxProducer = guessBlackbox();
 
 		clearElements();
 
@@ -184,9 +184,9 @@ function guessBlackbox() {
         }
     } catch(err) {
         console.log(err);
-    } finally {
-        return 'setivo'
     }
+
+    console.log(blackboxProducer)
 }
 
 function decToBin(num) {
