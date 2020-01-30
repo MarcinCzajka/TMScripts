@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.0
+// @version      0.10.1
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -35,8 +35,6 @@ let blackboxProducer = '';
     }, 1000);
 
     function checkData() {
-        console.log('Checking table - MAC');
-
         if(!blackboxProducer) blackboxProducer = guessBlackbox();
 
 		clearElements();
@@ -48,7 +46,7 @@ let blackboxProducer = '';
         loopThroughColumn("Nap. aku.", napAku);
         loopThroughColumn("Status kierowcy", incorrectTachoStatus);
         loopThroughColumn("Status kierowcy 2", incorrectTachoStatus);
-        markEmptyCanValues();
+        if(blackboxProducer === 'setivo') markEmptyCanValues();
     }
 
 })();
