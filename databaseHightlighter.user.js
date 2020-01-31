@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.1
+// @version      0.10.2
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -177,7 +177,7 @@ function markAlert(el, msg) {
 }
 
 function markMissingCanData(el, msg) {
-    el.style.backgroundColor = 'rgba(255, 0, 0, 0.08)';
+    el.style.backgroundColor = 'rgba(255, 0, 0, 0.16)';
     if(msg) el.title = msg;
 	coloredElements.push(el);
 }
