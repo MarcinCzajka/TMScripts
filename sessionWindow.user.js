@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.5
+// @version      0.6
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -17,12 +17,13 @@
     let topBar = null;
     const iframeId = 'myNewIframe';
     let win = null;
+    let configButtons = null;
 
     const btnGroup = document.createElement('div');
         btnGroup.classList.add('btn-group');
         btnGroup.role = 'group';
         btnGroup.id = 'btnGroup';
-        btnGroup.style = 'position:absolute;right:250px';
+        btnGroup.style = 'position:absolute;right:250px; box-shadow: 3px 3px 12px 0 rgba(0, 0, 0, 0.5)';
 
     const newBtn = document.createElement('button');
         newBtn.type = 'button';
@@ -57,12 +58,13 @@
     }
 
     function createIframe() {
+        const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '580px' : '400px';
         const iframeWidth = '1000px';
         const iframe = `
             <iframe
                 id=${iframeId}
                 src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
-                style="display: block; position: absolute;width: ${iframeWidth};height: 400px;right: 255px; top: 30px; z-index: 1001; background-color: white;">
+                style="display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};right: 255px; top: 30px; z-index: 1001; background-color: white; box-shadow:  12px 12px 12px 0 rgba(0, 0, 0, 0.5);">
             </iframe>
         `;
 
@@ -97,11 +99,17 @@
             const sendBtn = win.document.getElementById('modal1___BV_modal_footer_').children[1];
                 sendBtn.style = 'position:absolute; right: 20px; top: 0';
                 sendBtn.id = 'tempBtn';
-            sendBtn.onclick = function() {
-                win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('tempContainer'));
-                win.setTimeout(openDialogWindow, 0);
 
-                win.setTimeout(() => {win.document.getElementById('b-toaster-top-center').style = 'display: none'}, 0);
+            sendBtn.onclick = function() {
+                configButtons = win.document.getElementById('customDiv')
+                if(configButtons) win.document.querySelectorAll('body')[0].appendChild(configButtons);
+
+                win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('tempContainer'));
+                win.setTimeout(openDialogWindow, 50);
+
+                win.setTimeout(() => {
+                    win.document.getElementById('b-toaster-top-center').style = 'display: none';
+                }, 100);
             };
 
             container.appendChild(textarea);
@@ -109,7 +117,9 @@
 
             win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('modal1___BV_modal_outer_'));
             win.document.querySelectorAll('body')[0].appendChild(container);
-        }, 0)
+
+            if(configButtons) win.document.getElementById('tempContainer').appendChild(configButtons);
+        }, 50)
     }
 
     function changeIframeVisibility() {

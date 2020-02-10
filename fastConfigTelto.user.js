@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8
+// @version      2.0
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -46,9 +46,16 @@
         if(Number(IMEI) > 999999999) {
             document.getElementsByClassName('btn-secondary')[0].addEventListener('click', () => {
                 textbox = document.getElementById('exampleInputPassword1');
-                textbox.parentNode.insertBefore(customDiv, textbox.nextSibling);
+                textbox.parentNode.appendChild(customDiv);
                 textbox.style.height = '140px';
             });
+
+            //If script is launched in mini sessionWindow (another script)
+            if(document.getElementById('exampleInputPassword1')) {
+                customDiv.style.gridTemplateColumns = '15px 15px 12% 12% 12% 12% 12% 12% 12% 10%';
+                textbox = document.getElementById('exampleInputPassword1')
+                textbox.parentNode.appendChild(customDiv);
+            }
         }
     }, 1000);
 
