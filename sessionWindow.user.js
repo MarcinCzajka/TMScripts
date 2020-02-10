@@ -58,18 +58,24 @@
     }
 
     function createIframe() {
+
         const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '580px' : '400px';
         const iframeWidth = '1000px';
         const iframe = `
-            <iframe
-                id=${iframeId}
-                src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
-                style="display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};
-                       right: 255px; top: 30px; z-index: 1001; background-color: white; margin-top: 10px;
-                       box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px;
-                       border: 0;"
-            >
-            </iframe>
+            <div id='iframeContainer' style="display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  right: 255px; top: 45px; margin-top: 10px">
+                <div 
+                    id='topPanel' 
+                    style='width: 100%; height: 20px; background-color: green;
+                    position:relative; z-index: 1001;cursor: grab;'>
+                </div>
+                <iframe
+                    id=${iframeId}
+                    src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
+                    style="display: block; position: relative; width:100%; height:100%; z-index: 1001; background-color: white; border: 0;
+                        box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px;"
+                >
+                </iframe>
+            </div>
         `;
 
         topBar.insertAdjacentHTML('beforebegin', iframe);
@@ -86,7 +92,9 @@
                 openDialogWindow();
 
             }, 250)
-        })
+        });
+
+        document.getElementById('topPanel').addEventListener('mousedown', startToMoveWindow);
     }
 
     function openDialogWindow() {
@@ -126,11 +134,26 @@
         }, 50)
     }
 
+    function startToMoveWindow(e) {
+        e.preventDefault();
+
+        document.getElementById('topPanel').addEventListener('mouseup', function onMouseUp(){
+            document.getElementById('topPanel').removeEventListener('mousemove', moveWindow);
+            document.getElementById('topPanel').removeEventListener('mouseup', onMouseUp)
+        });
+
+        document.getElementById('topPanel').addEventListener('mousemove', moveWindow);
+    }
+
+    function moveWindow(e) {
+        console.log(e)
+    }
+
     function changeIframeVisibility() {
-        if(document.getElementById(iframeId).style.display === 'block') {
-            document.getElementById(iframeId).style.display = 'none';
+        if(document.getElementById('iframeContainer').style.display === 'block') {
+            document.getElementById('iframeContainer').style.display = 'none';
         } else {
-            document.getElementById(iframeId).style.display = 'block';
+            document.getElementById('iframeContainer').style.display = 'block';
         }
     }
 

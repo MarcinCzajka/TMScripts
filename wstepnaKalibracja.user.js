@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.16
+// @version      1.17
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include */api/installation*
