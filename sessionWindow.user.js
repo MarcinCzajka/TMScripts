@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.4
+// @version      0.5
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -101,7 +101,7 @@
                 win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('tempContainer'));
                 win.setTimeout(openDialogWindow, 0);
 
-                win.document.getElementById('b-toaster-top-center').style = 'display: none';
+                win.setTimeout(() => {win.document.getElementById('b-toaster-top-center').style = 'display: none'}, 0);
             };
 
             container.appendChild(textarea);
