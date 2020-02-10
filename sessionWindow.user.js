@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.1
+// @version      0.6.2
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -66,9 +66,9 @@
                 src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
                 style="display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};
                        right: 255px; top: 30px; z-index: 1001; background-color: white; margin-top: 10px;
-                       box-shadow:  -1px -1px 12px 0 rgba(0, 0, 0, 0.5),12px 12px 12px 0 rgba(0, 0, 0, 0.5);
-                       border: 0;
-            ">
+                       box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px;
+                       border: 0;"
+            >
             </iframe>
         `;
 
