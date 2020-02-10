@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.2
+// @version      0.10.3
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -96,7 +96,7 @@ function antenaStatus(el) {
 }
 
 function ignitionMatchVoltage(el) {
-    if(el.innerText === 'Wył.' && next(el).innerText === 'Wył') {
+    if(el.innerText === 'Wył.' && (next(el) ? next(el).innerText === 'Wył' : false)) {
         const voltage = +el.nextElementSibling.innerText;
         const errorMsg = 'Stacyjka wyłączona pomimo, że jest włączony silnik.';
 
@@ -146,7 +146,6 @@ function markEmptyCanValues() {
         if(isHexDataAvailable(header)) {
             loopThroughColumn(header, (el) => {
                 if(el.children[0].title.split('').every(char => char === 'F')) {
-                    console.log(getCellInRowByColumn(el, 'Stacyjka'))
                     if(getCellInRowByColumn(el, 'Stacyjka').innerText === 'Wł.') markMissingCanData(el, `${el.children[0].title} - Ramka przepisana`);
                 }
             });
@@ -258,6 +257,10 @@ function getColumnIndex(el) {
 }
 
 function next(el) {
-
-    return el.parentElement.nextElementSibling.children[getColumnIndex(el)];
+    if(el.parentElement.nextElementSibling) {
+        return el.parentElement.nextElementSibling.children[getColumnIndex(el)];
+    } else {
+        return false
+    }
 }
+
