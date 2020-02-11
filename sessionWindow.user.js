@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.0
+// @version      0.8.2
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -65,10 +65,15 @@
             <div id='iframeContainer' style='z-index: 1035; display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  left: ${posX - 1000}px; top: ${posY + 20}px'>
                 <div 
                     id='topPanel' 
-                    style='width: 100%; height: 20px; background-color: green;
-                    position:relative; z-index: 1001;cursor: grab;'
+                    style='width: 100%; height: 25px; background-color: green; opacity: 0.9;
+                    position:relative; z-index: 1001;cursor: grab; border-radius: 7px 7px 0 0;'
                 >
-                    <button id='iframeClose' style='color: aliceblue; opacity: 1; padding-right: 5px; height:10px' type="button" class="close" aria-label="Close">
+                    <button
+                        id='iframeClose'
+                        style='color: aliceblue; opacity: 1; padding-right: 5px; padding-left: 5px; height:100%; width: 25px;
+                               border-radius: 7px 7px 0 10px; background-color: #E54132;'
+                        type="button" class="close" aria-label="Close"
+                    >
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -76,7 +81,7 @@
                     id=${iframeId}
                     src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
                     style="display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: white; border: 0;
-                        box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px;"
+                        box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; border-radius: 0 0 7px 7px; opacity: 0.95"
                 >
                 </iframe>
             </div>
@@ -84,7 +89,7 @@
 
         document.querySelectorAll('body')[0].insertAdjacentHTML('beforebegin', iframe);
 
-        document.getElementById('iframeClose').addEventListener('click', changeIframeVisibility);
+        document.getElementById('iframeClose').addEventListener('mousedown', changeIframeVisibility);
 
         document.getElementById(iframeId).addEventListener('load', () => {
             win = document.getElementById(iframeId).contentWindow;
@@ -155,6 +160,7 @@
         function moveWindow(e) {
             e.stopPropagation();
             e.preventDefault();
+
             document.getElementById('iframeContainer').style.top = (e.clientY - initialOffsetY) + 'px';
             document.getElementById('iframeContainer').style.left = (e.clientX - initialOffsetX) + 'px';
         }
