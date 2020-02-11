@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.17.1
+// @version      1.17.3
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -275,7 +275,7 @@
 			'generuj_zdarzenia': 0,
 			'stacyjka': 1,
 			'sposob_gener_zdarzen': (isChecked('can_c') ? 4 : 1),
-			'algorithm_version': 4,
+			'algorithm_version': 5,
 			'gen_zdarzen_predkosc': 1,
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
@@ -302,19 +302,10 @@
 			'divide_days': 90,
 		};
 
-		let pomiarPaliwa = 0;
-		if (fuelType === "sonda") {
-			pomiarPaliwa = 2;
-		} else if (fuelType === "plywak") {
-			pomiarPaliwa = 3;
-		} else if (fuelType === "") {
-			pomiarPaliwa = 1;
-		};
-
 		const fuelCapacity = tanksCapacity();
 
 		const fuelSpecificData = {
-			'pomiar_paliwa_id': pomiarPaliwa,
+			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
 			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" ? 1 : 0),
 			'paliwo_z_can': (isChecked('spn96_c') ? 1 : 0),
 			'min_odchylenie': minOdchylenie,
@@ -366,7 +357,6 @@
 			data: data,
 			dataType: 'text',
 			success: function (res) {
-				console.log(res)
 				appendToSuccessFeed('Dane administracyjne');
 				asyncCounter.next()
 			},
