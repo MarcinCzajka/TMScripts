@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.2
+// @version      0.8.3
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -149,12 +149,16 @@
 
         document.addEventListener('mousemove', moveWindow);
 
+        document.getElementById(iframeId).style.pointerEvents = 'none';
+
         const initialOffsetX = e.offsetX;
         const initialOffsetY = e.offsetY;
 
         document.addEventListener('mouseup', function onMouseUp(){
             document.removeEventListener('mousemove', moveWindow);
-            document.removeEventListener('mouseup', onMouseUp)
+            document.removeEventListener('mouseup', onMouseUp);
+
+            document.getElementById(iframeId).style.pointerEvents = 'auto';
         });
 
         function moveWindow(e) {
