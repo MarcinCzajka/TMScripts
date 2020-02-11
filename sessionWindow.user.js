@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.2
+// @version      0.8.0
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -49,36 +49,42 @@
         document.getElementById('btnGroup').append(resetBtn);
     }, 1000);
 
-    function handleClick() {
+    function handleClick({clientX, clientY}) {
         if(!document.getElementById(iframeId)) {
-            createIframe();
+            createIframe(clientX, clientY);
         } else {
             changeIframeVisibility();
         }
     }
 
-    function createIframe() {
+    function createIframe(posX, posY) {
 
         const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '580px' : '400px';
         const iframeWidth = '1000px';
         const iframe = `
-            <div id='iframeContainer' style="display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  right: 255px; top: 45px; margin-top: 10px">
+            <div id='iframeContainer' style='z-index: 1035; display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  left: ${posX - 1000}px; top: ${posY + 20}px'>
                 <div 
                     id='topPanel' 
                     style='width: 100%; height: 20px; background-color: green;
-                    position:relative; z-index: 1001;cursor: grab;'>
+                    position:relative; z-index: 1001;cursor: grab;'
+                >
+                    <button id='iframeClose' style='color: aliceblue; opacity: 1; padding-right: 5px; height:10px' type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <iframe
                     id=${iframeId}
                     src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
-                    style="display: block; position: relative; width:100%; height:100%; z-index: 1001; background-color: white; border: 0;
+                    style="display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: white; border: 0;
                         box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px;"
                 >
                 </iframe>
             </div>
         `;
 
-        topBar.insertAdjacentHTML('beforebegin', iframe);
+        document.querySelectorAll('body')[0].insertAdjacentHTML('beforebegin', iframe);
+
+        document.getElementById('iframeClose').addEventListener('click', changeIframeVisibility);
 
         document.getElementById(iframeId).addEventListener('load', () => {
             win = document.getElementById(iframeId).contentWindow;
@@ -90,7 +96,6 @@
                 win.document.getElementById('session-window').style.height = '300px';
 
                 openDialogWindow();
-
             }, 250)
         });
 
@@ -137,17 +142,25 @@
     function startToMoveWindow(e) {
         e.preventDefault();
 
-        document.getElementById('topPanel').addEventListener('mouseup', function onMouseUp(){
-            document.getElementById('topPanel').removeEventListener('mousemove', moveWindow);
-            document.getElementById('topPanel').removeEventListener('mouseup', onMouseUp)
+        document.addEventListener('mousemove', moveWindow);
+
+        const initialOffsetX = e.offsetX;
+        const initialOffsetY = e.offsetY;
+
+        document.addEventListener('mouseup', function onMouseUp(){
+            document.removeEventListener('mousemove', moveWindow);
+            document.removeEventListener('mouseup', onMouseUp)
         });
 
-        document.getElementById('topPanel').addEventListener('mousemove', moveWindow);
+        function moveWindow(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            document.getElementById('iframeContainer').style.top = (e.clientY - initialOffsetY) + 'px';
+            document.getElementById('iframeContainer').style.left = (e.clientX - initialOffsetX) + 'px';
+        }
+
     }
 
-    function moveWindow(e) {
-        console.log(e)
-    }
 
     function changeIframeVisibility() {
         if(document.getElementById('iframeContainer').style.display === 'block') {
