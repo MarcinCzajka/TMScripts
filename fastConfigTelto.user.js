@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.0
+// @version      2.1
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -27,8 +27,6 @@
 	  customDiv.id = 'customDiv';
 	  customDiv.style = 'display:grid; grid-template-columns: repeat(10,10%); grid-template-rows: repeat(3, auto)';
 
-	init();
-
 	const config = {
 		'can': '',
 		'configureCan': false,
@@ -44,10 +42,14 @@
     setTimeout(() => {
         const IMEI = document.querySelectorAll('input')[0].value;
         if(Number(IMEI) > 999999999) {
+			initTeltonika();
+			
             document.getElementsByClassName('btn-secondary')[0].addEventListener('click', () => {
                 textbox = document.getElementById('exampleInputPassword1');
-                textbox.parentNode.appendChild(customDiv);
-                textbox.style.height = '140px';
+                if(textbox) {
+                    textbox.parentNode.appendChild(customDiv);
+                    textbox.style.height = '140px';
+                }
             });
 
             //If script is launched in mini sessionWindow (another script)
@@ -156,7 +158,7 @@
 
 		updateBtnColors();
 
-		textbox.value = config.result;
+		document.getElementById('exampleInputPassword1').value = config.result;
 		triggerInput();
 	};
 
@@ -165,7 +167,7 @@
 		  bubbles: true,
 		  cancelable: true,
 		});
-		textbox.dispatchEvent(event);
+		document.getElementById('exampleInputPassword1').dispatchEvent(event);
 	};
 
 	function triggerEvent(e, element) {
@@ -177,15 +179,15 @@
 	}
 
 	function forceFrame() {
-		const temp = textbox.value;
+		const temp = document.getElementById('exampleInputPassword1').value;
 
-		textbox.value = 'getrecord';
+		document.getElementById('exampleInputPassword1').value = 'getrecord';
 		triggerInput();
 
 		const sendBtn = document.getElementsByClassName('btn-primary')[0];
 		triggerEvent('click', sendBtn);
 
-		textbox.value = temp;
+		document.getElementById('exampleInputPassword1').value = temp;
 		triggerInput();
 	}
 
@@ -207,7 +209,7 @@
         container.appendChild(newBtn);
     };
 
-    function init() {
+    function initTeltonika() {
         createBtn('CAN 1', (e) => {canChange(e, '1')}, customDiv, 'can', '1', 'grid-column:3/6;grid-row:1');
         createBtn('CAN 2', (e) => {canChange(e, '2')}, customDiv, 'can', '2', 'grid-column:6/9;grid-row:1');
 		createBtn('FMS 0', (e) => {fmsChange(e, '0')}, customDiv, 'fms', '0', 'grid-column:3/5;grid-row:2');

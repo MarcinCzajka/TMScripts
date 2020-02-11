@@ -14,8 +14,8 @@
 (function() {
     'use strict';
 
-    let topBar = null;
     const iframeId = 'myNewIframe';
+    let topBar = null;
     let win = null;
     let configButtons = null;
 

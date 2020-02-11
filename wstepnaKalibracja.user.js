@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.17
+// @version      1.17.1
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -280,7 +280,6 @@
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
 			'min_napiecie_stacji': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
-			'corector_can_distance': (isChecked('spn917_c') ? 1 : 0),
 			'corector_can_speed': (isChecked('spn84_c') ? 1 : 0),
 			'corector_can_rotation': (isChecked('spn190_c') ? 1 : 0),
 			'paliwo_z_sondy_dyst': (isChecked('spn917_c') ? 3 : 1),
