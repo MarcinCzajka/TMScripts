@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.3
+// @version      0.8.4
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -14,8 +14,8 @@
 (function() {
     'use strict';
 
-    const iframeId = 'myNewIframe';
     let topBar = null;
+    const iframeId = 'myNewIframe';
     let win = null;
     let configButtons = null;
 
@@ -79,7 +79,7 @@
                 </div>
                 <iframe
                     id=${iframeId}
-                    src="https://gps.framelogic.pl/session/${window.location.href.slice(window.location.href.indexOf('record/') + 7)}"
+                    src="${window.location.href.replace('record', 'session')}"
                     style="display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: white; border: 0;
                         box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; border-radius: 0 0 7px 7px; opacity: 0.95"
                 >
