@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.4
+// @version      0.8.5
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -62,7 +62,7 @@
         const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '580px' : '400px';
         const iframeWidth = '1000px';
         const iframe = `
-            <div id='iframeContainer' style='z-index: 1035; display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  left: ${posX - 1000}px; top: ${posY + 20}px'>
+            <div id='iframeContainer' style='visibility: visible; background-color: #353535; border-radius: 7px; z-index: 1035; display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  left: ${posX - 1000}px; top: ${posY + 20}px'>
                 <div 
                     id='topPanel' 
                     style='width: 100%; height: 25px; background-color: green; opacity: 0.9;
@@ -80,7 +80,7 @@
                 <iframe
                     id=${iframeId}
                     src="${window.location.href.replace('record', 'session')}"
-                    style="display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: white; border: 0;
+                    style="visibility: hidden; display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: #353535; border: 0;
                         box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; border-radius: 0 0 7px 7px; opacity: 0.95"
                 >
                 </iframe>
@@ -99,6 +99,9 @@
                 win.document.getElementsByClassName('navbar')[0].style.display = 'none';
                 win.document.getElementsByClassName('content')[0].style.padding = '0';
                 win.document.getElementById('session-window').style.height = '300px';
+
+                document.getElementById('iframeContainer').style.backgroundColor = '';
+                document.getElementById(iframeId).style.visibility = 'inherit';
 
                 openDialogWindow();
             }, 250)
@@ -173,10 +176,10 @@
 
 
     function changeIframeVisibility() {
-        if(document.getElementById('iframeContainer').style.display === 'block') {
-            document.getElementById('iframeContainer').style.display = 'none';
+        if(document.getElementById('iframeContainer').style.visibility === 'visible') {
+            document.getElementById('iframeContainer').style.visibility = 'hidden';
         } else {
-            document.getElementById('iframeContainer').style.display = 'block';
+            document.getElementById('iframeContainer').style.visibility = 'visible';
         }
     }
 
