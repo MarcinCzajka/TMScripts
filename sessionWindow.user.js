@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.5
+// @version      0.8.7
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -59,14 +59,18 @@
 
     function createIframe(posX, posY) {
 
-        const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '580px' : '400px';
+        const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '605px' : '425px';
         const iframeWidth = '1000px';
         const iframe = `
-            <div id='iframeContainer' style='visibility: visible; background-color: #353535; border-radius: 7px; z-index: 1035; display: block; position: absolute;width: ${iframeWidth};height: ${iframeHeight};  left: ${posX - 1000}px; top: ${posY + 20}px'>
+            <div id='iframeContainer'
+                style='visibility: visible; background-image: linear-gradient(transparent 0 25px, #353535 25px 72%, white); border-radius: 7px; z-index: 1035; display: block;
+                position: absolute;width: ${iframeWidth};height: ${iframeHeight}; left: ${posX - 1000}px; top: ${posY + 20}px;
+                box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0.9'
+            >
                 <div 
                     id='topPanel' 
-                    style='width: 100%; height: 25px; background-color: green; opacity: 0.9;
-                    position:relative; z-index: 1001;cursor: grab; border-radius: 7px 7px 0 0;'
+                    style='width: 100%; height: 25px; background-color: green; cursor: grab;
+                    position:relative; z-index: 1001; border-radius: 7px 7px 0 0;'
                 >
                     <button
                         id='iframeClose'
@@ -77,11 +81,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <svg xmlns="http://www.w3.org/2000/svg" id='iframeLoader' viewBox="0 0 340 340" class="loader"
+                    style="position:absolute; left: calc(50% - 112px); top: calc(45% - 112px); z-index: 1036;"
+                >
+                    <circle cx="170" cy="170" r="160" stroke="#DFD"></circle>
+                    <circle cx="170" cy="170" r="135" stroke="#E2007C"></circle>
+                    <circle cx="170" cy="170" r="110" stroke="#DFD"></circle>
+                    <circle cx="170" cy="170" r="85" stroke="#E2007C"></circle>
+                </svg>
                 <iframe
                     id=${iframeId}
                     src="${window.location.href.replace('record', 'session')}"
-                    style="visibility: hidden; display: block; position: relative; width:100%; height:100%; z-index: 1034; background-color: #353535; border: 0;
-                        box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; border-radius: 0 0 7px 7px; opacity: 0.95"
+                    style="visibility: hidden; display: block; position: relative; width:100%; height:calc(100% - 25px);
+                           z-index: 1034; background-color: #353535; border: 0; border-radius: 0 0 7px 7px; opacity: 0.97"
                 >
                 </iframe>
             </div>
@@ -100,8 +112,9 @@
                 win.document.getElementsByClassName('content')[0].style.padding = '0';
                 win.document.getElementById('session-window').style.height = '300px';
 
-                document.getElementById('iframeContainer').style.backgroundColor = '';
+
                 document.getElementById(iframeId).style.visibility = 'inherit';
+                document.getElementById('iframeLoader').style.visibility = 'hidden';
 
                 openDialogWindow();
             }, 250)
@@ -118,7 +131,8 @@
                 container.style.position = 'relative';
                 container.id = 'tempContainer';
 
-            const textarea = win.document.getElementById('exampleInputPassword1')
+            const textarea = win.document.getElementById('exampleInputPassword1');
+                textarea.style.resize = 'none';
                 textarea.rows = '4';
 
             const sendBtn = win.document.getElementById('modal1___BV_modal_footer_').children[1];
@@ -184,7 +198,9 @@
     }
 
     function reloadIframe() {
-        document.getElementById(iframeId).contentWindow.location.reload(true)
+        document.getElementById(iframeId).style.visibility = 'hidden';
+        document.getElementById('iframeLoader').style.visibility = 'visible';
+        document.getElementById(iframeId).contentWindow.location.reload(true);
     }
 
 })();
