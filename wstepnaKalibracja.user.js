@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.17.3
+// @version      1.18.4
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -215,6 +215,8 @@
 		dateTo.setDate(dateTo.getDate() + 1);
 		dateTo = $.datepicker.formatDate('yy-mm-dd', dateTo) + " 23:59";
 
+        const probes = $('.tanks_tr').length;
+
 		const data = {
 			'comment': '',
 			'pojazd_id': vehicleId,
@@ -222,6 +224,7 @@
 			'pojazd_admin_multi_id': nrKartoteki,
 			'date_from': dateFrom,
 			'date_to': dateTo,
+            'data[algorithm_version]': 5,
 			'data[points_to_average]': 3,
 			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
@@ -231,26 +234,35 @@
 			'data[alg_obroty_typ]': (isChecked('spn190_c') ? 2 : 0),
 			'data[alg_predkosc_typ]': (isChecked('spn84_c') ? 2 : 1),
 			'data[alg_dystans_typ]': (isChecked('spn917_c') ? 3 : 0),
+
+            'data[pojemnosc_zbiornika_1]': (probes >= 1 ? document.getElementsByName('pojemnosc[]')[0].value : 0),
+            'data[rodzaj_sondy_zbiornika_1]': (probes >= 1 ? document.getElementsByName('producent_sondy[]')[0].value : 0),
+            'data[zone_tank_1]': (probes >= 1 ? document.getElementsByName('pojemnosc[]')[0].value : 0),
+            'data[pojemnosc_zbiornika_2]': (probes >= 2 ? document.getElementsByName('pojemnosc[]')[1].value : 0),
+            'data[rodzaj_sondy_zbiornika_2]': (probes >= 2 ? document.getElementsByName('producent_sondy[]')[1].value : 0),
+            'data[zone_tank_2]': (probes >= 2 ? document.getElementsByName('pojemnosc[]')[1].value : 0),
+            'data[pojemnosc_zbiornika_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
+            'data[rodzaj_sondy_zbiornika_3]': (probes >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
+            'data[zone_tank_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
+            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
+            'data[zone_tank_6]': (guessFuelType() === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0)
 		};
 
 		return data;
 	};
 
 	function fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
-		let fuelType = '';
+		const fuelType = guessFuelType();
+
 		let minOdchylenie = 0;
-		if (document.getElementsByClassName('tanks_tr').length > 0) {
-			if (document.getElementsByClassName('tanks_tr')[0].children[2].children[1].children[2].checked) {
-				fuelType = "sonda";
-				minOdchylenie = 1.5;
-			} else {
-				fuelType = "plywak";
-				minOdchylenie = 5;
-			};
-		} else if (isChecked('spn96_c')) {
-			fuelType = "can";
-			minOdchylenie = 100;
-		};
+
+        if(fuelType === "sonda") {
+            minOdchylenie = 1.5;
+        } else if(fuelType === "plywak") {
+            minOdchylenie = 5;
+        } else if(fuelType === "can") {
+            minOdchylenie = 100;
+        };
 
 		let markaRejestratora = 0;
 		const selectedBlackbox = $('#rodzaj_rejestratora_id').find('[selected]').text();
@@ -320,6 +332,7 @@
 			'liczba_przedzialow': 2,
 			'liczba_przedzialow_u': 2,
 			'usuwaj_pkt_zerowe': (fuelType === "can" ? 1 : 0),
+            'usuwaj_pkt_zerowe_od': 0,
 			'usuwaj_pkt_zerowe_do': (fuelType === "can" ? 1 : 0),
 			'usuwaj2_pkt_zerowe_od': (fuelType === "can" ? 103 : 0),
 			'usuwaj2_pkt_zerowe_do': (fuelType === "can" ? 109 : 0),
@@ -329,6 +342,20 @@
 			'rodzaj_sondy_zbiornika_3': ($('.tanks_tr').length >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
 			'pojemnosc_zbiornika_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
 			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
+
+            'strefa_niemierzalna': 0,
+            'strefa_niemierzalna2': 0,
+            'strefa_niemierzalna3': 0,
+            'korektor_tankowania': 0,
+            'korektor_upustu': 0,
+            'korektor_wykresu': 0,
+            'odchylenie_odniesienie': 0,
+            'prog_tankowanie': 0,
+            'prog_zasilania': 0,
+            'weryfikuj_karty_paliwo_odchyl': 10,
+            'korektor_tankowania': 0,
+            'wyjatek_wyl_stacyjki': 0,
+            'wyjatek_wyl_stacyjki_u': 0
 		};
 
 		const wtf = {
@@ -470,5 +497,19 @@
 			return Math.round(seconds);
 		};
 	};
+
+    function guessFuelType() {
+		if (document.getElementsByClassName('tanks_tr').length > 0) {
+			if (document.getElementsByClassName('tanks_tr')[0].children[2].children[1].children[2].checked) {
+				return "sonda";
+			} else {
+				return "plywak";
+			};
+		} else if (isChecked('spn96_c')) {
+			return "can";
+		}
+
+        return '';
+    }
 
 })();
