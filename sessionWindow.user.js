@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.7
+// @version      0.8.8
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -82,7 +82,7 @@
                     </button>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" id='iframeLoader' viewBox="0 0 340 340" class="loader"
-                    style="position:absolute; left: calc(50% - 112px); top: calc(45% - 112px); z-index: 1036;"
+                    style="position:absolute; left: calc(50% - 112px); top: calc(40% - 112px); z-index: 1036;"
                 >
                     <circle cx="170" cy="170" r="160" stroke="#DFD"></circle>
                     <circle cx="170" cy="170" r="135" stroke="#E2007C"></circle>
