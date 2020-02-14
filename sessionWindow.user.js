@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.8
+// @version      0.8.9
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -199,7 +199,7 @@
 
     function reloadIframe() {
         document.getElementById(iframeId).style.visibility = 'hidden';
-        document.getElementById('iframeLoader').style.visibility = 'visible';
+        document.getElementById('iframeLoader').style.visibility = 'inherit';
         document.getElementById(iframeId).contentWindow.location.reload(true);
     }
 
