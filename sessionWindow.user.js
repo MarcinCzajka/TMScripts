@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.9
+// @version      0.9.10
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -65,7 +65,7 @@
             <div id='iframeContainer'
                 style='visibility: visible; background-image: linear-gradient(transparent 0 25px, #353535 25px 72%, white); border-radius: 7px; z-index: 1035; display: block;
                 position: absolute;width: ${iframeWidth};height: ${iframeHeight}; left: ${posX - 1000}px; top: ${posY + 20}px;
-                box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0.9'
+                box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0.95'
             >
                 <div 
                     id='topPanel' 
@@ -139,8 +139,14 @@
                 sendBtn.style = 'position:absolute; right: 20px; top: 0';
                 sendBtn.id = 'tempBtn';
 
+            textarea.addEventListener('keypress', (e) => {
+                if(e.keyCode === 13) {
+                    sendBtn.click();
+                }
+            })
+
             sendBtn.onclick = function() {
-                configButtons = win.document.getElementById('customDiv')
+                configButtons = win.document.getElementById('customDiv');
                 if(configButtons) win.document.querySelectorAll('body')[0].appendChild(configButtons);
 
                 win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('tempContainer'));
