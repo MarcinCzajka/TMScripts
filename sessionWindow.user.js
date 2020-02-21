@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.9.10
+// @version      0.11.10
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -18,6 +18,9 @@
     const iframeId = 'myNewIframe';
     let win = null;
     let configButtons = null;
+    let container = null;
+    const fadeTime = '0.225';
+    const containerOpacity = '0.95';
 
     const btnGroup = document.createElement('div');
         btnGroup.classList.add('btn-group');
@@ -65,7 +68,7 @@
             <div id='iframeContainer'
                 style='visibility: visible; background-image: linear-gradient(transparent 0 25px, #353535 25px 72%, white); border-radius: 7px; z-index: 1035; display: block;
                 position: absolute;width: ${iframeWidth};height: ${iframeHeight}; left: ${posX - 1000}px; top: ${posY + 20}px;
-                box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0.95'
+                box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0; transition:opacity ${fadeTime}s ease-in-out;'
             >
                 <div 
                     id='topPanel' 
@@ -101,7 +104,12 @@
 
         document.querySelectorAll('body')[0].insertAdjacentHTML('beforebegin', iframe);
 
-        document.getElementById('iframeClose').addEventListener('mousedown', changeIframeVisibility);
+        container = document.getElementById('iframeContainer');
+
+        document.getElementById('iframeClose').addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            changeIframeVisibility();
+        });
 
         document.getElementById(iframeId).addEventListener('load', () => {
             win = document.getElementById(iframeId).contentWindow;
@@ -121,6 +129,8 @@
         });
 
         document.getElementById('topPanel').addEventListener('mousedown', startToMoveWindow);
+
+        setTimeout(() => { container.style.opacity = containerOpacity}, 0);
     }
 
     function openDialogWindow() {
@@ -174,6 +184,8 @@
 
         document.getElementById(iframeId).style.pointerEvents = 'none';
 
+        container.style.opacity = 0.85;
+
         const initialOffsetX = e.offsetX;
         const initialOffsetY = e.offsetY;
 
@@ -182,6 +194,7 @@
             document.removeEventListener('mouseup', onMouseUp);
 
             document.getElementById(iframeId).style.pointerEvents = 'auto';
+            container.style.opacity = containerOpacity;
         });
 
         function moveWindow(e) {
@@ -196,10 +209,12 @@
 
 
     function changeIframeVisibility() {
-        if(document.getElementById('iframeContainer').style.visibility === 'visible') {
-            document.getElementById('iframeContainer').style.visibility = 'hidden';
+        if(container.style.visibility === 'visible') {
+            container.style.opacity = 0;
+            setTimeout(() => {container.style.visibility = 'hidden'}, fadeTime * 1000);
         } else {
-            document.getElementById('iframeContainer').style.visibility = 'visible';
+            container.style.visibility = 'visible';
+            container.style.opacity = containerOpacity;
         }
     }
 
@@ -207,6 +222,57 @@
         document.getElementById(iframeId).style.visibility = 'hidden';
         document.getElementById('iframeLoader').style.visibility = 'inherit';
         document.getElementById(iframeId).contentWindow.location.reload(true);
+    }
+
+    function createResizers() {
+        const size = 10; //Global size of resizers
+
+        const uniStyle = `position:absolute;z-index:1036;width:${size}px;height:${size}px;background-color:black`
+
+        const bottomLeft = document.createElement('div');
+            bottomLeft.style = `${uniStyle};left:0;bottom:0;cursor:ne-resize;`;
+            bottomLeft.addEventListener('mousedown', resize);
+            bottomLeft.classList.add('left');
+        const bottomRight = document.createElement('div');
+            bottomRight.style = `${uniStyle};right:0;bottom:0;cursor:nw-resize;`;
+            bottomRight.addEventListener('mousedown', resize);
+
+        document.getElementById('iframeContainer').appendChild(bottomLeft);
+        document.getElementById('iframeContainer').appendChild(bottomRight);
+
+    }
+
+    function resize(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        document.getElementById(iframeId).style.pointerEvents = 'none';
+
+        document.addEventListener('mousemove', onMouseMove)
+
+        document.addEventListener('mouseup', function onMouseUp() {
+            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('mousemove', onMouseMove);
+
+            document.getElementById(iframeId).style.pointerEvents = 'auto';
+        })
+    }
+
+    function onMouseMove(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const {clientX, clientY, target} = e;
+
+        const currentWidth = +container.style.width.replace('px', '');
+
+        if(target.classList[0] === 'left') {
+            console.log(clientX)
+        } else {
+            console.log(clientX)
+            container.style.width = clientX - (clientX - currentWidth) + 'px';
+        }
+
     }
 
 })();
