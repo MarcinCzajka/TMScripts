@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.11.10
+// @version      0.11.11
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -85,7 +85,7 @@
                     </button>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" id='iframeLoader' viewBox="0 0 340 340" class="loader"
-                    style="position:absolute; left: calc(50% - 112px); top: calc(40% - 112px); z-index: 1036;"
+                    style="position:absolute; left: calc(50% - 112px); top: calc(50% - 112px); z-index: 1036; background-color: rgb(53, 53, 53); border-radius: 100%"
                 >
                     <circle cx="170" cy="170" r="160" stroke="#DFD"></circle>
                     <circle cx="170" cy="170" r="135" stroke="#E2007C"></circle>
@@ -105,6 +105,7 @@
         document.querySelectorAll('body')[0].insertAdjacentHTML('beforebegin', iframe);
 
         container = document.getElementById('iframeContainer');
+        //createResizers();
 
         document.getElementById('iframeClose').addEventListener('mousedown', (e) => {
             e.stopPropagation();
