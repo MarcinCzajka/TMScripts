@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Override default search
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.2
+// @version      0.1.3
 // @description  Override default search to allow special signs
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/overrideDefaultSearch.user.js
@@ -16,7 +16,6 @@
 
     setTimeout(() => {
         const menu = document.getElementById('main-menu');
-        console.log(menu, $._data(document, 'events').keydown.length)
         if(menu && $._data(document, 'events').keydown.length === 1) {
 
             $(document).unbind('keydown');

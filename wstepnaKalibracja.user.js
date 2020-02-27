@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.18.4
+// @version      1.19.4
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -52,11 +52,12 @@
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
-		const asyncCounter = AsyncCounter(5, btn);
+		const asyncCounter = AsyncCounter(6, btn);
 
 		getNrKartoteki(vehicleId, baseUrl).then((nrKartoteki) => {
 			fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter);
 			setPaliwo(vehicleId, nrKartoteki, baseUrl, asyncCounter);
+            hideSideNumber(vehicleId, baseUrl, asyncCounter);
 		}).catch(err => {
 			alert(err);
 		});
@@ -445,6 +446,38 @@
 			}
 		});
 	};
+
+    function hideSideNumber(vehicleId, baseUrl, asyncCounter) {
+        //If there is side number provided, dont do anything
+        if($('#nr_boczny_pojazdu').val()) {
+            asyncCounter.next();
+            return;
+        }
+
+        const data = {
+            'pokazuj_nr_rejestracyjny': 1,
+            'nr_rejestracyjny': $('#nr_rejestracyjny').val(),
+            'firma1_id': $('#firma1_id').val(),
+            'marka_id': $('#marka_id').val(),
+            'model': $('#model').val(),
+            'nr_boczny_pojazdu': ''
+        };
+
+		$.ajax({
+			url: `${baseUrl}/api/vehicle/data/data/${vehicleId}`,
+			type: 'POST',
+			data: data,
+			dataType: 'text',
+			success: function () {
+				appendToSuccessFeed('Odklikano pokazywanie numeru bocznego w danych podstawowych.');
+				asyncCounter.next()
+			},
+			error: function (err) {
+				console.log(err);
+				alert('Wystąpił błąd podczas odklikiwania numeru bocznego w danych podstawowych.');
+			}
+		});
+    }
 
 	function appendToSuccessFeed(message) {
 		const successFeed = document.getElementById('successFeed');
