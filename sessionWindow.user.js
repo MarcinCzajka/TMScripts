@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.11.11
+// @version      0.11.12
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -41,7 +41,7 @@
         resetBtn.classList.add('btn');
         resetBtn.classList.add('btn-secondary');
         resetBtn.classList.add('btn-sm');
-        resetBtn.innerHTML = 'reset';
+        resetBtn.innerHTML = 'reload';
         resetBtn.onclick = reloadIframe;
 
     setTimeout(() => {
