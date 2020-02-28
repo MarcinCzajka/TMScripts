@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.30
+// @version      4.30.01
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -125,6 +125,7 @@
 
                     //Nr rejestracyjny
                     if(userJSON.rej) $("#nr_rejestracyjny").val(userJSON.rej);
+                    if( $("#nr_boczny_pojazdu").val() === '.') $("#nr_boczny_pojazdu").val('');
                     if(userJSON.boczny) $("#nr_boczny_pojazdu").val(userJSON.boczny);
 
                     // Marka/model
