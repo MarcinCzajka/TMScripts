@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2.2
+// @version      0.3.2
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -18,6 +18,8 @@
         const query = window.location.search;
 
         let interval = null;
+        let flasher = null;
+        let lastPayload = '';
         let fetchType = 'sentitems'; //inbox
 
         const csrf = $('csrf_test_name').first().val();
@@ -44,7 +46,7 @@
         //Make container scrollable
         $('#smsContainer').css('overflow-x', 'hidden');
         $('#smsContainer').css('overflow-y', 'auto');
-        $('#smsContainer').css('height', '60vh');
+        $('#smsContainer').css('height', '55vh');
 
         createInputPanel();
 
@@ -82,7 +84,12 @@
 
         function fetchSms() {
             const nr = `+${$('#nrInput').val().replace('+', '')}`;
-            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
+            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function(payload) {
+
+                const payloadLength = (payload.match(/tr/g) || []).length;
+
+                if(!payloadLength) return;
+
                 $('[type=hidden]').remove();
                 $('.message_metadata').remove();
                 $('.hidden').remove();
@@ -123,11 +130,32 @@
                 $('.remove').remove();
 
                 styleSms();
-
                 scrollDown();
 
                 updateDate();
 
+                if(flasher && !document.hidden) {
+                    if(!document.hidden) {
+                        document.title = 'SMSEagle';
+                        clearInterval(flasher);
+                        flasher = null;
+                    }
+                }
+
+                if(document.hidden && lastPayload !== payloadLength) {
+                    let bool = true;
+                    flasher = setInterval(() => {
+                        if(bool) {
+                            document.title = 'Nowy SMS!';
+                            bool = !bool;
+                        } else {
+                            document.title = 'SMSEagle';
+                            bool = !bool;
+                        }
+                    }, 400)
+                }
+
+                lastPayload = payloadLength;
             })
         }
 
