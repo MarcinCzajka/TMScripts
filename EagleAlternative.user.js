@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1
+// @version      0.1.2
 // @description  Overlay for Kalkun integration
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @author       MAC
 // @match        http://*sms*
 // @include      http://*sms*
@@ -113,6 +113,8 @@
                         div.appendChild(smsContainer.children[0]);
                     };
                     $('#smsContainer').append(div);
+
+                    $('#refreshBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
                 };
 
                 $('.remove').remove();
@@ -135,11 +137,27 @@
             }
 
             interval = setInterval(fetchSms, 3000);
+            toggleRefreshBtnStyle(true);
 
             window.setTimeout(() => {
                 clearInterval(interval);
                 interval = null;
+
+                toggleRefreshBtnStyle(false)
             }, ms)
+        }
+
+        function toggleRefreshBtnStyle(isRefreshing) {
+            const refreshBtn = $('#refreshBtn');
+            if(isRefreshing) {
+                refreshBtn.text('Odświeżam...');
+                refreshBtn.addClass('btn-warning');
+                refreshBtn.removeClass('btn-success');
+            } else {
+                refreshBtn.text('Odśwież');
+                refreshBtn.addClass('btn-success');
+                refreshBtn.removeClass('btn-warning');
+            }
         }
 
         function styleSms() {
