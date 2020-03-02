@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create link to alternative Eagle in DB
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.1
+// @version      0.1.2
 // @description  Creates link near SIM to Eagle override
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToAltEagle.user.js
@@ -33,10 +33,10 @@
             for(const td of table) {
                 if(td.innerText === 'SIM') {
                     const simTd = td.nextElementSibling;
+                    simTd.style.position = 'relative';
                     simNr = simTd.innerText;
 
                     if(simNr) {
-                        td.style.position = 'relative';
                         createLinkToEagle(simTd);
                     }
 
