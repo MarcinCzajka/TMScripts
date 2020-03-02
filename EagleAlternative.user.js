@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.2
+// @version      0.2.2
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -18,6 +18,7 @@
         const query = window.location.search;
 
         let interval = null;
+        let fetchType = 'sentitems'; //inbox
 
         const csrf = $('csrf_test_name').first().val();
 
@@ -35,6 +36,8 @@
         $('body').append(container);
 
         createNrInput();
+
+        createFetchTypeBtnGroup();
 
         $('#container').append(smsContainer);
 
@@ -79,7 +82,7 @@
 
         function fetchSms() {
             const nr = `+${$('#nrInput').val().replace('+', '')}`;
-            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/sentitems/${nr}/`, function() {
+            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
                 $('[type=hidden]').remove();
                 $('.message_metadata').remove();
                 $('.hidden').remove();
@@ -194,7 +197,7 @@
 
             $('#nrInput').css('text-align', 'center');
             $('#nrInput').css('font-size', '1.6em');
-            $('#nrInput').css('margin-bottom', '10px');
+            $('#nrInput').css('margin-bottom', '5px');
             $('#nrInput').css('width', '100%');
             $('#nrInput').css('padding-left', '0');
             $('#nrInput').css('padding-right', '0');
@@ -268,6 +271,55 @@
 
             const formattedDate = hours + ":" + (minutes.length === 1 ? '0' + minutes : minutes) + ":" + (seconds.length === 1 ? '0' + seconds : seconds);
             $('#lastUpdateDate').text('Last update: ' + formattedDate);
+        }
+
+        function createFetchTypeBtnGroup() {
+            const fetchTypeBtnGroup = document.createElement('div');
+                fetchTypeBtnGroup.classList.add('btn-group');
+                fetchTypeBtnGroup.role = 'group';
+                fetchTypeBtnGroup.id = 'fetchTypeBtnGroup';
+                fetchTypeBtnGroup.style = 'width:100%; text-align: center; margin-bottom: 2px;'
+
+            const togglePrivateBtn = document.createElement('button');
+                togglePrivateBtn.classList.add('btn', 'btn-primary', 'btn-sm');
+                togglePrivateBtn.innerText = 'Tylko moje'
+                togglePrivateBtn.onclick = () => {
+                    if(!togglePrivateBtn.classList.contains('btn-primary')) {
+                        fetchType = 'sentitems';
+                        swapBtnClass();
+                        fetchSms();
+                    }
+                }
+
+            const toggleAllBtn = document.createElement('button');
+                toggleAllBtn.classList.add('btn', 'btn-secondary', 'btn-sm');
+                toggleAllBtn.innerText = 'Wszystkie';
+                toggleAllBtn.onclick = () => {
+                    if(!toggleAllBtn.classList.contains('btn-primary')) {
+                        fetchType = 'inbox';
+                        swapBtnClass();
+                        fetchSms();
+                    }
+                }
+
+            function swapBtnClass() {
+                if(!togglePrivateBtn.classList.contains('btn-primary')) {
+                    togglePrivateBtn.classList.add('btn-primary');
+                    togglePrivateBtn.classList.remove('btn-secondary');
+                    toggleAllBtn.classList.add('btn-secondary');
+                    toggleAllBtn.classList.remove('btn-primary');
+                } else {
+                    toggleAllBtn.classList.add('btn-primary');
+                    toggleAllBtn.classList.remove('btn-secondary');
+                    togglePrivateBtn.classList.add('btn-secondary');
+                    togglePrivateBtn.classList.remove('btn-primary');
+                }
+            }
+
+
+            document.getElementById('container').appendChild(fetchTypeBtnGroup);
+            document.getElementById('fetchTypeBtnGroup').appendChild(togglePrivateBtn);
+            document.getElementById('fetchTypeBtnGroup').appendChild(toggleAllBtn);
         }
 
     }
