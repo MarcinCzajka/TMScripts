@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create link to alternative Eagle in DB
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.0
+// @version      0.1.1
 // @description  Creates link near SIM to Eagle override
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToAltEagle.user.js
@@ -36,6 +36,7 @@
                     simNr = simTd.innerText;
 
                     if(simNr) {
+                        td.style.position = 'relative';
                         createLinkToEagle(simTd);
                     }
 
@@ -48,7 +49,7 @@
     function createLinkToEagle(el) {
         const btn = document.createElement('button');
         btn.classList.add('btn', 'btn-success', 'btn-sm');
-        btn.style.marginLeft = '45%';
+        btn.style = 'position: absolute; right: 0; top: 0;';
         btn.innerText = 'Wyślij SMS';
         btn.onclick = openEagle;
 
