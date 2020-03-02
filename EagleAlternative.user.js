@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.3.2
+// @version      0.3.3
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -167,12 +167,16 @@
                 interval = null;
             }
 
+            document.title = 'SMSEagle - Odświeżanie';
+
             interval = setInterval(fetchSms, 3000);
             toggleRefreshBtnStyle(true);
 
             window.setTimeout(() => {
                 clearInterval(interval);
                 interval = null;
+
+                document.title = 'SMSEagle';
 
                 toggleRefreshBtnStyle(false)
             }, ms)
