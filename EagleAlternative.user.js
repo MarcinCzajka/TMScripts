@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.3.3
+// @version      0.3.4
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -135,11 +135,10 @@
                 updateDate();
 
                 if(flasher && !document.hidden) {
-                    if(!document.hidden) {
-                        document.title = 'SMSEagle';
-                        clearInterval(flasher);
-                        flasher = null;
-                    }
+                    document.title = 'SMSEagle';
+                    clearInterval(flasher);
+                    flasher = null;
+                    bool = false;
                 }
 
                 if(document.hidden && lastPayload !== payloadLength) {
