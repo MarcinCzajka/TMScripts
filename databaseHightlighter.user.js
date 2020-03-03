@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.4
+// @version      0.10.5
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -141,7 +141,7 @@ function incorrectTachoStatus(el) {
 
 function markEmptyCanValues() {
     const canHeaders = ['Poziom paliwa', 'Zuż. paliwa', 'Dystans (CAN)', 'Prędkość (CAN)', 'Obroty silnika (CAN)'];
-
+console.log(1)
     for(let header of canHeaders) {
         if(isHexDataAvailable(header)) {
             loopThroughColumn(header, (el) => {
@@ -193,7 +193,9 @@ function clearElements() {
 function guessBlackbox() {
     try {
         const id = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value;
-        const left = id.slice(0,2);
+        const left = id.slice(0,3);
+
+        console.log(id, left)
 
         if(left === 'H1_' || left === 'H3_' || +id < 99999) {
             return 'setivo'

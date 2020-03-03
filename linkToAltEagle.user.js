@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create link to alternative Eagle in DB
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.4
+// @version      0.1.5
 // @description  Creates link near SIM to Eagle override
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToAltEagle.user.js
@@ -16,7 +16,6 @@
 
     let simNr = '';
     setTimeout(() => {
-        console.log(document.querySelector('body'))
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutationRecord) {
                 if(mutationRecord.target.classList.contains('modal-open')) createLink();
