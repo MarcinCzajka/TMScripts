@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.20
+// @version      1.20.1
 // @description  Kalibracja
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
 // @grant        none
