@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.12.13
+// @version      0.12.14
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -26,7 +26,7 @@
         btnGroup.classList.add('btn-group');
         btnGroup.role = 'group';
         btnGroup.id = 'btnGroup';
-        btnGroup.style = 'position:absolute;right:250px; box-shadow: 3px 3px 12px 0 rgba(0, 0, 0, 0.5)';
+        btnGroup.style = 'position:absolute; right:250px; border-radius: 5px; box-shadow: 2px 2px 12px -1px rgba(0, 0, 0, 0.5)';
 
     const newBtn = document.createElement('button');
         newBtn.type = 'button';
