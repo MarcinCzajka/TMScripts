@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.12.14
+// @version      0.12.15
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -162,7 +162,7 @@
             };
 
             const clearBtn = win.document.createElement('button');
-                clearBtn.style = 'position:absolute; right: 20px; top: 55px; width:80px';
+                clearBtn.style = 'position:absolute; right: 20px; top: 50px; width:80px';
                 clearBtn.classList.add('btn', 'btn-warning');
                 clearBtn.innerText = 'Wyczyść'
                 clearBtn.onclick = () => {
