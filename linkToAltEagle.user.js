@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create link to alternative Eagle in DB
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.3
+// @version      0.1.4
 // @description  Creates link near SIM to Eagle override
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToAltEagle.user.js
@@ -15,15 +15,15 @@
     'use strict';
 
     let simNr = '';
-
     setTimeout(() => {
+        console.log(document.querySelector('body'))
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutationRecord) {
                 if(mutationRecord.target.classList.contains('modal-open')) createLink();
             });
         });
 
-        observer.observe(document.querySelectorAll('body')[0], { attributes : true, attributeFilter : ['style'] });
+        observer.observe(document.querySelector('body'), { attributes : true, attributeFilter : ['class'] });
     }, 1000);
 
     function createLink() {
