@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.3.4
+// @version      0.4.6
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -14,12 +14,14 @@
 (function() {
     'use strict';
 
+    console.log(111)
+
     if(window.location.search.includes('chat=true')) {
         const query = window.location.search;
 
         let interval = null;
         let flasher = null;
-        let lastPayload = '';
+        let lastSmsCount = '';
         let fetchType = 'sentitems'; //inbox
 
         const csrf = $('csrf_test_name').first().val();
@@ -49,6 +51,7 @@
         $('#smsContainer').css('height', '55vh');
 
         createInputPanel();
+        createContainerShadow();
 
         fetchSms();
 
@@ -84,11 +87,11 @@
 
         function fetchSms() {
             const nr = `+${$('#nrInput').val().replace('+', '')}`;
-            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function(payload) {
+            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
 
-                const payloadLength = (payload.match(/tr/g) || []).length;
+                const smsCount = $('.optionmenu').length;
 
-                if(!payloadLength) return;
+                if(!smsCount) return;
 
                 $('[type=hidden]').remove();
                 $('.message_metadata').remove();
@@ -101,8 +104,7 @@
                 $('.icon-arrow-up').parent().remove();
                 $('.message_content').prev().remove();
 
-                const smsCount = (smsContainer.children.length / 3) + 1;
-                for(let i = 1; i < smsCount; i++){
+                for(let i = 1; i <= smsCount; i++){
                     const div = document.createElement('div');
                     div.classList.add('sms');
 
@@ -124,7 +126,8 @@
                     };
                     $('#smsContainer').append(div);
 
-                    $('#refreshBtn').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+                    $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
+                    $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
                 };
 
                 $('.remove').remove();
@@ -141,7 +144,7 @@
                     bool = false;
                 }
 
-                if(document.hidden && lastPayload !== payloadLength) {
+                if(document.hidden && lastSmsCount !== smsCount && !flasher) {
                     let bool = true;
                     flasher = setInterval(() => {
                         if(bool) {
@@ -154,7 +157,7 @@
                     }, 400)
                 }
 
-                lastPayload = payloadLength;
+                lastSmsCount = smsCount;
             })
         }
 
@@ -304,6 +307,15 @@
             $('#lastUpdateDate').text('Last update: ' + formattedDate);
         }
 
+        function createContainerShadow() {
+         const boxShadow = document.createElement('div');
+            boxShadow.style = `width: 100%; opacity: 0; top: 0px; z-index: -100; height: 100%;
+                position: absolute; box-shadow: rgb(255, 191, 0) 0px 0px 120px 10px inset;`;
+            boxShadow.id = 'containerShadow';
+
+            $('body').append(boxShadow);
+        }
+
         function createFetchTypeBtnGroup() {
             const fetchTypeBtnGroup = document.createElement('div');
                 fetchTypeBtnGroup.classList.add('btn-group');
@@ -333,6 +345,10 @@
                     }
                 }
 
+            document.getElementById('container').appendChild(fetchTypeBtnGroup);
+            document.getElementById('fetchTypeBtnGroup').appendChild(togglePrivateBtn);
+            document.getElementById('fetchTypeBtnGroup').appendChild(toggleAllBtn);
+
             function swapBtnClass() {
                 if(!togglePrivateBtn.classList.contains('btn-primary')) {
                     togglePrivateBtn.classList.add('btn-primary');
@@ -346,11 +362,6 @@
                     togglePrivateBtn.classList.remove('btn-primary');
                 }
             }
-
-
-            document.getElementById('container').appendChild(fetchTypeBtnGroup);
-            document.getElementById('fetchTypeBtnGroup').appendChild(togglePrivateBtn);
-            document.getElementById('fetchTypeBtnGroup').appendChild(toggleAllBtn);
         }
 
     }
