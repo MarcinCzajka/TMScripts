@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.11.12
+// @version      0.12.13
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -62,7 +62,7 @@
 
     function createIframe(posX, posY) {
 
-        const iframeHeight = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value > 999999999 ? '605px' : '425px';
+        const iframeHeight = document.querySelector('[placeholder="IMEI urządzenia"]').value > 999999999 ? '605px' : '425px';
         const iframeWidth = '1000px';
         const iframe = `
             <div id='iframeContainer'
@@ -102,7 +102,7 @@
             </div>
         `;
 
-        document.querySelectorAll('body')[0].insertAdjacentHTML('beforebegin', iframe);
+        document.querySelector('body').insertAdjacentHTML('beforeend', iframe);
 
         container = document.getElementById('iframeContainer');
         //createResizers();
@@ -147,20 +147,13 @@
                 textarea.rows = '4';
 
             const sendBtn = win.document.getElementById('modal1___BV_modal_footer_').children[1];
-                sendBtn.style = 'position:absolute; right: 20px; top: 0';
+                sendBtn.style = 'position:absolute; right: 20px; top: 10px; width: 80px;';
                 sendBtn.id = 'tempBtn';
-
-            textarea.addEventListener('keypress', (e) => {
-                if(e.keyCode === 13) {
-                    sendBtn.click();
-                }
-            })
-
-            sendBtn.onclick = function() {
+                sendBtn.onclick = () => {
                 configButtons = win.document.getElementById('customDiv');
-                if(configButtons) win.document.querySelectorAll('body')[0].appendChild(configButtons);
+                if(configButtons) win.document.querySelector('body').appendChild(configButtons);
 
-                win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('tempContainer'));
+                win.document.querySelector('body').removeChild(win.document.getElementById('tempContainer'));
                 win.setTimeout(openDialogWindow, 50);
 
                 win.setTimeout(() => {
@@ -168,11 +161,27 @@
                 }, 100);
             };
 
+            const clearBtn = win.document.createElement('button');
+                clearBtn.style = 'position:absolute; right: 20px; top: 55px; width:80px';
+                clearBtn.classList.add('btn', 'btn-warning');
+                clearBtn.innerText = 'Wyczyść'
+                clearBtn.onclick = () => {
+                    textarea.value = '';
+                    textarea.focus();
+                }
+
+            textarea.addEventListener('keypress', (e) => {
+                if(e.keyCode === 13) {
+                    sendBtn.click();
+                }
+            })
+
             container.appendChild(textarea);
             container.appendChild(sendBtn);
+            container.appendChild(clearBtn);
 
-            win.document.querySelectorAll('body')[0].removeChild(win.document.getElementById('modal1___BV_modal_outer_'));
-            win.document.querySelectorAll('body')[0].appendChild(container);
+            win.document.querySelector('body').removeChild(win.document.getElementById('modal1___BV_modal_outer_'));
+            win.document.querySelector('body').appendChild(container);
 
             if(configButtons) win.document.getElementById('tempContainer').appendChild(configButtons);
         }, 50)
