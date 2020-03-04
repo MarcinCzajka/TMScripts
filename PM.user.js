@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.30.01
+// @version      4.31.1
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -431,6 +431,8 @@
                     //Uwagi
                     $("#uwagi").val(`${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`);
 
+                    if(userJSON.firma === 'KIM kj' && userJSON.model === 'CARGOBULL') kimTrailerException(userJSON);
+
                 } catch (error) {
                     alert(error.message);
                     console.log(error);
@@ -534,6 +536,52 @@
 				});
 
         };
+
+        function kimTrailerException(userJSON) {
+            if(userJSON.termometer1) {
+                $("#uwagi").val($("#uwagi").val() + `\nTermometr_1: ${userJSON.termometer1}`);
+
+                addUrzadzenieDodatkoweInne('Termometr 1')
+
+            }
+            if(userJSON.termometer2) {
+                $("#uwagi").val($("#uwagi").val() + `\nTermometr_2: ${userJSON.termometer2}`);
+
+                addUrzadzenieDodatkoweInne('Termometr 2')
+
+            }
+
+            if(userJSON.termometer1 || userJSON.termometer2) {
+                $('#model').val('Frigo');
+            } else {
+                $('#model').val('Trailer');
+            }
+
+            const vehicleGroups = document.getElementById("grupa_pojazdow_id");
+            for(let group of vehicleGroups) {
+                if (group.innerText.toLowerCase() === 'trailers') {
+                    $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
+                    break;
+                };
+            };
+
+            $('#vehicle_type_id').select2('val', 4).trigger('change')
+
+
+            window.setTimeout(() => {
+                const vehicleBrands = $("#marka_id")[0];
+                for(let brand of vehicleBrands) {
+                    if (brand.innerText === 'Schmitz Cargobull') {
+                        $("#marka_id").select2('val', brand.value).trigger("change");
+                        break;
+                    };
+                };
+            }, 1000)
+
+            $('[name=config_db_id]').select2('val', 9).trigger('change');
+
+            if($('#can')[0].checked) $('#can').click();
+        }
 
 
 
