@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.12.15
+// @version      0.12.17
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -14,11 +14,12 @@
 (function() {
     'use strict';
 
-    let topBar = null;
     const iframeId = 'myNewIframe';
+    let topBar = null;
     let win = null;
     let configButtons = null;
     let container = null;
+
     const fadeTime = '0.225';
     const containerOpacity = '0.95';
 
@@ -26,7 +27,7 @@
         btnGroup.classList.add('btn-group');
         btnGroup.role = 'group';
         btnGroup.id = 'btnGroup';
-        btnGroup.style = 'position:absolute; right:250px; border-radius: 5px; box-shadow: 2px 2px 12px -1px rgba(0, 0, 0, 0.5)';
+        btnGroup.style = 'margin-left: 15px; border-radius: 5px; box-shadow: 2px 2px 12px -1px rgba(0, 0, 0, 0.5)';
 
     const newBtn = document.createElement('button');
         newBtn.type = 'button';
@@ -45,8 +46,8 @@
         resetBtn.onclick = reloadIframe;
 
     setTimeout(() => {
-        topBar = document.getElementsByClassName('col-sm-5')[0].children[0];
-        topBar.insertBefore(btnGroup, topBar.firstChild);
+        topBar = document.querySelector('ol .row');
+        topBar.appendChild(btnGroup);
 
         document.getElementById('btnGroup').append(newBtn);
         document.getElementById('btnGroup').append(resetBtn);
@@ -62,16 +63,16 @@
 
     function createIframe(posX, posY) {
 
-        const iframeHeight = document.querySelector('[placeholder="IMEI urządzenia"]').value > 999999999 ? '605px' : '425px';
+        const iframeHeight = document.querySelector('[placeholder="IMEI urządzenia"]').value > 999999999 ? '600px' : '425px';
         const iframeWidth = '1000px';
         const iframe = `
             <div id='iframeContainer'
                 style='visibility: visible; background-image: linear-gradient(transparent 0 25px, #353535 25px 72%, white); border-radius: 7px; z-index: 1035; display: block;
-                position: absolute;width: ${iframeWidth};height: ${iframeHeight}; left: ${posX - 1000}px; top: ${posY + 20}px;
+                position: absolute;width: ${iframeWidth};height: ${iframeHeight}; left: calc(50vw - 500px); top: ${posY + 200}px;
                 box-shadow: rgba(0, 0, 0, 0.5) -1px -1px 12px 0px, rgba(0, 0, 0, 0.4) 8px 8px 12px 0px; opacity: 0; transition:opacity ${fadeTime}s ease-in-out;'
             >
-                <div 
-                    id='topPanel' 
+                <div
+                    id='topPanel'
                     style='width: 100%; height: 25px; background-color: green; cursor: grab;
                     position:relative; z-index: 1001; border-radius: 7px 7px 0 0;'
                 >
