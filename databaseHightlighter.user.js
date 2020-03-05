@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.5
+// @version      0.10.7
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -35,8 +35,9 @@ let blackboxProducer = '';
     }, 1000);
 
     function checkData() {
-        if(!blackboxProducer) blackboxProducer = guessBlackbox();
+        if(document.getElementsByClassName('vuetable-empty-result').length) return;
 
+        if(!blackboxProducer) blackboxProducer = guessBlackbox();
 		clearElements();
 
         loopThroughColumn("Szerokość", lokalizacja);
@@ -141,7 +142,6 @@ function incorrectTachoStatus(el) {
 
 function markEmptyCanValues() {
     const canHeaders = ['Poziom paliwa', 'Zuż. paliwa', 'Dystans (CAN)', 'Prędkość (CAN)', 'Obroty silnika (CAN)'];
-console.log(1)
     for(let header of canHeaders) {
         if(isHexDataAvailable(header)) {
             loopThroughColumn(header, (el) => {
@@ -194,8 +194,6 @@ function guessBlackbox() {
     try {
         const id = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value;
         const left = id.slice(0,3);
-
-        console.log(id, left)
 
         if(left === 'H1_' || left === 'H3_' || +id < 99999) {
             return 'setivo'
