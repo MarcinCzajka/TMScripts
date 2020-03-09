@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28
+	// @version      2.28.1
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -15,7 +15,7 @@
 
 	(function() {
 		'use strict';
-	
+
 		let fuelCapacity = 0;
 
 		if(!document.getElementById('newBar')) {
@@ -23,7 +23,7 @@
 				newBar.setAttribute('colspan', '6');
 				newBar.id = 'newBar';
 			newBar.style.width = '100%';
-			
+
 			const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
 
 			newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
@@ -32,7 +32,7 @@
 			newBar.insertAdjacentHTML('beforeend', `<input value="Odklikaj CAN" 	  id="canService"   ${inputStyling}></input>`);
 			newBar.insertAdjacentHTML('beforeend', `<input value="Serwis sondy" 	  id="probeService" ${inputStyling}></input>`);
 			newBar.insertAdjacentHTML('beforeend', `<input value="Nowy wątek" 	      id="newThread"    ${inputStyling}></input>`);
-			
+
 			$(".break")[0].children[0].append(newBar);
 
 			document.getElementById("truckProbe").addEventListener('click', truckProbe);
@@ -58,7 +58,7 @@
 			$("#prog_wartosci_paliwa").val(litersByPercent(3.5));
 			$("#prog_weryfikujacy_paliwa_u").val(litersByPercent(2));
 			$("#prog_wartosci_paliwa_u").val(litersByPercent(2));
-			
+
 			usuwajPunktyZerowe(false);
 		}
 
@@ -77,7 +77,7 @@
 			$("#prog_wartosci_paliwa").val((percentOfFuel > 50 ? 50 : percentOfFuel));
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
-			
+
 			usuwajPunktyZerowe(true);
 		}
 
@@ -99,7 +99,7 @@
 			click("#rejestruj_obroty2");
 			click("#tachometr_w_pojezdzie3");
 			click("#gen_zdarzen_predkosc1");
-			
+
 			if(!fuelCapacity) {
 				const fallbackCapacity = 999
 
@@ -123,7 +123,7 @@
 			$("#prog_wartosci_paliwa").val(litersByPercent(10));
 			$("#prog_weryfikujacy_paliwa_u").val(0);
 			$("#prog_wartosci_paliwa_u").val(0);
-			
+
 			usuwajPunktyZerowe(true);
 		}
 
@@ -157,12 +157,12 @@
 		}
 
 		function generalSettings(targetElement) {
-			
+
             flashButton(targetElement);
-			
+
 			//Wersja algorytmu
 			$('[name=algorithm_version').select2('val', 5);
-			
+
 			$("#wywlaszczenie_zdarzenia").val(1000);
 
 			fuelCapacity = 0;
@@ -178,7 +178,6 @@
 			$("#liczba_przedzialow").val(2);
 			$("#liczba_przedzialow_u").val(2);
 
-			click("#niewylaczony_zaplon");
 			click("#bez_zaniku_zasilania");
 			click("#bez_zaniku_zasilania_u");
 			click("#bez_zdarzenia_jazda");
@@ -199,7 +198,7 @@
 
 		function canServicePreset(e) {
 			e.preventDefault();
-			
+
 			flashButton(e.target.id);
 
 			$("#sposob_gener_zdarzen1").click();
@@ -218,7 +217,7 @@
 
 		function probeServicePreset(e) {
 			e.preventDefault();
-			
+
 			flashButton(e.target.id);
 
 			unclick("#paliwo_z_sondy");
@@ -257,7 +256,7 @@
 		function createNewThread(e) {
 			e.preventDefault();
 			flashButton(e.target.id);
-			
+
 			if ($("input[name=datetime_to]").val() === "") {
 				alert('Wprowadź datę zamknięcia obecnego wątku.');
 			} else {
@@ -293,5 +292,5 @@
 
 			return `${year}-${month}-${day} ${d.toLocaleTimeString()}`
 		}
-		
+
 	})();
