@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.1
+	// @version      2.28.3
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -24,7 +24,7 @@
 				newBar.id = 'newBar';
 			newBar.style.width = '100%';
 
-			const inputStyling = 'style="margin-right:5px;height:90%;cursor:pointer;" type="button"';
+			const inputStyling = 'style="margin-right:5px;height:25px;cursor:pointer;" type="button"';
 
 			newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Sonda"  id="truckProbe"   ${inputStyling}></input>`);
 			newBar.insertAdjacentHTML('beforeend', `<input value="Ciężarowy - Pływak" id="truckFloater" ${inputStyling}></input>`);
@@ -178,6 +178,7 @@
 			$("#liczba_przedzialow").val(2);
 			$("#liczba_przedzialow_u").val(2);
 
+            unclick("#niewylaczony_zaplon");
 			click("#bez_zaniku_zasilania");
 			click("#bez_zaniku_zasilania_u");
 			click("#bez_zdarzenia_jazda");
