@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.3
+	// @version      2.28.4
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -128,6 +128,8 @@
 		}
 
 		function generalCarSettings() {
+            unclick('#corector_can_distance');
+
 			$("#min_napiecie_stacji").val(12);
 			$("#s2id_poprawnosc_tacho_id").select2('val', 1);
 			$("#s2id_paliwo_z_sondy_dyst").select2('val', 3);
