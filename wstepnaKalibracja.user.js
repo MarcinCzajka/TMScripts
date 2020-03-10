@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.19.5
+// @version      1.20.5
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -454,6 +454,8 @@
             return;
         }
 
+        let url = 'vehicle/data/data';
+
         const data = {
             'pokazuj_nr_rejestracyjny': 1,
             'nr_rejestracyjny': $('#nr_rejestracyjny').val(),
@@ -463,8 +465,16 @@
             'nr_boczny_pojazdu': ''
         };
 
+        if($('#vehicle_type_id').val() === '4') {
+            data.is_trailer = 1;
+            data.is_active_trailer = 1;
+            data.marka_id = $('#trailer_brand_id').val();
+
+            url = 'trailer/main/save';
+        }
+
 		$.ajax({
-			url: `${baseUrl}/api/vehicle/data/data/${vehicleId}`,
+			url: `${baseUrl}/api/${url}/${vehicleId}`,
 			type: 'POST',
 			data: data,
 			dataType: 'text',
