@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.4.7
+// @version      0.5.8
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -13,8 +13,6 @@
 
 (function() {
     'use strict';
-
-    console.log(111)
 
     if(window.location.search.includes('chat=true')) {
         const query = window.location.search;
@@ -285,14 +283,24 @@
                 listenForSms(60000);
             });
 
-            $('#sendBtn').on('click', () => {
+            $('#textarea').on('keypress', (e) => {
+                if(e.charCode === 13 && !e.shiftKey) {
+                    handleSend(e);
+                }
+            });
+
+            $('#sendBtn').on('click', handleSend);
+
+            function handleSend(e) {
+                e.preventDefault();
+
                 if($('#textarea').val() === '') return;
 
                 sendSms($('#nrInput').val(), $('#textarea').val());
                 $('#textarea').val('');
 
                 listenForSms(60000);
-            });
+            }
         }
 
         function scrollDown() {
