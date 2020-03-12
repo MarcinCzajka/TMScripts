@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.5.8
+// @version      0.6.8
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -220,6 +220,27 @@
 
             $('.smsContent').css('overflow-wrap', 'break-word');
             $('.smsContent').css('font-weight', '700');
+
+            addResendBtn();
+        }
+
+        function addResendBtn() {
+            $('.message').append(createResentBtn());
+            $('.isw-mail').css({cursor: 'pointer', position: 'absolute', right: '5px', top: '5px'});
+
+            $('.isw-mail').on('click', (e) => {
+                $('#textarea').val(e.target.previousElementSibling.innerText)
+
+                handleSend(e);
+            })
+        }
+
+        function createResentBtn() {
+            const result = document.createElement('span')
+            result.classList.add('isw-mail')
+            result.title = 'Wyślij jeszcze raz';
+
+            return result
         }
 
         function createNrInput() {
@@ -291,16 +312,17 @@
 
             $('#sendBtn').on('click', handleSend);
 
-            function handleSend(e) {
-                e.preventDefault();
+        }
 
-                if($('#textarea').val() === '') return;
+        function handleSend(e) {
+            e.preventDefault();
 
-                sendSms($('#nrInput').val(), $('#textarea').val());
-                $('#textarea').val('');
+            if($('#textarea').val() === '') return;
 
-                listenForSms(60000);
-            }
+            sendSms($('#nrInput').val(), $('#textarea').val());
+            $('#textarea').val('');
+
+            listenForSms(60000);
         }
 
         function scrollDown() {
