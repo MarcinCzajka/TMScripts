@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.8
+// @version      0.6.9
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -131,6 +131,7 @@
                 $('.remove').remove();
 
                 styleSms();
+                addResendBtn();
                 scrollDown();
 
                 updateDate();
@@ -220,8 +221,6 @@
 
             $('.smsContent').css('overflow-wrap', 'break-word');
             $('.smsContent').css('font-weight', '700');
-
-            addResendBtn();
         }
 
         function addResendBtn() {
@@ -229,6 +228,7 @@
             $('.isw-mail').css({cursor: 'pointer', position: 'absolute', right: '5px', top: '5px'});
 
             $('.isw-mail').on('click', (e) => {
+                if(!confirm('Czy na pewno chcesz wysłać tą wiadomość ponownie?')) return
                 $('#textarea').val(e.target.previousElementSibling.innerText)
 
                 handleSend(e);
