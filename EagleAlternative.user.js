@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.10
+// @version      0.6.11
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -221,6 +221,7 @@
 
             $('.smsContent').css('overflow-wrap', 'break-word');
             $('.smsContent').css('font-weight', '700');
+            $('.smsContent').css('margin-right', '25px');
         }
 
         function addResendBtn() {
