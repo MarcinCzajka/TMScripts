@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.9
+// @version      0.6.10
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -281,7 +281,7 @@
                 refreshBtn.classList.add('btn-success');
                 refreshBtn.innerText = 'Odśwież';
                 refreshBtn.style = 'width: 100px; margin-left: calc(100% - 220px);';
-                refreshBtn.title = 'Odświeża co 3 sekundy przez minutę';
+                refreshBtn.title = 'Odświeża co 3 sekundy przez 5 minut';
 
             const sendBtn = document.createElement('button');
                 sendBtn.id = 'sendBtn';
@@ -301,7 +301,7 @@
             $('#inputContainer').append(resultWindow);
 
             $('#refreshBtn').on('click', () => {
-                listenForSms(60000);
+                listenForSms(300000);
             });
 
             $('#textarea').on('keypress', (e) => {
@@ -322,7 +322,7 @@
             sendSms($('#nrInput').val(), $('#textarea').val());
             $('#textarea').val('');
 
-            listenForSms(60000);
+            listenForSms(300000);
         }
 
         function scrollDown() {
