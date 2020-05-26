@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.6.11
+// @version      0.7.11
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -14,8 +14,13 @@
 (function() {
     'use strict';
 
-    if(window.location.search.includes('chat=true')) {
-        const query = window.location.search;
+    const query = window.location.search;
+
+    if(query.includes('chat=true')) {
+        showAltEagle();
+    }
+
+    function showAltEagle() {
 
         let interval = null;
         let flasher = null;
@@ -24,7 +29,7 @@
 
         const csrf = $('csrf_test_name').first().val();
 
-        $('body').find('div').remove();
+        $('.workplace').remove();
 
         const container = document.createElement('div');
             container.id = 'container';

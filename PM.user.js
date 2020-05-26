@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.31.1
+// @version      4.32.1
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -295,16 +295,33 @@
 
                     //TachoReader
                     if(userJSON.d8 === "Tachoreader") {
-                        click('#tachoreader');
+                        //FMB640
+                        if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
+                            click('#fmb640');
 
-                        if(userJSON.modelTacho === "Siemens")
-                            $("#s2id_tachoreader_model_id").select2('val', 1);
-                        if(userJSON.modelTacho === "Stonerige")
-                            $("#s2id_tachoreader_model_id").select2('val', 2);
+                            if(userJSON.modelTacho === "Siemens") {
+                                $("#s2id_fmb640_model_id").select2('val', 1);
+                            } else if(userJSON.modelTacho === "Stonerige") {
+                                $("#s2id_fmb640_model_id").select2('val', 2);
+                            }
 
-                        $("#tachoreader_status").val(2);
+                            $("#fmb640_status").val('111');
 
-                        $('#tachoreader_nr_firmware').val(userJSON.wersjaTacho);
+                            $('#fmb640_nr_firmware').val(userJSON.wersjaTacho);
+
+                        } else {
+                            click('#tachoreader');
+
+                            if(userJSON.modelTacho === "Siemens") {
+                                $("#s2id_tachoreader_model_id").select2('val', 1);
+                            } else if(userJSON.modelTacho === "Stonerige") {
+                                $("#s2id_tachoreader_model_id").select2('val', 2);
+                            }
+
+                            $("#tachoreader_status").val(2);
+
+                            $('#tachoreader_nr_firmware').val(userJSON.wersjaTacho);
+                        }
                     }
 
                     //Przystawka CAN
