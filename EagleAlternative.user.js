@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.7.11
+// @version      0.8.11
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -49,8 +49,7 @@
         $('#container').append(smsContainer);
 
         //Make container scrollable
-        $('#smsContainer').css('overflow-x', 'hidden');
-        $('#smsContainer').css('overflow-y', 'auto');
+        $('#smsContainer').css('overflow', 'hidden auto');
         $('#smsContainer').css('height', '55vh');
 
         createInputPanel();
@@ -96,44 +95,47 @@
 
                 if(!smsCount) return;
 
-                $('[type=hidden]').remove();
-                $('.message_metadata').remove();
-                $('.hidden').remove();
-                $('.optionmenu').remove();
-                $('.nicecheckbox').remove();
-                $('.icon-folder-open').remove();
-                $('.message_preview').parent().prev().remove();
-                $('.message_preview').remove();
-                $('.icon-arrow-up').parent().remove();
-                $('.message_content').prev().remove();
+                $('#contact_container').remove();
 
-                for(let i = 1; i <= smsCount; i++){
+                for(let i = smsCount; i > 0; i--){
                     const div = document.createElement('div');
-                    div.classList.add('sms');
+                        div.classList.add('sms');
 
-                    for(let x = 1; x <= 3; x++) {
-                        if(x === 1) {
-                            smsContainer.children[0].classList.add('timestamp');
-                        } else if(x === 2) {
-                            if(smsContainer.children[0].children.length === 2) {
-                                div.classList.add('response');
-                            } else {
-                                div.classList.add('message');
-                            }
-                            smsContainer.children[0].classList.add('remove');
-                        } else {
-                            smsContainer.children[0].classList.add('smsContent');
+                    const displace = (i - 1) * 12;
+
+                    const timestamp = $('#smsContainer').children().eq(4 + displace).children()[0];
+                        timestamp.classList.add('timestamp')
+                        div.append(timestamp);
+
+                    const smsContent = $('.message_content')[i - 1];
+                        smsContent.classList.add('smsContent');
+                        div.append(smsContent)
+
+                    if($('#smsContainer').children().eq(5 + displace).children().eq(1).children().first().hasClass('icon-arrow-up')) {
+                        div.classList.add('message');
+
+                        const errorElement = $('.detail_area').eq(i - 1).find('tbody')[0];
+
+                        const deliveryStatus = errorElement.children[3].children[2].innerText;
+                        const status = errorElement.children[4].children[2].innerText;
+
+                        if(deliveryStatus !== 'DeliveryOK' && status !== '-1') {
+                            div.classList.add('error');
+
+                            $(div).append(`<div class='smsError'><p>Status modemu: ${deliveryStatus}</p><p>Kod statusu: ${status}</p></div>`);
                         }
+                    } else {
+                        div.classList.add('response');
+                    }
 
-                        div.appendChild(smsContainer.children[0]);
-                    };
-                    $('#smsContainer').append(div);
+                    $('body').append(div);
+                }
 
-                    $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
-                    $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
-                };
+                $('#smsContainer').empty();
+                $.each($('.sms'), (index, element) => { $('#smsContainer').prepend(element) })
 
-                $('.remove').remove();
+                $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
+                $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
 
                 styleSms();
                 addResendBtn();
@@ -227,6 +229,10 @@
             $('.smsContent').css('overflow-wrap', 'break-word');
             $('.smsContent').css('font-weight', '700');
             $('.smsContent').css('margin-right', '25px');
+
+            $('.message.error').css('background-color', '#F95');
+            $('.smsError').css('text-align', 'center');
+            $('.smsError p').css('margin', '0');
         }
 
         function addResendBtn() {
