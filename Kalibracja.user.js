@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Kalibracja
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.20.1
+// @version      1.21.2
 // @description  Kalibracja
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
@@ -45,8 +45,8 @@
 
         intervalCount++;
     }, 2000);
-	
-	
+
+
 
 	const fueltanksCount = document.getElementsByClassName('canvas-container').length / 2;
 	for(let index = 1, panelsCount = 1; index <= 6; index++) {
@@ -60,7 +60,7 @@
             }
         }
     };
-    
+
     const changeVolateInput = `<input id="changeVoltage" title="Zmień napięcia dla wszystkich zbiorników" style="width:22px;margin:3px 3px 3px 14%;border:1px solid #50C8BB"></input>`
     document.getElementById('toolkit1').insertAdjacentHTML('beforeend', changeVolateInput);
     document.getElementById("changeVoltage").addEventListener('change', function(e) {setVoltageForAllTanks(e.target.value)});
@@ -100,7 +100,7 @@
 					<img src="/api/media/images/newLayout/cross_red_small.png" style="position: absolute;width: 9px;left: 75%;top: calc(15% - 4px);">
 			   </div>
 			</div>`;
-			
+
         document.getElementsByClassName('canvas-container')[(panelsCount * 2) -2].nextElementSibling.insertAdjacentHTML('beforeend', newDiv);
 
 		const calibrationManager = eval('cm' + index);
@@ -112,7 +112,7 @@
 		});
 		document.getElementById(`deletePointsBtn${panelsCount}`).addEventListener('click', function() {removePoints(calibrationManager)});
     };
-    
+
     function setVoltageForAllTanks(val) {
         for(let i = 0; i < fueltanksCount; i++) {
             const calibrationManager = eval(`cm${i + 1}`);
@@ -125,36 +125,58 @@
         };
     }
 
-function makePoints(obj, textboxId) {
-    
-    obj.removeAllPoints();
+    function makePoints(obj, textboxId) {
 
-	const addValue = parseInt($(`#${textboxId}`).val() || 0);
+        const addValue = parseInt($(`#${textboxId}`).val() || 0);
 
-    obj.setPointsXY([
-        [0,300],
-        [75, 225 + addValue],
-        [150, 150],
-        [225, 75 - addValue],
-        [300,0]
-    ]);
+        const points = [
+            [0,300],
+            [75, 225 + addValue],
+            [150, 150],
+            [225, 75 - addValue],
+            [300,0]
+        ];
 
-    obj.redrawScreen();
+        setPoints(obj, points);
+    };
 
-	$('#save_calibration').css('opacity', 1);
-};
 
-function removePoints(obj) {
-	obj.removeAllPoints();
-	
-	obj.setPointsXY([
-        [0,300],
-        [300,0]
-    ]);
-	
-	obj.redrawScreen();
-	
-	$('#save_calibration').css('opacity', 1);
-};
+    function setPoints(obj, points) {
+
+        obj.removeAllPoints();
+        obj.setPointsXY(points);
+        obj.redrawScreen();
+
+        $('#save_calibration').css('opacity', 1);
+    };
+
+    function volvoCalibration(value = 0, offset = 0) {
+
+        const topX = 75 + +value;
+        const topY = 225 + +value;
+        const bottomX = 225 - +value;
+        const bottomY = 75 - +value;
+        const offsetX = (topX / 2) + +offset;
+        const offsetY = (topY + (topX / 2)) - +offset;
+        const bottomOffsetX = bottomX + (topX - offsetX);
+        const bottomOffsetY = bottomY - (topX - offsetX);
+
+        return [
+            [0,300],
+            [offsetX, offsetY],
+            [topX, topY],
+            [150, 150],
+            [bottomX, bottomY],
+            [bottomOffsetX, bottomOffsetY],
+            [300,0]
+        ]
+    };
+
+    function removePoints(obj) {
+        setPoints(obj, [
+            [0,300],
+            [300,0]
+        ]);
+    };
 
 })();
