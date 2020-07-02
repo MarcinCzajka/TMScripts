@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.2
+// @version      0.0.3
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -113,6 +113,9 @@
                 return result ? 'Wł.' : 'Wył.'
             case 'power':
             case 'battery':
+                return parseFloat(result).toFixed(2)
+            case 'analog_input1':
+            case 'analog_input2':
                 return parseFloat(result).toFixed(2)
             case 'speed':
                 return parseFloat(result).toFixed(0) + ' km/h'
