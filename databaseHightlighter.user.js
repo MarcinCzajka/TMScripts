@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.7
+// @version      0.10.8
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
@@ -27,14 +27,14 @@ let blackboxProducer = '';
 
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutationRecord) {
-                if(mutationRecord.target.style.display !== 'none') checkData();
+                if(mutationRecord.target.style.display !== 'none') window.checkData();
             });
         });
 
         observer.observe(document.getElementsByTagName('table')[0], { attributes : true, attributeFilter : ['style'] });
     }, 1000);
 
-    function checkData() {
+    window.checkData = function () {
         if(document.getElementsByClassName('vuetable-empty-result').length) return;
 
         if(!blackboxProducer) blackboxProducer = guessBlackbox();

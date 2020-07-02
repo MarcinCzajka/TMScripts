@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.1
+// @version      0.0.2
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -65,6 +65,8 @@
                 lastDate = newDate;
             }
         }
+
+        if(window.checkData) window.checkData();
     };
 
     function appendToTable(el) {
