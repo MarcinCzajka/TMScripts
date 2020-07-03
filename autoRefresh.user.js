@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.4
+// @version      0.0.5
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -39,15 +39,12 @@
         if(!data) return false;
 
         const tableHead = document.querySelector('thead').children[0].children;
-        let lastDate = getValueByColName('created_at', 0) || document.getElementsByClassName('flatpickr-input')[0].value;
-            lastDate = new Date( lastDate );
+        let lastSeq = getValueByColName('seq', 0)
 
         for(let i = data.length - 1; i >= 0; i--) {
-            const newDate = new Date( data[i]['created_at'].$date );
-            //Reset miliseconds as GPS panel get rid of them
-                newDate.setMilliseconds(0);
+            const newSeq = data[i]['seq'];
 
-            if(lastDate < newDate) {
+            if(lastSeq < newSeq) {
                 const newRow = document.createElement('tr');
                 newRow.classList.add('showGently', 'customFrame');
 
@@ -64,7 +61,7 @@
                 replaceLocationWithLink(newRow);
                 appendToTable(newRow);
 
-                lastDate = newDate;
+                lastSeq = newSeq;
             }
         }
 
@@ -99,7 +96,7 @@
     function formatValue(title, val) {
         let result = val;
 
-        if(typeof result === 'undefined') return "" 
+        if(typeof result === 'undefined') return ""
 
         switch(title) {
             case 'received_at':
