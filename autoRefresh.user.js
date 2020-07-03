@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.3
+// @version      0.0.4
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -36,9 +36,11 @@
         const blob = await getData(url);
 
         const data = blob.data;
+        if(!data) return false;
 
         const tableHead = document.querySelector('thead').children[0].children;
-        let lastDate = new Date( getValueByColName('created_at', 0) );
+        let lastDate = getValueByColName('created_at', 0) || document.getElementsByClassName('flatpickr-input')[0].value;
+            lastDate = new Date( lastDate );
 
         for(let i = data.length - 1; i >= 0; i--) {
             const newDate = new Date( data[i]['created_at'].$date );
@@ -67,6 +69,8 @@
         }
 
         if(window.checkData) window.checkData();
+
+        return true
     };
 
     function appendToTable(el) {
@@ -94,6 +98,8 @@
 
     function formatValue(title, val) {
         let result = val;
+
+        if(typeof result === 'undefined') return "" 
 
         switch(title) {
             case 'received_at':
@@ -126,12 +132,14 @@
             case 'engine_temp':
                 return result + ' °C'
             default:
-                return typeof result === 'undefined' ? "" : result
+                return result
         }
     }
 
     function getValueByColName(name, rowIndex = 0) {
         const tableIndex = getIndexOfTitle(name);
+
+        if(document.getElementsByClassName('vuetable-empty-result').length) return false
 
         return document.querySelector('tbody').children[rowIndex].children[tableIndex].innerText
     }
