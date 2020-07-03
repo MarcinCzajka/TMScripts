@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.5
+// @version      0.0.6
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -38,6 +38,9 @@
         const data = blob.data;
         if(!data) return false;
 
+        //Dont proceed if table is refreshing using native code
+        if(document.querySelector('table').style.display === 'none') return false;
+
         const tableHead = document.querySelector('thead').children[0].children;
         let lastSeq = getValueByColName('seq', 0)
 
@@ -60,7 +63,6 @@
 
                 replaceLocationWithLink(newRow);
                 appendToTable(newRow);
-
                 lastSeq = newSeq;
             }
         }
@@ -168,14 +170,11 @@
     }
 
     function clearNewFrames() {
-        //Sometimes frames are cleared but they will download afterwards due to pending HTTP request
-        setTimeout(function() {
-            const frames = document.getElementsByClassName('customFrame');
+        const frames = document.getElementsByClassName('customFrame');
 
-            while(frames[0]) {
-                frames[0].parentNode.removeChild(frames[0]);
-            }
-        }, 20)
+        while(frames[0]) {
+            frames[0].parentNode.removeChild(frames[0]);
+        }
     }
 
     function createRefreshButton() {
