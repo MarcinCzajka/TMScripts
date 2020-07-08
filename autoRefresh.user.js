@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.6
+// @version      0.0.7
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -19,7 +19,10 @@
     let isRefreshing = null;
 
     window.onload = function () {
-        document.getElementsByClassName('btn mr-sm-2 btn-secondary btn-sm')[0].addEventListener('click', clearNewFrames);
+        document.querySelectorAll('button.btn.mr-sm-2.btn-sm').forEach(element => {
+            element.addEventListener('click', clearNewFrames);
+        })
+
 
         createRefreshButton();
         createAnimationNode();
@@ -175,6 +178,9 @@
         while(frames[0]) {
             frames[0].parentNode.removeChild(frames[0]);
         }
+
+        //Disable refreshing
+        refreshClickEventHandler(null, true);
     }
 
     function createRefreshButton() {
@@ -201,14 +207,14 @@
         document.getElementsByClassName('form-group mr-sm-2 mb-sm-2')[1].append(btnGroup);
     }
 
-    function refreshClickEventHandler() {
-        if(!isRefreshing) {
+    function refreshClickEventHandler(e, turnOff = false) {
+        if(!isRefreshing && !turnOff) {
             isRefreshing = setInterval(getFrames, refreshInterval)
 
             setButtonStyle(true);
 
             getFrames();
-        } else {
+        } else if(isRefreshing) {
             clearInterval(isRefreshing);
             isRefreshing = null;
 
