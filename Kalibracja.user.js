@@ -86,7 +86,7 @@
 
 	function createButtonPanel(index, panelsCount) {
 		const newDiv =
-			`<div id='toolkit${panelsCount}' style="position: relative;display: flex;flex-direction: row;">
+			`<div id='toolkit${panelsCount}' style="position: relative;display: flex;flex-direction: row; height: 33px; transition: height .4s ease-in-out">
 				<div id='newButton${panelsCount}' title='Dodaj 3 punkty' style='position:relative;height:27px;width:27px;padding:0;margin:3px 0 3px 0;cursor:pointer;'>
 				  <div style='position:absolute;width:27px;height:27px;left:0px;border:1px solid #50C8BB;background-image:url("/api/media/images/newLayout/images/under.png");background-size:27px;background-position:left top'></div>
 				  <div style='position:absolute;width:50%;height:27px;right:-2px;border:1px solid #50C8BB;border-left:0;background-image:url("/api/media/images/newLayout/images/above.png");background-size:27px;background-position:right top'></div>

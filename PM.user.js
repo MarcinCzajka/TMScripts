@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.32.1
+// @version      4.35.0
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -17,7 +17,6 @@
 
     const headerCaption = document.getElementById('bottom_header').children[1].children[0].innerText;
     if(headerCaption.includes("Protokół montażowy") && document.getElementById("take-trigger")) {
-
 
         const myTextbox = document.createElement("div");
         myTextbox.innerHTML = `
@@ -56,13 +55,12 @@
 
             setTimeout(() => {
                 try {
-
                     const userJSON = JSON.parse(document.getElementById("myTextbox").value);
 
                     //Wybranie firmy
 					if($('#firma1_id').val() === "") {
 						const companies = document.getElementById("firma1_id");
-						const firma = (userJSON.firma === "KIM JOHANSEN KJ" ? "KIM" : userJSON.firma);
+						const firma = userJSON.firma;
 						let companyValue = '';
 
 						for(let company of companies) {
@@ -79,14 +77,24 @@
 						};
 					};
 
-                    const vehicleGroups = document.getElementById("grupa_pojazdow_id");
-                    const vehicleGroupNames = ['wszystkie', 'alle', 'kim', 'todos vehiculos', 'auto', 'all_trucks'];
-                    for(let group of vehicleGroups) {
-                        if (vehicleGroupNames.indexOf(group.innerText.toLowerCase()) > -1) {
-                            $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
-                            break;
-                        };
-                    };
+                    //Wait for vehicle groups to fetch and then pick one up
+                    window.setTimeout(() => {
+                        const vehicleGroups = document.getElementById("grupa_pojazdow_id");
+                        const vehicleGroupNames = userJSON.grupa || ['wszystkie', 'alle', 'todos vehiculos', 'auto', 'all_trucks'];
+                        for(let group of vehicleGroups) {
+                            if(typeof vehicleGroupNames === 'string') {
+                                if (group.innerText.toLowerCase() === vehicleGroupNames.toLowerCase()) {
+                                    $('#grupa_pojazdow_id').select2('val', group.value).trigger('change');
+                                    break;
+                                }
+                            } else {
+                                if (vehicleGroupNames.indexOf(group.innerText.toLowerCase()) > -1) {
+                                    $('#grupa_pojazdow_id').select2('val', group.value).trigger('change');
+                                    break;
+                                }
+                            }
+                        }
+                    },0)
 
                     //Kategoria montażu
                     if(userJSON.monter === "Monter klienta" || !userJSON.monter) {
@@ -101,6 +109,18 @@
                         $("#type_id").select2('val', 1).trigger('change');
                     } else if(userJSON.type === "Upgrade") {
                         $("#type_id").select2('val', 2).trigger('change');
+
+                        const observer = new MutationObserver(function(mutations) {
+                            for(let regNumber of document.getElementById('reg_number_select').children){
+                                if(regNumber.innerText === userJSON.rej) {
+                                    $('#reg_number_select').select2('val', regNumber.value).trigger('change')
+                                    break
+                                }
+                            }
+
+                            this.disconnect();
+                        }).observe(document.getElementById('reg_number_select'), { childList : true });
+
                     } else if(userJSON.type.includes("Przekładka")) {
                         $("#type_id").select2('val', 3).trigger('change');
 
@@ -128,16 +148,27 @@
                     if( $("#nr_boczny_pojazdu").val() === '.') $("#nr_boczny_pojazdu").val('');
                     if(userJSON.boczny) $("#nr_boczny_pojazdu").val(userJSON.boczny);
 
-                    // Marka/model
-                    const trucksArray = ['DAF', 'IVECO', 'MAN', 'MERCEDES', 'RENAULT', 'SCANIA', 'VOLVO']
-                    if(trucksArray.indexOf(userJSON.marka) > -1) {
-                        $("#s2id_vehicle_type_id").select2("val", 1);
+                    // Rodzaj/Marka/model
+
+                    let vehicleType = 1;
+                    switch(userJSON.rodzaj) {
+                        case 'Osobowy':
+                            vehicleType = 2;
+                            break;
+                        case 'Maszyna':
+                            vehicleType = 3;
+                            break;
+                        case 'Naczepa':
+                            vehicleType = 4;
                     }
 
-                    const vehicleBrands = $("#marka_id")[0];
+                    $("#vehicle_type_id").select2("val", vehicleType).trigger('change');
+
+                    const typeSelector = vehicleType === 4 ? '#trailer_brand_id' : "#marka_id";
+                    const vehicleBrands = $(typeSelector)[0];
                     for(let brand of vehicleBrands) {
                         if (brand.innerText.toLowerCase() === userJSON.marka.toLowerCase()) {
-                            $("#marka_id").select2('val', brand.value).trigger("change");
+                            $(typeSelector).select2('val', brand.value).trigger("change");
                             break;
                         };
                     };
@@ -148,102 +179,104 @@
                     document.getElementsByName('nr_karty_sim')[0].value = userJSON.sim;
 
                     //Zaklikaj Rejestrator
-                    click('[name=rej]')
 
-
-                    //Typ rejestratora
-					if(userJSON.id.substring(0,1).toLowerCase() === 'h' && !userJSON.typRejestratora) userJSON.typRejestratora = "SE5";
-                    //Skaut
-                    if(userJSON.typRejestratora.substring(0, 2) === "SE") {
-                        const blackboxBrands = $("#rodzaj_rejestratora_id")[0];
-                        for(let brand of blackboxBrands) {
-                            if (brand.innerText === "Setivo") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', brand.value).trigger('change.select2');
-                                break;
-                            };
-                        };
-
-                        //Baza odczytów
-                        document.getElementById("database-config").style = "width: 260px; display: inline-block";
-
-                        const databaseConfigs = document.getElementsByName("config_db_id")[0];
-
-                        for(let config of databaseConfigs) {
-                            if (config.innerText === "[A] gps.ze-it.pl") {
-                                $('#database-config').find('.select2-container').select2('val', config.value).trigger('change.select2');
-                                break;
-                            };
-                        };
+                    if(userJSON.id) {
+                        click('[name=rej]')
 
                         //Typ rejestratora
-                        const blackboxType = $("#typ_rejestratora_id")[0];
-
-                        for(let type of blackboxType) {
-                            if (type.innerText === userJSON.typRejestratora) {
-                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
-                                break;
+                        if(userJSON.id.substring(0,1).toLowerCase() === 'h' && !userJSON.typRejestratora) userJSON.typRejestratora = "SE5";
+                        //Skaut
+                        if(userJSON.typRejestratora.substring(0, 2) === "SE") {
+                            const blackboxBrands = $("#rodzaj_rejestratora_id")[0];
+                            for(let brand of blackboxBrands) {
+                                if (brand.innerText === "Setivo") {
+                                    $("#rodzaj_rejestratora_id").select2('val', brand.value).trigger('change');
+                                    break;
+                                };
                             };
-                        }
-                    } else if(userJSON.typRejestratora === "Albatros" || (parseInt(userJSON.id) > 99999 && parseInt(userJSON.id) < 999999)) {
-                        const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
 
-                        for(let producent of blackboxProducent) {
-                            if (producent.innerText === "Albatros") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', producent.value).trigger('change.select2');
-                                break;
+                            //Baza odczytów
+                            document.getElementById("database-config").style = "width: 260px; display: inline-block";
+
+                            const databaseConfigs = document.getElementsByName("config_db_id")[0];
+
+                            for(let config of databaseConfigs) {
+                                if (config.innerText === "[A] gps.ze-it.pl") {
+                                    $('#database-config').find('.select2-container').select2('val', config.value).trigger('change');
+                                    break;
+                                };
+                            };
+
+                            //Typ rejestratora
+                            const blackboxType = $("#typ_rejestratora_id")[0];
+
+                            for(let type of blackboxType) {
+                                if (type.innerText === userJSON.typRejestratora) {
+                                    $("#typ_rejestratora_id").select2('val', type.value).trigger('change');
+                                    break;
+                                };
+                            }
+                        } else if(userJSON.typRejestratora === "Albatros" || (parseInt(userJSON.id) > 99999 && parseInt(userJSON.id) < 999999)) {
+                            const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
+
+                            for(let producent of blackboxProducent) {
+                                if (producent.innerText === "Albatros") {
+                                    $("#rodzaj_rejestratora_id").select2('val', producent.value).trigger('change');
+                                    break;
+                                };
+                            };
+
+                            const blackboxType = $("#typ_rejestratora_id")[0];
+
+                            for(let type of blackboxType) {
+                                if (type.innerText === "Albatros 8.5") {
+                                    $("#typ_rejestratora_id").select2('val', type.value).trigger('change');
+                                    break;
+                                };
+                            };
+
+
+                        } else if (userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
+                            const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
+
+                            for(let producent of blackboxProducent) {
+                                if (producent.innerText === "TELTONIKA") {
+                                    $("#rodzaj_rejestratora_id").select2('val', producent.value).trigger('change');
+                                    break;
+                                };
+                            };
+
+                            document.getElementById("database-config").style = "width: 260px; display: inline-block";
+
+                            const databaseConfigs = document.getElementsByName("config_db_id")[0];
+
+                            for (let config of databaseConfigs) {
+                                if (config.innerText === "[A] gps.ze-it.pl") {
+                                    $('#database-config').find('.select2-container').select2('val', config.value).trigger('change');
+                                    break;
+                                };
+                            };
+
+                            const blackboxType = $("#typ_rejestratora_id")[0];
+
+                            for(let type of blackboxType) {
+                                if (type.innerText === userJSON.typRejestratora) {
+                                    $("#typ_rejestratora_id").select2('val', type.value).trigger('change');
+                                    break;
+                                };
                             };
                         };
 
-                        const blackboxType = $("#typ_rejestratora_id")[0];
-
-                        for(let type of blackboxType) {
-                            if (type.innerText === "Albatros 8.5") {
-                                $("#s2id_typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
-                                break;
-                            };
-                        };
-
-
-                    } else if (userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
-                        const blackboxProducent = $("#rodzaj_rejestratora_id")[0];
-
-                        for(let producent of blackboxProducent) {
-                            if (producent.innerText === "TELTONIKA") {
-                                $("#s2id_rodzaj_rejestratora_id").select2('val', producent.value).trigger('change.select2');
-                                break;
-                            };
-                        };
-
-                        document.getElementById("database-config").style = "width: 260px; display: inline-block";
-
-                        const databaseConfigs = document.getElementsByName("config_db_id")[0];
-
-                        for (let config of databaseConfigs) {
-                            if (config.innerText === "[A] gps.ze-it.pl") {
-                                $('#database-config').find('.select2-container').select2('val', config.value).trigger('change.select2');
-                                break;
-                            };
-                        };
-
-                        const blackboxType = $("#typ_rejestratora_id")[0];
-
-                        for(let type of blackboxType) {
-                            if (type.innerText === userJSON.typRejestratora) {
-                                $("#typ_rejestratora_id").select2('val', type.value).trigger('change.select2');
-                                break;
-                            };
-                        };
-                    };
-
-                    //Id rejestratora
-                    $('[name=dscr]').val(userJSON.id);
-
-                    click('[name=rej_c]');
+                        //Id rejestratora
+                        $('[name=dscr]').first().val(userJSON.id);
+                        click('[name=rej_c]');
+                    }
 
                     //CAN
                     const canConfig = userJSON.canConfig;
-                    click("#can");
-                    if(canConfig) {
+                    if(canConfig !== '') {
+                        click("#can");
+
                         if(canConfig.canPredkosc.toLowerCase().includes("tak")) {
                             click("#spn84_c")
                             click("#spn1611_c")
@@ -256,8 +289,14 @@
                             click("#spanstatus_c")
                             click("#tagid_c")
                         }
+
                         if(canConfig.canWebasto.toLowerCase().includes("tak")) click("#webasto_can_c")
+
+                        //Przystawka CAN
+                        let rodzajPrzystawki = (userJSON.typRejestratora === "Albatros" ? "Przystawka Canlogistic (Albatros)" : "Przystawka indukcyjna magistrali CAN");
+                        addUrzadzenieDodatkoweInne(rodzajPrzystawki);
                     }
+
                     //D8
                     if(userJSON.d8) {
 						if(userJSON.d8 === "TMR") {
@@ -284,7 +323,7 @@
 							const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
 							for(let connection of d8Connections) {
 								if (connection.innerText === userJSON.d8) {
-									$("#s2id_kabel_d8_podlaczenie_id").select2('val', connection.value).trigger('change.select2');
+									$("#kabel_d8_podlaczenie_id").select2('val', connection.value).trigger('change');
 									break;
 								};
 							};
@@ -298,35 +337,17 @@
                         //FMB640
                         if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
                             click('#fmb640');
-
-                            if(userJSON.modelTacho === "Siemens") {
-                                $("#s2id_fmb640_model_id").select2('val', 1);
-                            } else if(userJSON.modelTacho === "Stonerige") {
-                                $("#s2id_fmb640_model_id").select2('val', 2);
-                            }
-
+                            $("#fmb640_model_id").select2('val', (userJSON.modelTacho === "Siemens" ? 1 : 2)).trigger('change');
                             $("#fmb640_status").val('111');
-
                             $('#fmb640_nr_firmware').val(userJSON.wersjaTacho);
 
                         } else {
                             click('#tachoreader');
-
-                            if(userJSON.modelTacho === "Siemens") {
-                                $("#s2id_tachoreader_model_id").select2('val', 1);
-                            } else if(userJSON.modelTacho === "Stonerige") {
-                                $("#s2id_tachoreader_model_id").select2('val', 2);
-                            }
-
+                            $("#s2id_tachoreader_model_id").select2('val', (userJSON.modelTacho === "Siemens" ? 1 : 2)).trigger('change');
                             $("#tachoreader_status").val(2);
-
                             $('#tachoreader_nr_firmware').val(userJSON.wersjaTacho);
                         }
                     }
-
-                    //Przystawka CAN
-						let rodzajPrzystawki = (userJSON.typRejestratora === "Albatros" ? "Przystawka Canlogistic (Albatros)" : "Przystawka indukcyjna magistrali CAN");
-						addUrzadzenieDodatkoweInne(rodzajPrzystawki);
 
                     //Urządzenia dodatkowe Din 1-5
                     if(userJSON.konfiguracja.toLowerCase().includes("webasto")) {
@@ -378,6 +399,16 @@
 
                         addUrzadzenieDodatkoweInne('TOM-TOM');
                         if(tomtomString) document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[4].children[0].value = tomtomString;
+                    }
+
+                    //Termometry
+                    if(userJSON.termometer1) {
+                        $("#uwagi").val(getUwagi() + `Termometr_1: ${userJSON.termometer1}`);
+                        addUrzadzenieDodatkoweInne('Termometr 1')
+                    }
+                    if(userJSON.termometer2) {
+                        $("#uwagi").val(getUwagi() + `Termometr_2: ${userJSON.termometer2}`);
+                        addUrzadzenieDodatkoweInne('Termometr 2')
                     }
 
                     //Sondy an0
@@ -434,21 +465,18 @@
                     const monterzy = $("#wykonal")[0];
                     for(let monter of monterzy) {
                         if (monter.innerText === userJSON.monter) {
-                            $("#s2id_wykonal").select2('val', monter.value).trigger("change");
+                            $("#wykonal").select2('val', monter.value).trigger("change");
                             break;
                         }
                     }
 
                     //Data i czas
                     $("#kiedy2").val(userJSON.date);
-                    $("#s2id_kiedy2hour").select2('val', userJSON.godzina).trigger('change.select2');
-                    $("#s2id_kiedy2minute").select2('val', userJSON.minuta).trigger('change.select2');
-
+                    $("#kiedy2hour").select2('val', userJSON.godzina).trigger('change');
+                    $("#kiedy2minute").select2('val', userJSON.minuta).trigger('change');
 
                     //Uwagi
-                    $("#uwagi").val(`${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`);
-
-                    if(userJSON.firma === 'KIM kj' && userJSON.model === 'CARGOBULL') kimTrailerException(userJSON);
+                    $("#uwagi").val(`${getUwagi()}${userJSON.czynnosci}${(userJSON.czynnosci ? '\n\n' : '')}${userJSON.konfiguracja}`.trim());
 
                 } catch (error) {
                     alert(error.message);
@@ -502,7 +530,7 @@
 
                 for (let itemColor of dinColors) {
                     if (itemColor.innerText === color) {
-                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', itemColor.value).trigger('change.select2');
+                        $(`#${newDinTr.children[2].children[2].id}`).select2('val', itemColor.value).trigger('change');
                         break;
                     };
                 };
@@ -523,12 +551,19 @@
             const newDeviceId = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[0].id;
             const devices = document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[1];
 
+            let deviceWasFound = false;
             for(let device of devices) {
                 if (device.innerText.toLowerCase() === urzadzenie.toLowerCase()) {
                     $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
+                    deviceWasFound = true;
                     break;
                 };
             };
+
+            if(!deviceWasFound) {
+                $('.odd.active.added.dino_tr').first().remove();
+                return
+            }
 
             const newCanTr = document.getElementsByClassName("active added dino_tr");
             newCanTr[newCanTr.length - 1].classList.add("bad");
@@ -551,56 +586,13 @@
 						};
 					});
 				});
-
         };
 
-        function kimTrailerException(userJSON) {
-            if(userJSON.termometer1) {
-                $("#uwagi").val($("#uwagi").val() + `\nTermometr_1: ${userJSON.termometer1}`);
+        function getUwagi() {
+            const uwagi = $("#uwagi").val();
 
-                addUrzadzenieDodatkoweInne('Termometr 1')
-
-            }
-            if(userJSON.termometer2) {
-                $("#uwagi").val($("#uwagi").val() + `\nTermometr_2: ${userJSON.termometer2}`);
-
-                addUrzadzenieDodatkoweInne('Termometr 2')
-
-            }
-
-            if(userJSON.termometer1 || userJSON.termometer2) {
-                $('#model').val('Frigo');
-            } else {
-                $('#model').val('Trailer');
-            }
-
-            const vehicleGroups = document.getElementById("grupa_pojazdow_id");
-            for(let group of vehicleGroups) {
-                if (group.innerText.toLowerCase() === 'trailers') {
-                    $('#s2id_grupa_pojazdow_id').select2('val', group.value).trigger('change');
-                    break;
-                };
-            };
-
-            $('#vehicle_type_id').select2('val', 4).trigger('change')
-
-
-            window.setTimeout(() => {
-                const vehicleBrands = $("#marka_id")[0];
-                for(let brand of vehicleBrands) {
-                    if (brand.innerText === 'Schmitz Cargobull') {
-                        $("#marka_id").select2('val', brand.value).trigger("change");
-                        break;
-                    };
-                };
-            }, 1000)
-
-            $('[name=config_db_id]').select2('val', 9).trigger('change');
-
-            if($('#can')[0].checked) $('#can').click();
+            return uwagi.length ? `${uwagi}\n\n` : ""
         }
-
-
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
