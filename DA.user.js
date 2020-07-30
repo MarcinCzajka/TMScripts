@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.4
+	// @version      2.28.5
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -228,8 +228,10 @@
 
 			$("#min_odchylenie").val(100);
 
+			fuelCapacity = getFuelCapacity();
+
 			$("#prog_weryfikujacy_paliwa").val(9999);
-			$("#prog_wartosci_paliwa").val(9999);
+			$("#prog_wartosci_paliwa").val(fuelCapacity / 2);
 			$("#prog_weryfikujacy_paliwa_u").val(9999);
 			$("#prog_wartosci_paliwa_u").val(9999);
 		}
@@ -248,6 +250,16 @@
 
 		function flashButton(id) {
 			$(`#${id}`).fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+		}
+
+		function getFuelCapacity() {
+			let result = 0;
+
+			for(let i = 1; i <= 6; i++) {
+				result += +$("#pojemnosc_zbiornika_" + i).val();
+			}
+
+			return result
 		}
 
 
