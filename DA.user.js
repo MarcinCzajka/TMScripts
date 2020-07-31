@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.5
+	// @version      2.28.6
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -231,7 +231,7 @@
 			fuelCapacity = getFuelCapacity();
 
 			$("#prog_weryfikujacy_paliwa").val(9999);
-			$("#prog_wartosci_paliwa").val(fuelCapacity / 2);
+			$("#prog_wartosci_paliwa").val(fuelCapacity / 4);
 			$("#prog_weryfikujacy_paliwa_u").val(9999);
 			$("#prog_wartosci_paliwa_u").val(9999);
 		}
