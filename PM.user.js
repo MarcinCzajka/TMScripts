@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.36.0
+// @version      4.36.1
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -56,11 +56,12 @@
             setTimeout(() => {
                 try {
                     const userJSON = JSON.parse(document.getElementById("myTextbox").value);
+                    const firma = userJSON.firma;
+                    const firmaWProtokole = $('#firma1_id').val();
 
                     //Wybranie firmy
-					if($('#firma1_id').val() === "") {
+					if(firmaWProtokole === "") {
 						const companies = document.getElementById("firma1_id");
-						const firma = userJSON.firma;
 						let companyValue = '';
 
 						for(let company of companies) {
@@ -73,9 +74,11 @@
 						if (companyValue) {
 							$('#firma1_id').select2('val', companyValue).trigger('change');
 						} else {
-							alert(`Nie znaleziono firmy ${userJSON.firma}`);
+							alert(`Nie znaleziono firmy ${firma}`);
 						};
-					};
+					} else {
+                        if(firmaWProtokole !== firma) alert(`Firma w protokole "${firmaWProtokole}" różni się od podanej firmy: "${firma}"`)
+                    }
 
                     //Wait for vehicle groups to fetch and then pick one up
                     window.setTimeout(() => {
