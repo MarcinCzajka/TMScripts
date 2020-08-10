@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.35.0
+// @version      4.36.0
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -320,9 +320,12 @@
 								$("#kabel_d8_producent_id").select2('val', 2);
 
 
-							const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
+                            const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
+                            let d8ToSelect = userJSON.d8;
+                            if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) d8ToSelect = 'FMB640'
+
 							for(let connection of d8Connections) {
-								if (connection.innerText === userJSON.d8) {
+								if (connection.innerText === d8ToSelect) {
 									$("#kabel_d8_podlaczenie_id").select2('val', connection.value).trigger('change');
 									break;
 								};
@@ -341,12 +344,18 @@
                             $("#fmb640_status").val('111');
                             $('#fmb640_nr_firmware').val(userJSON.wersjaTacho);
 
+                            unClick('#tachoreader');
                         } else {
                             click('#tachoreader');
                             $("#s2id_tachoreader_model_id").select2('val', (userJSON.modelTacho === "Siemens" ? 1 : 2)).trigger('change');
                             $("#tachoreader_status").val(2);
                             $('#tachoreader_nr_firmware').val(userJSON.wersjaTacho);
+
+                            unClick('#fmb640');
                         }
+                    } else {
+                        unClick('#tachoreader');
+                        unClick('#fmb640');
                     }
 
                     //Urządzenia dodatkowe Din 1-5
@@ -596,9 +605,13 @@
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-		function click(element) {
-			if(!$(element)[0].checked) $(element).click();
-    }
+		function click(element) {       
+			if(!$(element)[0].checked) $(element).click();  
+        }   
+
+        function unClick(element) {       
+			if($(element)[0].checked) $(element).click();  
+        }
 
     }
 })();
