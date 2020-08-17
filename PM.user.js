@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.36.2
+// @version      4.36.3
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -60,7 +60,7 @@
                     const firmaWProtokole = $('#firma1_id').select2('data').text;
 
                     //Wybranie firmy
-					if(firmaWProtokole === "") {
+					if(firmaWProtokole === "" || firmaWProtokole === "-- Wybierz --") {
 						const companies = document.getElementById("firma1_id");
 						let companyValue = '';
 
