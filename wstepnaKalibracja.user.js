@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.21.6
+// @version      1.21.7
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -219,8 +219,8 @@
 		}
 
 		const data = $('#kiedy2').val().toString();
-		const hour = $('#kiedy2hour').val().toString();
-		const minute = $('#kiedy2minute').val().toString();
+		const hour = `${$('#kiedy2hour').val().toString().length === 1 ? '0' : ''}${$('#kiedy2hour').val().toString()}`;
+		const minute = `${$('#kiedy2minute').val().toString().length === 1 ? '0' : ''}${$('#kiedy2minute').val().toString()}`;
 
 		$.ajax({
 			url: `${baseUrl}/api/vehicle/data/data_exploitation/${vehicleId}`,
@@ -608,7 +608,7 @@
 
         return '';
 	}
-	
+
 	function isCanFuelAmmount() {
 		const ammount = document.getElementsByName('spn96_amount')[0].value;
 
