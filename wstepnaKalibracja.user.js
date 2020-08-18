@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.21.7
+// @version      1.22.6
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -132,27 +132,33 @@
 		};
 	};
 
-	function getNrKartoteki(vehicleId, baseUrl) {
-		const url = baseUrl + '/api/vehicle/admin/index/' + vehicleId;
-		return new Promise((resolve, reject) => {
-			fetch(url)
-				.then(res => {
-					if (!res.ok) {
-						reject('Wystąpił błąd podczas pobierania nr kartoteki. Uzupełnij kartotekę ręcznie.');
-					} else {
-						res.text()
-							.then(res => {
-								let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8);
-								editedResponse = editedResponse.slice(editedResponse.indexOf('</td>') + 10);
-								editedResponse = editedResponse.slice(0, editedResponse.indexOf('</td>'));
-								editedResponse = editedResponse.slice(editedResponse.indexOf('value="') + 7, editedResponse.indexOf('">'));
+    function getNrKartoteki(vehicleId, baseUrl) {
+        const url = baseUrl + '/api/vehicle/admin/index/' + vehicleId;
+        return new Promise((resolve, reject) => {
+            fetch(url)
+                .then(res => {
+                if (!res.ok) {
+                    reject('Wystąpił błąd podczas pobierania nr kartoteki. Uzupełnij kartotekę ręcznie.');
+                } else {
+                    res.text()
+                        .then(res => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(res, 'text/html');
 
-								resolve(editedResponse);
-							});
-					};
-				});
-		});
-	};
+                        for(const element of doc.getElementsByTagName('a')) {
+                            if(element.textContent === 'Moduł FV') {
+                                if(element.children.length) alert(`Uzupełnij MFV: ${element.children[0].title}`);
+                                break;
+                            }
+                        }
+
+                        resolve(doc.querySelector('td.datatable_datetime_from').getAttribute('value'));
+
+                    })
+                }
+            })
+        })
+    }
 
 	function createCalibrationPoints() {
 
@@ -613,7 +619,6 @@
 		const ammount = document.getElementsByName('spn96_amount')[0].value;
 
 		if(ammount && ammount !== '0') return true
-
 		return false
 	}
 
