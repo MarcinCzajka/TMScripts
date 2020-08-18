@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.36.3
+// @version      4.36.4
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -469,8 +469,8 @@
                         an1.parentElement.children[3].children[0].click(); //Zaklikaj sonde
                     }
 
-                    //Zaklikaj pojemność CAN
-                    if(!userJSON.an0numer && !userJSON.an1numer) $('[name=spn96_amount]').val(+userJSON.an0pojemnosc + +userJSON.an1pojemnosc);
+                    //Wprowadź pojemność zbiornika dla CAN
+                    if(!userJSON.an0numer && !userJSON.an1numer) $('[name=spn96_amount]').val((+userJSON.an0pojemnosc + +userJSON.an1pojemnosc) || '');
 
                     //Informacje końcowe
                     $('[name=miejsce_rejestratora]').val(userJSON.gdzieRejestrator || ".");

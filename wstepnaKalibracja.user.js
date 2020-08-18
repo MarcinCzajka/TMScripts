@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.20.5
+// @version      1.21.6
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include */api/installation*
@@ -52,7 +52,7 @@
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
-		const asyncCounter = AsyncCounter(6, btn);
+		const asyncCounter = AsyncCounter(8, btn);
 
 		getNrKartoteki(vehicleId, baseUrl).then((nrKartoteki) => {
 			fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter);
@@ -63,6 +63,7 @@
 		});
 		getVinNr(vehicleId, baseUrl, asyncCounter);
 		downloadFrames(vehicleId, baseUrl, asyncCounter);
+        synchronizeDistance(vehicleId, baseUrl, asyncCounter);
 	};
 
 	function* AsyncCounter(nrOfOperations, btnToUpdate) {
@@ -172,7 +173,7 @@
 		} else if (isChecked('spn96_c')) { //Paliwo z CAN
 			let tankCapacity = "999.00";
 
-			if (document.getElementsByName('spn96_amount')[0].value !== "") {
+			if ( isCanFuelAmmount() ) {
 				tankCapacity = document.getElementsByName('spn96_amount')[0].value + ".00";
 			};
 
@@ -210,6 +211,59 @@
 		});
 	};
 
+	function synchronizeDistance(vehicleId, baseUrl, asyncCounter) {
+		const distance = $('[name=stan_licznika]').val().toString();
+		if(distance === '.') {
+			asyncCounter.next();
+			return
+		}
+
+		const data = $('#kiedy2').val().toString();
+		const hour = $('#kiedy2hour').val().toString();
+		const minute = $('#kiedy2minute').val().toString();
+
+		$.ajax({
+			url: `${baseUrl}/api/vehicle/data/data_exploitation/${vehicleId}`,
+			type: 'POST',
+			data: {
+				arch_stan_licznika: distance,
+				aktualizacja_licznika: data,
+				date_od_h: hour,
+				date_od_m: minute,
+				date_od_s: '00',
+			},
+			success: function () {
+				appendToSuccessFeed('Ustawiono dystans w Danych organizacyjnych');
+				asyncCounter.next();
+
+                if(false && document.getElementById('spn917_c').checked) {
+                    $.ajax({
+                        url:`${baseUrl}/api/vehicle/data/ajaxGetCounters`,
+                        type: 'POST',
+                        data: {
+                            vehicleId: vehicleId,
+                            datetime: `${data} ${hour}:${minute}:00`
+                        },
+                        success: function () {
+                            appendToSuccessFeed('Przeprowadzono synchronizację licznika.');
+                            asyncCounter.next();
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            alert( JSON.parse(err.responseText).error.message );
+                        }
+                    })
+                } else {
+                    asyncCounter.next();
+                }
+			},
+			error: function (err) {
+				console.log(err);
+				alert('Wystąpił błąd podczas ustawiania dystansu.');
+			}
+		})
+	}
+
 	function createFuelSettingsData(vehicleId, nrKartoteki) {
 		const dateFrom = $('#kiedy2').val() + " 00:00";
 		let dateTo = $.datepicker.parseDate('yy-mm-dd', $('#kiedy2').val());
@@ -245,8 +299,8 @@
             'data[pojemnosc_zbiornika_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
             'data[rodzaj_sondy_zbiornika_3]': (probes >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
             'data[zone_tank_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
-            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
-            'data[zone_tank_6]': (guessFuelType() === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0)
+            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0),
+            'data[zone_tank_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0)
 		};
 
 		return data;
@@ -341,7 +395,7 @@
 			'rodzaj_sondy_zbiornika_1': ($('.tanks_tr').length >= 1 ? document.getElementsByName('producent_sondy[]')[0].value : 0),
 			'rodzaj_sondy_zbiornika_2': ($('.tanks_tr').length >= 2 ? document.getElementsByName('producent_sondy[]')[1].value : 0),
 			'rodzaj_sondy_zbiornika_3': ($('.tanks_tr').length >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
-			'pojemnosc_zbiornika_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
+			'pojemnosc_zbiornika_6': (fuelType === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0),
 			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
 
             'strefa_niemierzalna': 0,
@@ -505,7 +559,7 @@
 			};
 			return capacity
 		} else {
-			if (document.getElementsByName('spn96_amount')[0].value) {
+			if (isCanFuelAmmount()) {
 				return parseInt(document.getElementsByName('spn96_amount')[0].value);
 			} else {
 				return 999;
@@ -553,6 +607,14 @@
 		}
 
         return '';
-    }
+	}
+	
+	function isCanFuelAmmount() {
+		const ammount = document.getElementsByName('spn96_amount')[0].value;
+
+		if(ammount && ammount !== '0') return true
+
+		return false
+	}
 
 })();
