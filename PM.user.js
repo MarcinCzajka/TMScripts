@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.36.4
+// @version      4.37.4
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -403,6 +403,7 @@
                     if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
                     if(userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
+                    if(userJSON.konfiguracja.toLowerCase().includes("garmin")) addUrzadzenieDodatkoweInne('Garmin 5 lub 7');
 
                     if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) {
                         let tomtomString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('tomtom')).toLowerCase();
