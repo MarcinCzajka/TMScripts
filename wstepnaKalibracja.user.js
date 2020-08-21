@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.22.6
+// @version      2.22.6
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -18,6 +18,30 @@
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
 
+	const svgSize = '1.8em';
+	const defaultSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	<path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
+	<path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
+	<path d="M.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
+	<path fill-rule="evenodd" d="M11.646 14.146a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708l-1-1a.5.5 0 0 1 0-.708zm-7.292 0a.5.5 0 0 0-.708 0l-1 1a.5.5 0 0 0 .708.708l1-1a.5.5 0 0 0 0-.708zM5.5.5A.5.5 0 0 1 6 0h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+	<path d="M7 1h2v2H7V1z"/>
+  </svg>`;
+	const positiveSvg = `<svg style="color: green" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-check-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+	<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+	</svg>`;
+	const neutralSvg = `<svg width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-dash-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+	<path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
+  </svg>`;
+	const negativeSvg = `<svg style="color: red" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-exclamation-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+	<path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+  </svg>`;
+  	const errorSvg = `<svg style="color: red; float:left" width="2.2em" height="2.2em" viewBox="0 0 16 16" class="bi bi-exclamation-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+</svg>`
+
 	const timer = new Timer();
 
 	if (confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
@@ -30,15 +54,14 @@
 		confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
 		document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
 
-		const successFeed = document.createElement('div');
-		successFeed.id = 'successFeed';
-		successFeed.style.display = 'none';
-
-		kalibracjaWstepnaBtn.parentNode.insertBefore(successFeed, kalibracjaWstepnaBtn.nextSibling);
+		createSuccessFeed();
+		createErrorFeed();
 	};
 
 	function kalibracjaWstepna() {
 		timer.start();
+
+		setUpFeeds();
 
 		const btn = document.getElementById('kalibracjaWstepnaBtn');
 		btn.style.background = '#ce2305';
@@ -46,13 +69,11 @@
 		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () {
 			$(this).fadeTo(250, 1.0);
 		});
-		document.getElementById('successFeed').innerHTML = '<p><b>Uzupełniono:</b><br></p>';
-		document.getElementById('successFeed').style.display = 'none';
 
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
-		const asyncCounter = AsyncCounter(8, btn);
+		const asyncCounter = AsyncCounter(7, btn);
 
 		getNrKartoteki(vehicleId, baseUrl).then((nrKartoteki) => {
 			fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter);
@@ -72,7 +93,7 @@
 			yield i;
 		};
 
-		appendToSuccessFeed(`<br><b>Wypełnianie zajęło: ${timer.getTime()}s</b>`);
+		//appendToSuccessFeed(`<br><b>Wypełnianie zajęło: ${timer.getTime()}s</b>`);
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
@@ -92,8 +113,9 @@
 
 		if (all_calibration_points) { //Jeżeli są zaklikane sondy albo paliwo z CAN
 			//Kalibracja paliwa
+			const url = `${baseUrl}/api/fuel/main/calibrationsave/${vehicleId}/${nrKartoteki}`;
 			$.ajax({
-				url: `${baseUrl}/api/fuel/main/calibrationsave/${vehicleId}/${nrKartoteki}`,
+				url: url,
 				type: "POST",
 				data: {
 					'data': all_calibration_points,
@@ -101,16 +123,19 @@
 				},
 				dataType: 'text',
 				success: function () {
-					appendToSuccessFeed('Kalibracja paliwa');
+					setSuccessFeed('Kalibracja paliwa', positiveSvg, url)
 					asyncCounter.next()
 				},
 				error: function (err) {
 					console.log(err);
-					alert('Wystąpił błąd podczas zmiany kalibracji paliwa. Spróbuj ręcznie.');
+					setSuccessFeed('Kalibracja paliwa', negativeSvg, url)
+					displayError('Wystąpił błąd podczas kalibracji paliwa. Spróbuj ręcznie.');
+					asyncCounter.next()
 				}
 			});
 
 			//ustawienia paliwa
+			const feedbackUrl = `${baseUrl}/api/fuel/main/settings/${vehicleId}/${nrKartoteki}`;
 			const data = createFuelSettingsData(vehicleId, nrKartoteki);
 			$.ajax({
 				url: `${baseUrl}/api/fuel/main/settingssave`,
@@ -118,15 +143,19 @@
 				data: data,
 				dataType: 'text',
 				success: function () {
-					appendToSuccessFeed('Kalibracja paliwa: Ustawienia');
+					setSuccessFeed('Kalibracja paliwa: Ustawienia', positiveSvg, feedbackUrl)
 					asyncCounter.next()
 				},
 				error: function (err) {
 					console.log(err);
-					alert('Wystąpił błąd podczas zmiany ustawień paliwa. Spróbuj ręcznie.');
+					setSuccessFeed('Kalibracja paliwa: Ustawienia', negativeSvg, feedbackUrl)
+					displayError('Wystąpił błąd podczas zmiany ustawień paliwa. Spróbuj ręcznie.');
+					asyncCounter.next()
 				}
 			});
 		} else {
+			setSuccessFeed('Kalibracja paliwa', neutralSvg)
+			setSuccessFeed('Kalibracja paliwa: Ustawienia', neutralSvg)
 			asyncCounter.next();
 			asyncCounter.next();
 		};
@@ -143,14 +172,21 @@
                     res.text()
                         .then(res => {
                         const parser = new DOMParser();
-                        const doc = parser.parseFromString(res, 'text/html');
+						const doc = parser.parseFromString(res, 'text/html');
+
+						let isInvoiceOk = true;
 
                         for(const element of doc.getElementsByTagName('a')) {
                             if(element.textContent === 'Moduł FV') {
-                                if(element.children.length) alert(`Uzupełnij MFV: ${element.children[0].title}`);
+                                if(element.children.length) {
+									isInvoiceOk = false;
+									displayError(`Uzupełnij MFV: ${element.children[0].title}`)
+								}
                                 break;
                             }
-                        }
+						}
+
+						setSuccessFeed('Aktywność MFV', (isInvoiceOk ? neutralSvg : negativeSvg), `${baseUrl}/api/vehicle/invoice/index/${vehicleId}`)
 
                         resolve(doc.querySelector('td.datatable_datetime_from').getAttribute('value'));
 
@@ -202,24 +238,31 @@
 			"datetimeTo": ""
 		};
 
+		const feedbackUrl = `${baseUrl}/api/vehicle/gps/index/${vehicleId}`;
+
 		$.ajax({
 			url: `${baseUrl}/api/vehicle/gps/ajaxReloadVehicleFrames`,
 			type: "POST",
 			data: data,
 			success: function () {
-				appendToSuccessFeed('Pobrano dane źródłowe');
-				asyncCounter.next();
+				setSuccessFeed('Pobrano dane źródłowe', positiveSvg, feedbackUrl)
+				asyncCounter.next()
 			},
 			error: function (err) {
-				console.log(err);
-				alert('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');
+				console.log(err)
+				setSuccessFeed('Pobrano dane źródłowe', negativeSvg, feedbackUrl)
+				displayError('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');
+				asyncCounter.next()
 			}
 		});
 	};
 
 	function synchronizeDistance(vehicleId, baseUrl, asyncCounter) {
+		const url = `${baseUrl}/api/vehicle/data/data_exploitation/${vehicleId}`;
+
 		const distance = $('[name=stan_licznika]').val().toString();
 		if(distance === '.') {
+			setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', neutralSvg, url)
 			asyncCounter.next();
 			return
 		}
@@ -229,7 +272,7 @@
 		const minute = `${$('#kiedy2minute').val().toString().length === 1 ? '0' : ''}${$('#kiedy2minute').val().toString()}`;
 
 		$.ajax({
-			url: `${baseUrl}/api/vehicle/data/data_exploitation/${vehicleId}`,
+			url: url,
 			type: 'POST',
 			data: {
 				arch_stan_licznika: distance,
@@ -239,10 +282,11 @@
 				date_od_s: '00',
 			},
 			success: function () {
-				appendToSuccessFeed('Ustawiono dystans w Danych organizacyjnych');
+				setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', positiveSvg, url)
 				asyncCounter.next();
 
-                if(false && document.getElementById('spn917_c').checked) {
+				//As of now i believe i cant synchronize distance because data that is needed is being downloaded
+                /*if(document.getElementById('spn917_c').checked) {
                     $.ajax({
                         url:`${baseUrl}/api/vehicle/data/ajaxGetCounters`,
                         type: 'POST',
@@ -251,21 +295,24 @@
                             datetime: `${data} ${hour}:${minute}:00`
                         },
                         success: function () {
-                            appendToSuccessFeed('Przeprowadzono synchronizację licznika.');
+							setSuccessFeed('Przeprowadzono synchronizację licznika', positiveSvg);
                             asyncCounter.next();
                         },
                         error: function (err) {
                             console.log(err);
-                            alert( JSON.parse(err.responseText).error.message );
+							displayError( JSON.parse(err.responseText).error.message );
+							asyncCounter.next()
                         }
                     })
                 } else {
                     asyncCounter.next();
-                }
+                }*/
 			},
 			error: function (err) {
 				console.log(err);
-				alert('Wystąpił błąd podczas ustawiania dystansu.');
+				setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', negativeSvg)
+				displayError('Wystąpił błąd podczas ustawiania dystansu.');
+				asyncCounter.next()
 			}
 		})
 	}
@@ -439,23 +486,29 @@
 			};
 		};
 
+		const url = `${baseUrl}/api/vehicle/admin/save/${vehicleId}/${nrKartoteki}`;
+
 		$.ajax({
-			url: `${baseUrl}/api/vehicle/admin/save/${vehicleId}/${nrKartoteki}`,
+			url: url,
 			type: "POST",
 			data: data,
 			dataType: 'text',
 			success: function (res) {
-				appendToSuccessFeed('Dane administracyjne');
+				setSuccessFeed('Dane administracyjne', positiveSvg, url)
 				asyncCounter.next()
 			},
 			error: function (err) {
 				console.log(err);
-				alert('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');
+				setSuccessFeed('Dane administracyjne', negativeSvg, url)
+				displayError('Wystąpił błąd podczas uzupełniania kartoteki administracyjnej. Spróbuj ręcznie.');
+				asyncCounter.next()
 			}
 		});
 	};
 
 	function getVinNr(vehicleId, baseUrl, asyncCounter) {
+		const extendedDataUrl = `${baseUrl}/api/vehicle/data/data_extended/${vehicleId}`;
+
 		$.ajax({
 			url: '/api/vehicle/data/ajax_getVinNumber',
 			type: 'POST',
@@ -468,23 +521,27 @@
 
 				if (vin != '') {
 					if (vin.length == 17 && vin.match(/^[0-9a-z]+$/i)) {
-						fillExtendedData(vin, vehicleId, baseUrl, asyncCounter);
+						fillExtendedData(vin, extendedDataUrl, asyncCounter);
 					} else {
-						alert('Niepoprawny numer VIN' + ': ' + vin);
-						asyncCounter.next();
+						setSuccessFeed('Dane rozszerzone', negativeSvg, extendedDataUrl)
+						displayError('Niepoprawny numer VIN: ' + vin);
+						asyncCounter.next()
 					};
 				} else {
+					setSuccessFeed('Dane rozszerzone', neutralSvg, extendedDataUrl);
 					asyncCounter.next();
 				}
 
 			},
 			error: function () {
-				asyncCounter.next();
+				setSuccessFeed('Dane rozszerzone', negativeSvg, extendedDataUrl)
+				displayError('Wystąpił problem podczas pobierania VIN')
+				asyncCounter.next()
 			}
 		});
 	};
 
-	function fillExtendedData(vin, vehicleId, baseUrl, asyncCounter) {
+	function fillExtendedData(vin, url, asyncCounter) {
 		const data = {
 			'typ_pojazdu_wg_producenta_id': ($('#vehicle_type_id').val() == "1" ? 2 : ''),
 			'ustawowe_rozliczanie_pojazd': ($('#kabel_d8_podlaczenie_id').val() == "5" ? 1 : ''),
@@ -492,29 +549,33 @@
 		};
 
 		$.ajax({
-			url: `${baseUrl}/api/vehicle/data/data_extended/${vehicleId}`,
+			url: url,
 			type: 'POST',
 			data: data,
 			dataType: 'text',
 			success: function () {
-				appendToSuccessFeed('Dane rozszerzone');
+				setSuccessFeed('Dane rozszerzone', positiveSvg, url)
 				asyncCounter.next()
 			},
 			error: function (err) {
 				console.log(err);
-				alert('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');
+				setSuccessFeed('Dane rozszerzone', negativeSvg, url)
+				displayError('Wystąpił błąd podczas uzupełniania danych rozszerzonych. Spróbuj ręcznie.');
+				asyncCounter.next()
 			}
 		});
 	};
 
     function hideSideNumber(vehicleId, baseUrl, asyncCounter) {
+		const isTrailer = $('#vehicle_type_id').val() === '4' ? true : false;
+		const feedbackUrl = `${baseUrl}/api/${isTrailer ? 'trailer/main/save' : 'vehicle/data/data'}/${vehicleId}`;
+
         //If there is side number provided, dont do anything
         if($('#nr_boczny_pojazdu').val()) {
+			setSuccessFeed('Odklikano pokazywanie numeru bocznego', neutralSvg, feedbackUrl)
             asyncCounter.next();
             return;
         }
-
-        let url = 'vehicle/data/data';
 
         const data = {
             'pokazuj_nr_rejestracyjny': 1,
@@ -525,36 +586,114 @@
             'nr_boczny_pojazdu': ''
         };
 
-        if($('#vehicle_type_id').val() === '4') {
+        if(isTrailer) {
             data.is_trailer = 1;
             data.is_active_trailer = 1;
             data.marka_id = $('#trailer_brand_id').val();
-
-            url = 'trailer/main/save';
-        }
+		}
 
 		$.ajax({
-			url: `${baseUrl}/api/${url}/${vehicleId}`,
+			url: feedbackUrl,
 			type: 'POST',
 			data: data,
 			dataType: 'text',
 			success: function () {
-				appendToSuccessFeed('Odklikano pokazywanie numeru bocznego w danych podstawowych.');
+				setSuccessFeed('Odklikano pokazywanie numeru bocznego', positiveSvg, feedbackUrl)
 				asyncCounter.next()
 			},
 			error: function (err) {
 				console.log(err);
-				alert('Wystąpił błąd podczas odklikiwania numeru bocznego w danych podstawowych.');
+				setSuccessFeed('Odklikano pokazywanie numeru bocznego', negativeSvg, feedbackUrl)
+				displayError('Wystąpił błąd podczas odklikiwania numeru bocznego w danych podstawowych.');
+				asyncCounter.next()
 			}
 		});
-    }
+	}
 
-	function appendToSuccessFeed(message) {
-		const successFeed = document.getElementById('successFeed');
-		successFeed.style.display = 'block';
+	function createSuccessFeed() {
+		const successFeed = document.createElement('table');
+		successFeed.id = 'successFeed';
+		successFeed.style.textAlign = 'center';
+		successFeed.style.whiteSpace = 'nowrap';
+		successFeed.style.marginLeft = '20em';
+		successFeed.classList.add('table', 'table-sm')
 
-		successFeed.innerHTML = successFeed.innerHTML + `<p>${message}</p>`;
-	};
+		successFeed.innerHTML = `
+			<thead>
+				<tr>
+					<th scope="col">Action</th>
+					<th scope="col">Completion</th>
+					<th scope="col">Link</th>
+				</tr>
+			</thead>
+			<tbody id='successFeedBody'>
+			</tbody>
+		`;
+
+		const createVehicleTr = document.getElementById('confirm-trigger').parentElement.parentElement.parentElement.nextElementSibling;
+
+		const newTr = document.createElement('tr');
+		newTr.innerHTML = `<td colspan="6"></td>`;
+		newTr.style.display = 'none';
+		newTr.id = "successFeedTr";
+		createVehicleTr.insertAdjacentElement('afterend', newTr);
+		newTr.children[0].appendChild(successFeed);
+
+		addNewAction('Odklikano pokazywanie numeru bocznego', 'Dane podstawowe')
+        addNewAction('Dane rozszerzone', 'Dane rozszerzone')
+        addNewAction('Ustawiono dystans w Danych organizacyjnych', 'Dane organizacyjne')
+        addNewAction('Dane administracyjne', 'Dane administracyjne')
+        addNewAction('Pobrano dane źródłowe', 'Dane źródłowe')
+		addNewAction('Kalibracja paliwa', 'Kalibracja paliwa')
+        addNewAction('Kalibracja paliwa: Ustawienia', 'Ustawienia paliwa')
+		addNewAction('Aktywność MFV', 'Moduł faktur VAT')
+
+		function addNewAction(action, linkName = '') {
+			const tr = document.createElement('tr');
+			tr.innerHTML = `<td scope="row">${action.toString()}</td><td>${defaultSvg}</td><td><a href='' data-name="${linkName}"></a></td>`;
+
+			document.getElementById('successFeedBody').appendChild(tr);
+		}
+	}
+
+	function createErrorFeed() {
+		const errorFeed = document.createElement('table');
+		errorFeed.innerHTML = '<tbody id="errorFeed"></tbody>'
+
+		document.getElementById('kalibracjaWstepnaBtn').insertAdjacentElement('afterend', errorFeed)
+	}
+
+	function displayError(error) {
+		const errorElement = document.createElement('tr');
+		errorElement.innerHTML = `<th>${errorSvg}</th><td style="font-weight: 600">${error.toString()}</td>`;
+
+		document.getElementById('errorFeed').appendChild(errorElement)
+	}
+
+	function setSuccessFeed(text, svg, url = '') {
+		for(const tr of document.getElementById('successFeedBody').children) {
+			if(tr.children[0].textContent.toLowerCase() === text.toLowerCase()) {
+				tr.children[1].innerHTML = svg;
+
+                if(url) {
+                    const link = tr.children[2].children[0];
+                    link.innerText = link.dataset.name;
+                    link.href = url;
+                }
+
+				break
+			}
+		}
+	}
+
+	function setUpFeeds() {
+		for(const tr of document.getElementById('successFeedBody').children) {
+			tr.children[1].innerHTML = defaultSvg;
+		}
+
+		document.getElementById('errorFeed').innerHTML = '';
+		document.getElementById('successFeedTr').style.display = '';
+	}
 
 	function tanksCapacity() {
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
