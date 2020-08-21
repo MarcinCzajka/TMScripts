@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.22.6
+// @version      2.24.6
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -54,8 +54,8 @@
 		confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
 		document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
 
-		createSuccessFeed();
 		createErrorFeed();
+		createSuccessFeed();
 	};
 
 	function kalibracjaWstepna() {
@@ -93,7 +93,8 @@
 			yield i;
 		};
 
-		//appendToSuccessFeed(`<br><b>Wypełnianie zajęło: ${timer.getTime()}s</b>`);
+		const duration = timer.getTime()
+		document.getElementById('timer').innerText = `Wypełnianie protokołu zajęło: ${duration} sekund${duration < 5 ? 'y' : ''}`;
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
@@ -113,9 +114,9 @@
 
 		if (all_calibration_points) { //Jeżeli są zaklikane sondy albo paliwo z CAN
 			//Kalibracja paliwa
-			const url = `${baseUrl}/api/fuel/main/calibrationsave/${vehicleId}/${nrKartoteki}`;
+			const url = `${baseUrl}/api/fuel/main/calibration/${vehicleId}/${nrKartoteki}`;
 			$.ajax({
-				url: url,
+				url: `${baseUrl}/api/fuel/main/calibrationsave/${vehicleId}/${nrKartoteki}`,
 				type: "POST",
 				data: {
 					'data': all_calibration_points,
@@ -650,10 +651,16 @@
 
 		function addNewAction(action, linkName = '') {
 			const tr = document.createElement('tr');
-			tr.innerHTML = `<td scope="row">${action.toString()}</td><td>${defaultSvg}</td><td><a href='' data-name="${linkName}"></a></td>`;
+			tr.innerHTML = `<td scope="row">${action.toString()}</td><td>${defaultSvg}</td><td><a href='' target="_blank" data-name="${linkName}"></a></td>`;
 
 			document.getElementById('successFeedBody').appendChild(tr);
 		}
+
+		//Create Timer
+		const timer = document.createElement('p');
+		timer.id = 'timer';
+		timer.style.fontWeight = '600';
+		document.getElementById('kalibracjaWstepnaBtn').parentElement.appendChild(timer);
 	}
 
 	function createErrorFeed() {
@@ -692,6 +699,7 @@
 		}
 
 		document.getElementById('errorFeed').innerHTML = '';
+		document.getElementById('timer').innerText = '';
 		document.getElementById('successFeedTr').style.display = '';
 	}
 
@@ -731,6 +739,7 @@
 
 		this.getTime = () => {
 			this.timeEnd = new Date();
+
 			return this.toSeconds(this.timeEnd - this.timeStart);
 		};
 
