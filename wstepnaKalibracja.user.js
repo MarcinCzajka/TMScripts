@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.24.6
+// @version      2.24.7
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -187,7 +187,7 @@
                             }
 						}
 
-						setSuccessFeed('Aktywność MFV', (isInvoiceOk ? neutralSvg : negativeSvg), `${baseUrl}/api/vehicle/invoice/index/${vehicleId}`)
+						setSuccessFeed('Aktywność MFV', (isInvoiceOk ? positiveSvg : negativeSvg), `${baseUrl}/api/vehicle/invoice/index/${vehicleId}`)
 
                         resolve(doc.querySelector('td.datatable_datetime_from').getAttribute('value'));
 
