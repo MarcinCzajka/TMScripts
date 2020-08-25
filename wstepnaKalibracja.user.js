@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.24.7
+// @version      2.25.8
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -263,7 +263,7 @@
 
 		const distance = $('[name=stan_licznika]').val().toString();
 		if(distance === '.') {
-			setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', neutralSvg, url)
+			setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', neutralSvg, url)
 			asyncCounter.next();
 			return
 		}
@@ -283,7 +283,7 @@
 				date_od_s: '00',
 			},
 			success: function () {
-				setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', positiveSvg, url)
+				setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', positiveSvg, url)
 				asyncCounter.next();
 
 				//As of now i believe i cant synchronize distance because data that is needed is being downloaded
@@ -311,7 +311,7 @@
 			},
 			error: function (err) {
 				console.log(err);
-				setSuccessFeed('Ustawiono dystans w Danych organizacyjnych', negativeSvg)
+				setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', negativeSvg)
 				displayError('Wystąpił błąd podczas ustawiania dystansu.');
 				asyncCounter.next()
 			}
@@ -642,15 +642,21 @@
 
 		addNewAction('Odklikano pokazywanie numeru bocznego', 'Dane podstawowe')
         addNewAction('Dane rozszerzone', 'Dane rozszerzone')
-        addNewAction('Ustawiono dystans w Danych organizacyjnych', 'Dane organizacyjne')
+        addNewAction('Ustawiono dystans w Danych eksploatacyjnych', 'Dane eksploatacyjne')
         addNewAction('Dane administracyjne', 'Dane administracyjne')
         addNewAction('Pobrano dane źródłowe', 'Dane źródłowe')
 		addNewAction('Kalibracja paliwa', 'Kalibracja paliwa')
         addNewAction('Kalibracja paliwa: Ustawienia', 'Ustawienia paliwa')
 		addNewAction('Aktywność MFV', 'Moduł faktur VAT')
 
+		//Create link to Map
+		const mapLinkTr = document.createElement('tr');
+		mapLinkTr. innerHTML = `<th colspan="3" scope="row"><a target="_blank" style="font-size: 1em" href="${window.location.origin}/api/main#/api/map/leaflet/index/${$('#grupa_pojazdow_id').select2('val')}">Link do mapy</a></th>`;
+		document.getElementById('successFeedBody').appendChild(mapLinkTr);
+
 		function addNewAction(action, linkName = '') {
 			const tr = document.createElement('tr');
+			tr.classList.add('successFeedAction');
 			tr.innerHTML = `<td scope="row">${action.toString()}</td><td>${defaultSvg}</td><td><a href='' target="_blank" data-name="${linkName}"></a></td>`;
 
 			document.getElementById('successFeedBody').appendChild(tr);
@@ -695,7 +701,7 @@
 
 	function setUpFeeds() {
 		for(const tr of document.getElementById('successFeedBody').children) {
-			tr.children[1].innerHTML = defaultSvg;
+			if(tr.classList.contains('successFeedAction')) tr.children[1].innerHTML = defaultSvg;
 		}
 
 		document.getElementById('errorFeed').innerHTML = '';
