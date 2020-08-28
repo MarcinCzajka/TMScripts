@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.8.11
+// @version      1.8.11
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -18,13 +18,13 @@
 
     if(query.includes('chat=true')) {
         showAltEagle();
+        addStylesheet();
     }
 
     function showAltEagle() {
 
         let interval = null;
         let flasher = null;
-        let lastSmsCount = '';
         let fetchType = 'sentitems'; //inbox
 
         const csrf = $('csrf_test_name').first().val();
@@ -41,6 +41,8 @@
             smsContainer.style.marginBottom = '10px';
 
         $('body').append(container);
+
+        createCacheElement();
 
         createNrInput();
 
@@ -89,32 +91,35 @@
 
         function fetchSms() {
             const nr = `+${$('#nrInput').val().replace('+', '')}`;
-            $('#smsContainer').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
+            $('#smsCache').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
 
-                const smsCount = $('.optionmenu').length;
+                const smsCount = $('#smsCache .optionmenu').length;
 
                 if(!smsCount) return;
 
-                $('#contact_container').remove();
+                $('#smsCache #contact_container').remove();
 
-                for(let i = smsCount; i > 0; i--){
+                const smsFolder = document.getElementById('smsFolder');
+                smsFolder.textContent = '';
+
+                for(let i = smsCount; i > 0; i--) {
                     const div = document.createElement('div');
                         div.classList.add('sms');
 
                     const displace = (i - 1) * 12;
 
-                    const timestamp = $('#smsContainer').children().eq(4 + displace).children()[0];
+                    const timestamp = $('#smsCache').children().eq(4 + displace).children()[0];
                         timestamp.classList.add('timestamp')
                         div.append(timestamp);
 
-                    const smsContent = $('.message_content')[i - 1];
+                    const smsContent = $('#smsCache .message_content')[i - 1];
                         smsContent.classList.add('smsContent');
-                        div.append(smsContent)
+                        div.append(smsContent);
 
-                    if($('#smsContainer').children().eq(5 + displace).children().eq(1).children().first().hasClass('icon-arrow-up')) {
+                    if($('#smsCache').children().eq(5 + displace).children().eq(1).children().first().hasClass('icon-arrow-up')) {
                         div.classList.add('message');
 
-                        const errorElement = $('.detail_area').eq(i - 1).find('tbody')[0];
+                        const errorElement = $('#smsCache .detail_area').eq(i - 1).find('tbody')[0];
 
                         const deliveryStatus = errorElement.children[3].children[2].innerText;
                         const status = errorElement.children[4].children[2].innerText;
@@ -128,26 +133,30 @@
                         div.classList.add('response');
                     }
 
-                    $('body').append(div);
+                    smsFolder.append(div);
                 }
 
-                $('#smsContainer').empty();
-                $.each($('.sms'), (index, element) => { $('#smsContainer').prepend(element) })
+                const smsCountDifference = smsFolder.children.length - $('#smsContainer').children().length;
 
-                $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
-                $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
+                if(smsCountDifference) {
 
-                styleSms();
-                addResendBtn();
-                scrollDown();
+                    const smsContainer = $('#smsContainer');
+                    const fetchedSms = document.querySelectorAll('#smsFolder .sms');
+                    const isContainerEmpty = !$('#smsContainer').children().length;
+                    for(let i = 0; i < smsCountDifference; i++) {
+                        if(isContainerEmpty) {
+                            smsContainer.prepend(fetchedSms[i])
+                        } else {
+                            smsContainer.append(fetchedSms[i])
+                        }
 
-                updateDate();
+                        addResendBtn(fetchedSms[i]);
+                    }
 
-                if(document.hidden && lastSmsCount !== smsCount && !flasher) {
+                    scrollDown();
+
                     let bool = true;
-
                     flasher = setInterval(() => {
-
                         if(!document.hidden) {
                             document.title = 'SMSEagle';
                             clearInterval(flasher);
@@ -166,7 +175,10 @@
                     }, 400)
                 }
 
-                lastSmsCount = smsCount;
+                $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
+                $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
+                
+                updateDate();
             })
         }
 
@@ -206,40 +218,12 @@
             }
         }
 
-        function styleSms() {
-            $('.sms').css('position', 'relative');
-            $('.sms').css('padding-bottom', '10px');
-            $('.sms').css('width', '340px');
-            $('.sms').css('text-align', 'left');
-            $('.sms').css('font', '400 .9em, sans-serif');
-            $('.sms').css('border', '1px solid #97C6E3');
-            $('.sms').css('border-radius', '10px');
-            $('.sms').css('margin-bottom', '10px');
+        function addResendBtn(element) {
+            if(!element) return
+            const resendBtn = createResendBtn();
+            element.append(resendBtn);
 
-            $('.message').css('background-color', '#A8DDFD');
-            $('.message').css('margin-left', 'calc(100% - 360px)');
-            $('.response').css('background-color', '#f8E896');
-
-            $('.timestamp').css('position', 'absolute');
-            $('.timestamp').css('font-size', '.85em');
-            $('.timestamp').css('font-weight', '300');
-            $('.timestamp').css('bottom', '0');
-            $('.timestamp').css('right', '8px');
-
-            $('.smsContent').css('overflow-wrap', 'break-word');
-            $('.smsContent').css('font-weight', '700');
-            $('.smsContent').css('margin-right', '25px');
-
-            $('.message.error').css('background-color', '#F95');
-            $('.smsError').css('text-align', 'center');
-            $('.smsError p').css('margin', '0');
-        }
-
-        function addResendBtn() {
-            $('.message').append(createResentBtn());
-            $('.isw-mail').css({cursor: 'pointer', position: 'absolute', right: '5px', top: '5px'});
-
-            $('.isw-mail').on('click', (e) => {
+            resendBtn.addEventListener('click', (e) => {
                 if(!confirm('Czy na pewno chcesz wysłać tą wiadomość ponownie?')) return
                 $('#textarea').val(e.target.previousElementSibling.innerText)
 
@@ -247,12 +231,28 @@
             })
         }
 
-        function createResentBtn() {
+        function createResendBtn() {
             const result = document.createElement('span')
             result.classList.add('isw-mail')
             result.title = 'Wyślij jeszcze raz';
 
             return result
+        }
+
+        function createCacheElement() {
+            if(!document.getElementById('smsCache')) {
+                const cache = document.createElement('div');
+                cache.id = 'smsCache';
+                cache.style.display = 'none';
+                document.getElementById('container').appendChild(cache);
+            }
+
+            if(!document.getElementById('smsFolder')) {
+                const smsFolder = document.createElement('div');
+                smsFolder.id = 'smsFolder';
+                smsFolder.style.display = 'none';
+                document.getElementById('container').appendChild(smsFolder);
+            }
         }
 
         function createNrInput() {
@@ -409,5 +409,59 @@
             }
         }
 
+    }
+
+    function addStylesheet() {
+        const stylesheet = document.createElement('style');
+        stylesheet.type = "text/css";
+
+        stylesheet.textContent = `
+            .isw-mail {
+                cursor: pointer;
+                position: absolute;
+                right: 5px;
+                top: 5px;
+            }
+            .sms {
+                position: relative;
+                padding-bottom: 10px;
+                width: 340px;
+                text-align: left;
+                font: 400 .9em, sans-serif;
+                border: 1px solid #97C6E3;
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+            .message {
+                background-color: #A8DDFD;
+                margin-left: calc(100% - 360px);
+            }
+            .response {
+                background-color: #F8E896;
+            }
+            .timestamp {
+                position: absolute;
+                font-size: .85em;
+                font-weight: 300;
+                bottom: 0;
+                right: 8px;
+            }
+            .smsContent {
+                overflow-wrap: break-word;
+                font-weight: 700;
+                margin-right: 25px;
+            }
+            .message.error {
+                background-color: #F95;
+            }
+            .smsError {
+                text-align: center;
+            }
+            .smsError p {
+                margin: 0;
+            }
+        `;
+
+        document.querySelector('head').appendChild(stylesheet);
     }
 })();
