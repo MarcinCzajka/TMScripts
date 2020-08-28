@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8.11
+// @version      1.8.13
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -33,12 +33,10 @@
 
         const container = document.createElement('div');
             container.id = 'container';
-            container.style = 'width: 750px; margin-left: calc(50% - 375px);';
 
         const smsContainer = document.createElement('div');
             smsContainer.classList.add('block');
             smsContainer.id = 'smsContainer';
-            smsContainer.style.marginBottom = '10px';
 
         $('body').append(container);
 
@@ -49,10 +47,6 @@
         createFetchTypeBtnGroup();
 
         $('#container').append(smsContainer);
-
-        //Make container scrollable
-        $('#smsContainer').css('overflow', 'hidden auto');
-        $('#smsContainer').css('height', '55vh');
 
         createInputPanel();
         createContainerShadow();
@@ -150,7 +144,7 @@
                             smsContainer.append(fetchedSms[i])
                         }
 
-                        addResendBtn(fetchedSms[i]);
+                        if(fetchedSms[i].classList.contains('message')) addResendBtn(fetchedSms[i]);
                     }
 
                     scrollDown();
@@ -263,13 +257,6 @@
 
             document.getElementById('container').appendChild(nrInput);
 
-            $('#nrInput').css('text-align', 'center');
-            $('#nrInput').css('font-size', '1.6em');
-            $('#nrInput').css('margin-bottom', '5px');
-            $('#nrInput').css('width', '100%');
-            $('#nrInput').css('padding-left', '0');
-            $('#nrInput').css('padding-right', '0');
-
             $('#nrInput').on('focusout', fetchSms);
         }
 
@@ -354,8 +341,6 @@
 
         function createContainerShadow() {
          const boxShadow = document.createElement('div');
-            boxShadow.style = `width: 100%; opacity: 0; top: 0px; z-index: -100; height: 100%;
-                position: absolute; box-shadow: rgb(255, 191, 0) 0px 0px 120px 10px inset;`;
             boxShadow.id = 'containerShadow';
 
             $('body').append(boxShadow);
@@ -366,7 +351,6 @@
                 fetchTypeBtnGroup.classList.add('btn-group');
                 fetchTypeBtnGroup.role = 'group';
                 fetchTypeBtnGroup.id = 'fetchTypeBtnGroup';
-                fetchTypeBtnGroup.style = 'width:100%; text-align: center; margin-bottom: 2px;'
 
             const togglePrivateBtn = document.createElement('button');
                 togglePrivateBtn.classList.add('btn', 'btn-primary', 'btn-sm');
@@ -459,6 +443,37 @@
             }
             .smsError p {
                 margin: 0;
+            }
+            #container {
+                width: 750px;
+                margin-left: calc(50% - 375px);
+            }
+            #smsContainer {
+                overflow: hidden auto;
+                height: 55vh;
+                margin-bottom: 10px;
+            }
+            #nrInput {
+                text-align: center;
+                font-size: 1.6em;
+                margin-bottom: 5px;
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            #containerShadow {
+                width: 100%;
+                opacity: 0;
+                top: 0px;
+                z-index: -100;
+                height: 100%;
+                position: absolute;
+                box-shadow: rgb(255, 191, 0) 0px 0px 120px 10px inset;
+            }
+            #fetchTypeBtnGroup {
+                width:100%;
+                text-align: center;
+                margin-bottom: 2px;
             }
         `;
 
