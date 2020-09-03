@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.25.8
+// @version      2.26.8
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -17,6 +17,8 @@
 
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
+
+	const isTruck = $('#vehicle_type_id').select2('val') == "1";
 
 	const svgSize = '1.8em';
 	const defaultSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -214,7 +216,7 @@
 			};
 			return all_calibration_points;
 		} else if (isChecked('spn96_c')) { //Paliwo z CAN
-			let tankCapacity = "999.00";
+			let tankCapacity = isTruck ? "999.00" : "99.00";
 
 			if ( isCanFuelAmmount() ) {
 				tankCapacity = document.getElementsByName('spn96_amount')[0].value + ".00";
@@ -338,7 +340,7 @@
 			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
 			'data[invoice_matching]': 3600,
-			'data[fa_trust_voltage_low]': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
+			'data[fa_trust_voltage_low]': (isTruck ? 21 : 12),
 			'data[alg_stacyjka_typ]': 1,
 			'data[alg_obroty_typ]': (isChecked('spn190_c') ? 2 : 0),
 			'data[alg_predkosc_typ]': (isChecked('spn84_c') ? 2 : 1),
@@ -353,8 +355,8 @@
             'data[pojemnosc_zbiornika_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
             'data[rodzaj_sondy_zbiornika_3]': (probes >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
             'data[zone_tank_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
-            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0),
-            'data[zone_tank_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0)
+            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0),
+            'data[zone_tank_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0)
 		};
 
 		return data;
@@ -400,7 +402,7 @@
 			'gen_zdarzen_predkosc': 1,
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
-			'min_napiecie_stacji': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
+			'min_napiecie_stacji': (isTruck ? 21 : 12),
 			'corector_can_speed': (isChecked('spn84_c') ? 1 : 0),
 			'corector_can_rotation': (isChecked('spn190_c') ? 1 : 0),
 			'paliwo_z_sondy_dyst': (isChecked('spn917_c') ? 3 : 1),
@@ -409,8 +411,8 @@
 			'bez_zaniku_zasilania': 1,
 			'bez_zaniku_zasilania_u': 1,
 			'bez_zdarzenia_jazda': 1,
-			'wyjatek_brak_zasilania': ($('#vehicle_type_id').val() == "1" ? 21 : 12),
-			'max_obroty_silnika': (isChecked('spn190_c') ? 2300 : 0),
+			'wyjatek_brak_zasilania': (isTruck ? 21 : 12),
+			'max_obroty_silnika': (isChecked('spn190_c') ? (isTruck ? 2300 : 5000) : 0),
 			'max_obroty_silnika_przelicznik': (isChecked('spn190_c') ? 1 : 0),
 			'dystans_gps_pokaz': 1,
 			'dystans_gps_w_pojezdzie': 1,
@@ -449,8 +451,8 @@
 			'rodzaj_sondy_zbiornika_1': ($('.tanks_tr').length >= 1 ? document.getElementsByName('producent_sondy[]')[0].value : 0),
 			'rodzaj_sondy_zbiornika_2': ($('.tanks_tr').length >= 2 ? document.getElementsByName('producent_sondy[]')[1].value : 0),
 			'rodzaj_sondy_zbiornika_3': ($('.tanks_tr').length >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
-			'pojemnosc_zbiornika_6': (fuelType === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : 999) : 0),
-			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || 999) : 0),
+			'pojemnosc_zbiornika_6': (fuelType === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0),
+			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || (isTruck ? 999 : 99)) : 0),
 
             'strefa_niemierzalna': 0,
             'strefa_niemierzalna2': 0,
@@ -721,7 +723,7 @@
 			if (isCanFuelAmmount()) {
 				return parseInt(document.getElementsByName('spn96_amount')[0].value);
 			} else {
-				return 999;
+				return isTruck ? 999 : 99;
 			};
 		};
 	};
