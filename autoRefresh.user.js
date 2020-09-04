@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.7
+// @version      0.0.8
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -60,6 +60,7 @@
                     const cell = document.createElement('td');
                     const value = formatValue(title, data[i][title]);
                     cell.innerText = value;
+                    cell.classList.add('text-nowrap');
 
                     newRow.appendChild(cell);
                 }
@@ -128,7 +129,7 @@
             case 'speed':
                 return parseFloat(result).toFixed(0) + ' km/h'
             case 'mileage':
-                return (+result / 1000).toFixed(2) + 'km'
+                return (+result / 1000).toFixed(2) + ' km'
             case 'analog_engine_speed':
                 return result ? result + ' rpm': '0 rpm'
             case 'engine_temp':
