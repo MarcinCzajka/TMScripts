@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.26.8
+// @version      2.27.8
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -17,6 +17,7 @@
 
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
+    const fuelSettings = {};
 
 	const isTruck = $('#vehicle_type_id').select2('val') == "1";
 
@@ -77,13 +78,17 @@
 
 		const asyncCounter = AsyncCounter(7, btn);
 
-		getNrKartoteki(vehicleId, baseUrl).then((nrKartoteki) => {
+		getNrKartoteki(vehicleId, baseUrl).then(async (nrKartoteki) => {
+            hideSideNumber(vehicleId, baseUrl, asyncCounter);
+
+            await createFuelSettings();
+
 			fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter);
 			setPaliwo(vehicleId, nrKartoteki, baseUrl, asyncCounter);
-            hideSideNumber(vehicleId, baseUrl, asyncCounter);
 		}).catch(err => {
 			alert(err);
 		});
+
 		getVinNr(vehicleId, baseUrl, asyncCounter);
 		downloadFrames(vehicleId, baseUrl, asyncCounter);
         synchronizeDistance(vehicleId, baseUrl, asyncCounter);
@@ -112,7 +117,7 @@
 	};
 
 	function setPaliwo(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
-		const all_calibration_points = createCalibrationPoints();
+		const all_calibration_points = fuelSettings.callibrationPoints;
 
 		if (all_calibration_points) { //Jeżeli są zaklikane sondy albo paliwo z CAN
 			//Kalibracja paliwa
@@ -199,15 +204,13 @@
         })
     }
 
-	function createCalibrationPoints() {
-
-		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
-		if (tanksTr.length > 0) { //Paliwo z Sond/Pływaka
+	function createCallibrationPoints() {
+		if (fuelSettings.fuelType === 'sonda' || fuelSettings.fuelType === 'plywak') {
 
 			let index = 1;
 			const all_calibration_points = [];
 
-			for (let tr of tanksTr) {
+			for (let tr of document.querySelectorAll('tr.tanks_tr:not(.deleted)')) {
 				const tankCapacity = tr.children[2].children[0].children[2].value + ".00";
 				all_calibration_points.push(["0.00", "0.00", index])
 				all_calibration_points.push(["244.00", tankCapacity, index])
@@ -215,16 +218,11 @@
 				index++;
 			};
 			return all_calibration_points;
-		} else if (isChecked('spn96_c')) { //Paliwo z CAN
-			let tankCapacity = isTruck ? "999.00" : "99.00";
-
-			if ( isCanFuelAmmount() ) {
-				tankCapacity = document.getElementsByName('spn96_amount')[0].value + ".00";
-			};
+		} else if (fuelSettings.fuelType === 'can') { //Paliwo z CAN
 
 			const all_calibration_points = [
 				["0.00", "0.00", 6],
-				["103.00", tankCapacity, 6]
+				["103.00", fuelSettings.totalCapacity + ".00", 6]
 			];
 
 			return all_calibration_points;
@@ -355,15 +353,15 @@
             'data[pojemnosc_zbiornika_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
             'data[rodzaj_sondy_zbiornika_3]': (probes >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
             'data[zone_tank_3]': (probes >= 3 ? document.getElementsByName('pojemnosc[]')[2].value : 0),
-            'data[pojemnosc_zbiornika_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0),
-            'data[zone_tank_6]': (guessFuelType() === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0)
+            'data[pojemnosc_zbiornika_6]': (fuelSettings.fuelType === 'can' ? fuelSettings.totalCapacity : 0),
+            'data[zone_tank_6]': (fuelSettings.fuelType === 'can' ? fuelSettings.totalCapacity : 0)
 		};
 
 		return data;
 	};
 
-	function fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
-		const fuelType = guessFuelType();
+	 function fillAdministrativeData(vehicleId, nrKartoteki, baseUrl, asyncCounter) {
+		const fuelType = fuelSettings.fuelType;
 
 		let minOdchylenie = 0;
 
@@ -425,17 +423,15 @@
 			'divide_days': 90,
 		};
 
-		const fuelCapacity = tanksCapacity();
-
 		const fuelSpecificData = {
 			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
 			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" ? 1 : 0),
 			'paliwo_z_can': (isChecked('spn96_c') ? 1 : 0),
 			'min_odchylenie': minOdchylenie,
-			'prog_weryfikujacy_paliwa': (fuelType !== "can" ? litersByPercent(fuelCapacity, 3.5) : (litersByPercent(fuelCapacity, 5) > 50 ? 50 : litersByPercent(fuelCapacity, 5))),
-			'prog_wartosci_paliwa': (fuelType !== "can" ? litersByPercent(fuelCapacity, 3.5) : (litersByPercent(fuelCapacity, 5) > 50 ? 50 : litersByPercent(fuelCapacity, 5))),
-			'prog_weryfikujacy_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelCapacity, 2) : 0),
-			'prog_wartosci_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelCapacity, 2) : 0),
+			'prog_weryfikujacy_paliwa': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 3.5) : (litersByPercent(fuelSettings.totalCapacity, 5) > 50 ? 50 : litersByPercent(fuelSettings.totalCapacity, 5))),
+			'prog_wartosci_paliwa': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 3.5) : (litersByPercent(fuelSettings.totalCapacity, 5) > 50 ? 50 : litersByPercent(fuelSettings.totalCapacity, 5))),
+			'prog_weryfikujacy_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 2) : 0),
+			'prog_wartosci_paliwa_u': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 2) : 0),
 			'ilosc_punktow_drogi': 5,
 			'ilosc_punktow_drogi_u': 5,
 			'odchylenie_standardowe': 1,
@@ -451,8 +447,8 @@
 			'rodzaj_sondy_zbiornika_1': ($('.tanks_tr').length >= 1 ? document.getElementsByName('producent_sondy[]')[0].value : 0),
 			'rodzaj_sondy_zbiornika_2': ($('.tanks_tr').length >= 2 ? document.getElementsByName('producent_sondy[]')[1].value : 0),
 			'rodzaj_sondy_zbiornika_3': ($('.tanks_tr').length >= 3 ? document.getElementsByName('producent_sondy[]')[2].value : 0),
-			'pojemnosc_zbiornika_6': (fuelType === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : (isTruck ? 999 : 99)) : 0),
-			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || (isTruck ? 999 : 99)) : 0),
+			'pojemnosc_zbiornika_6': (fuelType === "can" ? (isCanFuelAmmount() ? document.getElementsByName('spn96_amount')[0].value : fuelSettings.totalCapacity) : 0),
+			'zone_tank_6': (fuelType === "can" ? (document.getElementsByName('spn96_amount')[0].value || fuelSettings.totalCapacity) : 0),
 
             'strefa_niemierzalna': 0,
             'strefa_niemierzalna2': 0,
@@ -711,7 +707,15 @@
 		document.getElementById('successFeedTr').style.display = '';
 	}
 
-	function tanksCapacity() {
+    async function createFuelSettings() {
+        fuelSettings.fuelType = guessFuelType();
+        if(fuelSettings.fuelType === '') return
+
+        fuelSettings.totalCapacity = await tanksCapacity();
+        fuelSettings.callibrationPoints = createCallibrationPoints();
+    }
+
+	async function tanksCapacity() {
 		const tanksTr = document.querySelectorAll('tr.tanks_tr:not(.deleted)');
 		if (tanksTr.length > 0) {
 			let capacity = 0;
@@ -723,10 +727,19 @@
 			if (isCanFuelAmmount()) {
 				return parseInt(document.getElementsByName('spn96_amount')[0].value);
 			} else {
-				return isTruck ? 999 : 99;
+                const defaultCap = isTruck ? 999 : 99;
+                const result = await askForCapacity(defaultCap)
+
+				return result ? result : defaultCap;
 			};
 		};
 	};
+
+    function askForCapacity(defaultCap) {
+        return new Promise((resolve, reject) => {
+            fl_confirm_input(`Brak pojemności zbiorników.\nPodaj własną wartość lub zostanie przyjęta wartość ${defaultCap}l`, answer => { resolve(+answer) }, () => { reject(+defaultCap) });
+        })
+    }
 
 	function litersByPercent(fuelCapacity, percent) {
 		return Math.floor(fuelCapacity * (percent / 100));
