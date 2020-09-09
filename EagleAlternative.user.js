@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8.13
+// @version      1.8.14
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -257,7 +257,7 @@
 
             document.getElementById('container').appendChild(nrInput);
 
-            $('#nrInput').on('focusout', fetchSms);
+            $('#nrInput').on('focusout', function() {$('#smsContainer').empty();fetchSms()});
         }
 
         function createInputPanel() {
