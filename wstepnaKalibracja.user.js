@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.8
+// @version      2.27.9
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -101,7 +101,7 @@
 		};
 
 		const duration = timer.getTime()
-		document.getElementById('timer').innerText = `Wypełnianie protokołu zajęło: ${duration} sekund${duration < 5 ? 'y' : ''}`;
+		document.getElementById('timer').innerText = `Wypełnianie protokołu zajęło: ${duration} sekund${duration < 5 ? (duration === 1 ? 'ę' : 'y') : ''}`;
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";

@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.8.14
+// @version      1.9.14
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @author       MAC
-// @match        http://*sms*
-// @include      http://*sms*
+// @match        http://*sms.fr*
+// @include      http://*sms.fr*
 // @grant        none
 // ==/UserScript==
 
@@ -16,12 +16,21 @@
 
     const query = window.location.search;
 
+    addStylesheet();
+    createNavigationInput();
+
     if(query.includes('chat=true')) {
         showAltEagle();
-        addStylesheet();
     }
 
-    function showAltEagle() {
+    function showAltEagle(number = `+${query.slice(query.indexOf('number') + 7).replace('+', '')}`) {
+
+        if(document.getElementById('smsContainer')) {
+            document.getElementById('nrInput').value = number;
+            fetchSms();
+
+            return
+        }
 
         let interval = null;
         let flasher = null;
@@ -42,7 +51,7 @@
 
         createCacheElement();
 
-        createNrInput();
+        createNrInput(number);
 
         createFetchTypeBtnGroup();
 
@@ -171,7 +180,7 @@
 
                 $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
                 $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
-                
+
                 updateDate();
             })
         }
@@ -249,11 +258,11 @@
             }
         }
 
-        function createNrInput() {
+        function createNrInput(number) {
             const nrInput = document.createElement('input');
                 nrInput.classList.add('block');
                 nrInput.id = 'nrInput';
-                nrInput.value = `+${query.slice(query.indexOf('number') + 7).replace('+', '')}`;
+                nrInput.value = +number;
 
             document.getElementById('container').appendChild(nrInput);
 
@@ -395,12 +404,40 @@
 
     }
 
+    function createNavigationInput() {
+        const navigationInput = document.createElement('li');
+        navigationInput.innerHTML = `<a>
+                <span class="isw-chat"></span>
+                <span class="text inputHolder">
+                    <input id="navigationInput" placeholder="Wprowadź numer">
+                </span>
+            </a>`;
+
+        document.querySelector('ul.navigation').append(navigationInput);
+        document.getElementById('navigationInput').addEventListener('focusout', onNavigationInput);
+
+        function onNavigationInput({target}) {
+            const number = target.value;
+            if(number === '') return
+
+            showAltEagle(+number);
+        }
+    }
+
     function addStylesheet() {
         const stylesheet = document.createElement('style');
         stylesheet.type = "text/css";
 
         stylesheet.textContent = `
-            .isw-mail {
+            #navigationInput {
+                border: 0;
+                width: 168px;
+            }
+            .inputHolder {
+                padding: 8px 4px 8px 0 !important;
+                width: 170px !important;
+            }
+            .sms .isw-mail {
                 cursor: pointer;
                 position: absolute;
                 right: 5px;
