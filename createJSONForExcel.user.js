@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create JSON for Excel App
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.1
+// @version      0.0.2
 // @description  Create JSON for Excel App
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/createJSONForExcel.user.js
@@ -36,10 +36,18 @@
 
             const newTr = document.createElement('tr');
             newTr.id = 'newTr';
-            newTr.innerHTML = `<td>JSON</td><td style="word-break:break-all">${JSON.stringify(result)}</td>`;
+            newTr.innerHTML = `<td>JSON</td><td id="selectionRange" title="Kliknij, żeby zaznaczyć cały JSON" style="word-break:break-all">${JSON.stringify(result)}</td>`;
 
             table.appendChild(newTr);
 
+            document.getElementById('selectionRange').addEventListener('click', () => {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+
+                const range = document.createRange();
+                range.selectNodeContents(document.getElementById('selectionRange'));
+                selection.addRange(range);
+            });
         }
     }
 
