@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create JSON for Excel App
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.2
+// @version      0.0.3
 // @description  Create JSON for Excel App
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/createJSONForExcel.user.js
@@ -33,6 +33,7 @@
             result.typRejestratora = findValByText('Model', table);
             result.sim = findValByText('SIM', table).replace('Wyślij SMS', '').replace('+', '');
             result.rej = findValByText('VRN', table).trim();
+            result.vin = findValByText('VIN', table).trim();
 
             const newTr = document.createElement('tr');
             newTr.id = 'newTr';
