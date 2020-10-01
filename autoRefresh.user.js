@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.8
+// @version      0.0.10
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -29,6 +29,12 @@
     }
 
     async function getFrames(){
+        let lastSeq = getValueByColName('seq', 0)
+        if(lastSeq === '') {
+            throw('Brak numeru sekwencyjnego!');
+            return
+        }
+
         let dateTo = new Date();
         let dateFrom = new Date(new Date().setHours(0,0,0,0));
 
@@ -45,7 +51,6 @@
         if(document.querySelector('table').style.display === 'none') return false;
 
         const tableHead = document.querySelector('thead').children[0].children;
-        let lastSeq = getValueByColName('seq', 0)
 
         for(let i = data.length - 1; i >= 0; i--) {
             const newSeq = data[i]['seq'];
@@ -59,6 +64,7 @@
 
                     const cell = document.createElement('td');
                     const value = formatValue(title, data[i][title]);
+
                     cell.innerText = value;
                     cell.classList.add('text-nowrap');
 
@@ -67,6 +73,7 @@
 
                 replaceLocationWithLink(newRow);
                 appendToTable(newRow);
+          console.log(newRow)
                 lastSeq = newSeq;
             }
         }
@@ -205,11 +212,21 @@
 
         btnGroup.append(newBtn);
         btnGroup.append(singleRefreshBtn);
-        document.getElementsByClassName('form-group mr-sm-2 mb-sm-2')[1].append(btnGroup);
+
+        if(document.getElementsByClassName('form-group mr-sm-2 mb-sm-2')[1]) {
+            document.getElementsByClassName('form-group mr-sm-2 mb-sm-2')[1].append(btnGroup);
+        } else {
+            setTimeout(() => {document.getElementsByClassName('form-group mr-sm-2 mb-sm-2')[1].append(btnGroup)}, 1000)
+        }
     }
 
     function refreshClickEventHandler(e, turnOff = false) {
         if(!isRefreshing && !turnOff) {
+            if(getValueByColName('seq', 0) === '') {
+                alert('Automatyczne odświeżanie nie zadziała\nBrak numeru sekwencyjnego.');
+                throw('Brak numeru sekwencyjnego.');
+            }
+
             isRefreshing = setInterval(getFrames, refreshInterval)
 
             setButtonStyle(true);
