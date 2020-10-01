@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.10
+// @version      0.0.11
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -222,10 +222,7 @@
 
     function refreshClickEventHandler(e, turnOff = false) {
         if(!isRefreshing && !turnOff) {
-            if(getValueByColName('seq', 0) === '') {
-                alert('Automatyczne odświeżanie nie zadziała\nBrak numeru sekwencyjnego.');
-                throw('Brak numeru sekwencyjnego.');
-            }
+            isFrameId();
 
             isRefreshing = setInterval(getFrames, refreshInterval)
 
@@ -260,6 +257,8 @@
     }
 
     async function singleScan() {
+        isFrameId();
+
         const button = document.getElementById('singleRefreshButton');
         button.classList.add('btn-success');
         button.classList.remove('btn-warning');
@@ -270,6 +269,13 @@
         button.classList.add('btn-warning');
         button.classList.remove('btn-success');
         button.innerText = 'x1';
+    }
+
+    function isFrameId() {
+        if(getValueByColName('seq', 0) === '') {
+            alert('Automatyczne odświeżanie nie zadziała\nBrak numeru ID ramek.');
+            throw('Brak ID Ramek.');
+        }
     }
 
 })();
