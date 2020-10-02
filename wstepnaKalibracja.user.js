@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.9
+// @version      2.27.10
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -15,12 +15,7 @@
 (function () {
 	'use strict';
 
-	const confirmBtn = document.getElementById('confirm-trigger');
-	const wasVehicleCreated = $('.vehicle-files')[0];
-    const fuelSettings = {};
-
-	const isTruck = $('#vehicle_type_id').select2('val') == "1";
-
+	//Create global variables of status icons
 	const svgSize = '1.8em';
 	const defaultSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 	<path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
@@ -45,14 +40,22 @@
   <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
 </svg>`
 
+	//Create instance of custom class Timer, declaration of which is available below. This object is used to measure Calibration time
 	const timer = new Timer();
 
+	const confirmBtn = document.getElementById('confirm-trigger');
+	const wasVehicleCreated = $('.vehicle-files')[0];
+    const fuelSettings = {};
+
+	const isTruck = $('#vehicle_type_id').select2('val') == "1";
+
+	//Conditions that have to be met in order to show Calibration button
 	if (confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
 		const kalibracjaWstepnaBtn = document.createElement('input');
-		kalibracjaWstepnaBtn.type = "button";
-		kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
-		kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
-		kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
+			kalibracjaWstepnaBtn.type = "button";
+			kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
+			kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
+			kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
 
 		confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
 		document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
@@ -76,8 +79,10 @@
 		const baseUrl = window.location.origin;
 		const vehicleId = wasVehicleCreated.dataset.pojazd_id;
 
+		//Create counter that will measure number of tasks completed and display status to the user
 		const asyncCounter = AsyncCounter(7, btn);
 
+		//Next function calls are proper settings that use asynchronous code to communicate with Web App
 		getNrKartoteki(vehicleId, baseUrl).then(async (nrKartoteki) => {
             hideSideNumber(vehicleId, baseUrl, asyncCounter);
 
@@ -105,6 +110,7 @@
 
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
+
 		$('#kalibracjaWstepnaBtn').fadeTo(50, 0.5, function () {
 			$(this).fadeTo(250, 1.0);
 		});
@@ -177,6 +183,7 @@
                 if (!res.ok) {
                     reject('Wystąpił błąd podczas pobierania nr kartoteki. Uzupełnij kartotekę ręcznie.');
                 } else {
+					//Convert server response to text and check if dom contains warning about missing MFV
                     res.text()
                         .then(res => {
                         const parser = new DOMParser();
@@ -286,7 +293,9 @@
 				setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', positiveSvg, url)
 				asyncCounter.next();
 
-				//As of now i believe i cant synchronize distance because data that is needed is being downloaded
+				/*As of now i believe i cant synchronize distance because frames are being downloaded/processed by server.
+				If data is there this function would properly synchronise distance.*/
+
                 /*if(document.getElementById('spn917_c').checked) {
                     $.ajax({
                         url:`${baseUrl}/api/vehicle/data/ajaxGetCounters`,
@@ -418,7 +427,7 @@
 			'can_dystans': (isChecked('spn917_c') ? 1 : 0),
 			'gen_lokalizacje': 1,
 			'gen_dop_predkosci': 1,
-			'wysylaj_dhl': (window.location.host === "kj.framelogic.pl" ? 1 : 0),
+			'wysylaj_dhl': (window.location.host.indexOf('kj') === 0 ? 1 : 0),
 			'divide': 1,
 			'divide_days': 90,
 		};
@@ -611,11 +620,11 @@
 
 	function createSuccessFeed() {
 		const successFeed = document.createElement('table');
-		successFeed.id = 'successFeed';
-		successFeed.style.textAlign = 'center';
-		successFeed.style.whiteSpace = 'nowrap';
-		successFeed.style.marginLeft = '20em';
-		successFeed.classList.add('table', 'table-sm')
+			successFeed.id = 'successFeed';
+			successFeed.style.textAlign = 'center';
+			successFeed.style.whiteSpace = 'nowrap';
+			successFeed.style.marginLeft = '20em';
+			successFeed.classList.add('table', 'table-sm')
 
 		successFeed.innerHTML = `
 			<thead>
@@ -632,9 +641,10 @@
 		const createVehicleTr = document.getElementById('confirm-trigger').parentElement.parentElement.parentElement.nextElementSibling;
 
 		const newTr = document.createElement('tr');
-		newTr.innerHTML = `<td colspan="6"></td>`;
-		newTr.style.display = 'none';
-		newTr.id = "successFeedTr";
+			newTr.innerHTML = `<td colspan="6"></td>`;
+			newTr.style.display = 'none';
+			newTr.id = "successFeedTr";
+
 		createVehicleTr.insertAdjacentElement('afterend', newTr);
 		newTr.children[0].appendChild(successFeed);
 
@@ -688,8 +698,8 @@
 
                 if(url) {
                     const link = tr.children[2].children[0];
-                    link.innerText = link.dataset.name;
-                    link.href = url;
+						link.innerText = link.dataset.name;
+						link.href = url;
                 }
 
 				break
@@ -736,6 +746,7 @@
 	};
 
     function askForCapacity(defaultCap) {
+		//if fuel capacity is not provided ask user if he wants to provide it
         return new Promise((resolve, reject) => {
             fl_confirm_input(`Brak pojemności zbiorników.\nPodaj własną wartość lub zostanie przyjęta wartość ${defaultCap}l`, answer => { resolve(+answer) }, () => { reject(+defaultCap) });
         })
