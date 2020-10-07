@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.10.14
+// @version      1.11.14
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -224,20 +224,45 @@
         function addResendBtn(element) {
             if(!element) return
             const resendBtn = createResendBtn();
-            element.append(resendBtn);
+            element.appendChild(resendBtn);
 
-            resendBtn.addEventListener('click', (e) => {
+            resendBtn.addEventListener('click', e => {
                 if(!confirm('Czy na pewno chcesz wysłać tą wiadomość ponownie?')) return
-                $('#textarea').val(e.target.previousElementSibling.innerText)
+                $('#textarea').val(getSmsContent(e.target))
 
                 handleSend(e);
             })
+
+            const editBtn = createEditBtn();
+            element.appendChild(editBtn);
+
+            editBtn.addEventListener('click', e => {
+                $('#textarea').val(getSmsContent(e.target))
+            })
+        }
+
+        function getSmsContent(element) {
+            const container = element.parentElement.children;
+
+            for(const child of container) {
+                if(child.classList.contains('smsContent')) {
+                    return child.textContent;
+                }
+            }
         }
 
         function createResendBtn() {
             const result = document.createElement('span')
             result.classList.add('isw-mail')
             result.title = 'Wyślij jeszcze raz';
+
+            return result
+        }
+
+        function createEditBtn() {
+            const result = document.createElement('span')
+            result.classList.add('isw-edit')
+            result.title = 'Edytuj wiadomość';
 
             return result
         }
@@ -449,6 +474,12 @@
                 right: 5px;
                 top: 5px;
             }
+            .sms .isw-edit {
+                cursor: pointer;
+                position: absolute;
+                right: 30px;
+                top: 5px;
+            }
             .sms {
                 position: relative;
                 padding-bottom: 10px;
@@ -476,7 +507,7 @@
             .smsContent {
                 overflow-wrap: break-word;
                 font-weight: 700;
-                margin-right: 25px;
+                margin-right: 55px;
             }
             .message.error {
                 background-color: #F95;
