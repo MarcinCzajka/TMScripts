@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.11.14
+// @version      1.11.15
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -237,7 +237,8 @@
             element.appendChild(editBtn);
 
             editBtn.addEventListener('click', e => {
-                $('#textarea').val(getSmsContent(e.target))
+                $('#textarea').val(getSmsContent(e.target));
+                document.getElementById('textarea').focus();
             })
         }
 
