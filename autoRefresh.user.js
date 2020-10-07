@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.11
+// @version      0.0.12
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -17,6 +17,7 @@
     const refreshInterval = 5000;
 
     let isRefreshing = null;
+    let comparisonMethod = 'seq';
 
     window.onload = function () {
         document.querySelectorAll('button.btn.mr-sm-2.btn-sm').forEach(element => {
@@ -29,10 +30,16 @@
     }
 
     async function getFrames(){
-        let lastSeq = getValueByColName('seq', 0)
-        if(lastSeq === '') {
-            throw('Brak numeru sekwencyjnego!');
-            return
+        let lastCompare;
+        if(comparisonMethod === 'seq') {
+            lastCompare = getValueByColName('seq', 0);
+
+            if(lastCompare === '') {
+                comparisonMethod = 'date';
+                lastCompare = new Date(getValueByColName('received_at', 0)).getTime();
+            }
+        } else {
+            lastCompare = new Date(getValueByColName('received_at', 0)).getTime();
         }
 
         let dateTo = new Date();
@@ -47,15 +54,20 @@
         const data = blob.data;
         if(!data) return false;
 
-        //Dont proceed if table is refreshing using native code
+        //Dont proceed if table is refreshing using native refresh/reset button
         if(document.querySelector('table').style.display === 'none') return false;
 
         const tableHead = document.querySelector('thead').children[0].children;
 
         for(let i = data.length - 1; i >= 0; i--) {
-            const newSeq = data[i]['seq'];
+            let newCompare;
+            if(comparisonMethod === 'seq') {
+                newCompare = data[i]['seq']
+            } else {
+                newCompare = +(data[i]['received_at']['$date'].toString().slice(0, -3) + '000');
+            }
 
-            if(lastSeq < newSeq) {
+            if(lastCompare < newCompare) {
                 const newRow = document.createElement('tr');
                 newRow.classList.add('showGently', 'customFrame');
 
@@ -73,8 +85,8 @@
 
                 replaceLocationWithLink(newRow);
                 appendToTable(newRow);
-          console.log(newRow)
-                lastSeq = newSeq;
+
+                lastCompare = newCompare;
             }
         }
 
@@ -222,8 +234,6 @@
 
     function refreshClickEventHandler(e, turnOff = false) {
         if(!isRefreshing && !turnOff) {
-            isFrameId();
-
             isRefreshing = setInterval(getFrames, refreshInterval)
 
             setButtonStyle(true);
@@ -257,8 +267,6 @@
     }
 
     async function singleScan() {
-        isFrameId();
-
         const button = document.getElementById('singleRefreshButton');
         button.classList.add('btn-success');
         button.classList.remove('btn-warning');
@@ -269,13 +277,6 @@
         button.classList.add('btn-warning');
         button.classList.remove('btn-success');
         button.innerText = 'x1';
-    }
-
-    function isFrameId() {
-        if(getValueByColName('seq', 0) === '') {
-            alert('Automatyczne odświeżanie nie zadziała\nBrak numeru ID ramek.');
-            throw('Brak ID Ramek.');
-        }
     }
 
 })();
