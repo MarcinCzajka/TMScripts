@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Session in normal view
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.12.17
+// @version      0.13.20
 // @description  Displays session window in regular panel
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
@@ -17,7 +17,7 @@
     const iframeId = 'myNewIframe';
     let topBar = null;
     let win = null;
-    let configButtons = null;
+    let tabStrip = null;
     let container = null;
 
     const fadeTime = '0.225';
@@ -31,21 +31,29 @@
 
     const newBtn = document.createElement('button');
         newBtn.type = 'button';
-        newBtn.classList.add('btn');
-        newBtn.classList.add('btn-primary');
-        newBtn.classList.add('btn-sm');
+        newBtn.classList.add('btn', 'btn-primary', 'btn-sm');
         newBtn.innerHTML = 'Mała sesja';
+        newBtn.disabled = true;
         newBtn.onclick = handleClick;
 
     const resetBtn = document.createElement('button');
         resetBtn.type = 'button';
-        resetBtn.classList.add('btn');
-        resetBtn.classList.add('btn-secondary');
-        resetBtn.classList.add('btn-sm');
+        resetBtn.classList.add('btn', 'btn-secondary', 'btn-sm');
         resetBtn.innerHTML = 'reload';
+        resetBtn.disabled = true;
         resetBtn.onclick = reloadIframe;
 
     setTimeout(() => {
+        (function listenForValueChange() {
+            if(document.querySelector('[placeholder="IMEI urządzenia"]').value !== '') {
+                    newBtn.disabled = false;
+                    resetBtn.disabled = false;
+                return
+            }
+
+            setTimeout(listenForValueChange, 150)
+        })()
+
         topBar = document.querySelector('ol .row');
         topBar.appendChild(btnGroup);
 
@@ -116,7 +124,15 @@
         document.getElementById(iframeId).addEventListener('load', () => {
             win = document.getElementById(iframeId).contentWindow;
 
-            win.setTimeout(() => {
+            win.setTimeout(prepareSession, 150)
+
+            function prepareSession() {
+                if(!win.document.getElementsByClassName('breadcrumb')[0]) {
+                    console.log('No session available yet...  // Session in normal view');
+                    win.setTimeout(prepareSession, 150);
+                    return
+                }
+
                 win.document.getElementsByClassName('breadcrumb')[0].style.display = 'none';
                 win.document.getElementsByClassName('navbar')[0].style.display = 'none';
                 win.document.getElementsByClassName('content')[0].style.padding = '0';
@@ -127,7 +143,7 @@
                 document.getElementById('iframeLoader').style.visibility = 'hidden';
 
                 openDialogWindow();
-            }, 250)
+            }
         });
 
         document.getElementById('topPanel').addEventListener('mousedown', startToMoveWindow);
@@ -151,8 +167,8 @@
                 sendBtn.style = 'position:absolute; right: 20px; top: 10px; width: 80px;';
                 sendBtn.id = 'tempBtn';
                 sendBtn.onclick = () => {
-                configButtons = win.document.getElementById('customDiv');
-                if(configButtons) win.document.querySelector('body').appendChild(configButtons);
+                    tabStrip = win.document.getElementById('tabStrip');
+                if(tabStrip) win.document.querySelector('body').appendChild(tabStrip);
 
                 win.document.querySelector('body').removeChild(win.document.getElementById('tempContainer'));
                 win.setTimeout(openDialogWindow, 50);
@@ -184,7 +200,7 @@
             win.document.querySelector('body').removeChild(win.document.getElementById('modal1___BV_modal_outer_'));
             win.document.querySelector('body').appendChild(container);
 
-            if(configButtons) win.document.getElementById('tempContainer').appendChild(configButtons);
+            if(tabStrip) win.document.getElementById('tempContainer').appendChild(tabStrip);
         }, 50)
     }
 
@@ -230,9 +246,12 @@
     }
 
     function reloadIframe() {
-        document.getElementById(iframeId).style.visibility = 'hidden';
+        const iframe = document.getElementById(iframeId);
+        if(!iframe) return
+
+        iframe.style.visibility = 'hidden';
         document.getElementById('iframeLoader').style.visibility = 'inherit';
-        document.getElementById(iframeId).contentWindow.location.reload(true);
+        iframe.contentWindow.location.reload(true);
     }
 
     function createResizers() {
