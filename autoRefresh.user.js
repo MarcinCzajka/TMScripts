@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.12
+// @version      0.0.13
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -24,17 +24,18 @@
             element.addEventListener('click', clearNewFrames);
         })
 
-
         createRefreshButton();
         createAnimationNode();
     }
 
-    async function getFrames(){
+    async function getFrames() {
         let lastCompare;
+        const emptyMessage = document.querySelector('.vuetable-empty-result');
+
         if(comparisonMethod === 'seq') {
             lastCompare = getValueByColName('seq', 0);
 
-            if(lastCompare === '') {
+            if(lastCompare === '' && !emptyMessage) {
                 comparisonMethod = 'date';
                 lastCompare = new Date(getValueByColName('received_at', 0)).getTime();
             }
@@ -85,6 +86,8 @@
 
                 replaceLocationWithLink(newRow);
                 appendToTable(newRow);
+
+                if(emptyMessage) emptyMessage.remove();
 
                 lastCompare = newCompare;
             }
