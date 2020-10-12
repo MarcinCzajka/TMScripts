@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.11.15
+// @version      1.11.16
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -139,7 +139,7 @@
                     smsFolder.append(div);
                 }
 
-                const smsCountDifference = smsFolder.children.length - $('#smsContainer').children().length;
+                const smsCountDifference = document.querySelectorAll('#smsFolder .sms.response').length - document.querySelectorAll('#smsContainer .sms.response').length;
 
                 if(smsCountDifference) {
 
