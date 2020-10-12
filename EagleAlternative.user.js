@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.11.16
+// @version      1.11.17
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -139,7 +139,7 @@
                     smsFolder.append(div);
                 }
 
-                const smsCountDifference = document.querySelectorAll('#smsFolder .sms.response').length - document.querySelectorAll('#smsContainer .sms.response').length;
+                const smsCountDifference = smsFolder.children.length - $('#smsContainer').children().length;
 
                 if(smsCountDifference) {
 
@@ -158,24 +158,26 @@
 
                     scrollDown();
 
-                    let bool = true;
-                    flasher = setInterval(() => {
-                        if(!document.hidden) {
-                            document.title = 'SMSEagle';
-                            clearInterval(flasher);
-                            flasher = null;
-                            bool = false;
-                            return;
-                        }
+                    if(document.querySelectorAll('#smsFolder .sms.response').length - document.querySelectorAll('#smsContainer .sms.response').length) {
+                        let bool = true;
+                        flasher = setInterval(() => {
+                            if(!document.hidden) {
+                                document.title = 'SMSEagle';
+                                clearInterval(flasher);
+                                flasher = null;
+                                bool = false;
+                                return;
+                            }
 
-                        if(bool) {
-                            document.title = 'Nowy SMS!';
-                            bool = !bool;
-                        } else {
-                            document.title = 'SMSEagle';
-                            bool = !bool;
-                        }
-                    }, 400)
+                            if(bool) {
+                                document.title = 'Nowy SMS!';
+                                bool = !bool;
+                            } else {
+                                document.title = 'SMSEagle';
+                                bool = !bool;
+                            }
+                        }, 400)
+                    }
                 }
 
                 $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
