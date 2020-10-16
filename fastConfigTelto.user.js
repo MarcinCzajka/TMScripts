@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.0
+// @version      3.1
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -28,6 +28,7 @@
 	const fmb640 = fmb640Element();
 	const lvCan = lvCanElement();
 	const fm5300 = fm5300Element();
+    const rfid = rfidElement();
 
 	const tabStrip = document.createElement('div');
 	tabStrip.id = 'tabStrip';
@@ -47,6 +48,11 @@
 			<label for="tab3">FM5300</label>
 			<div></div>
 		</li>
+		<li class="teltoNav" id="rfid-nav">
+			<input type="radio" name="tabStrip1" id="tab4" />
+			<label for="tab4">RFID</label>
+			<div></div>
+		</li>
 	</ul>`;
 
 	//Append new container to inexistent (at document.ready) element. Timeout at 0 is not enough
@@ -61,16 +67,35 @@
 				triggerButtonCreation();
 			}
 
-			function triggerButtonCreation() {
-				if(document.getElementById('exampleInputPassword1') && !document.getElementById('tabStrip')) {
-					document.getElementById('exampleInputPassword1').parentNode.appendChild(tabStrip);
-					document.querySelector('#fmb640-nav>div').appendChild(fmb640);
-					document.querySelector('#lvCan200-nav>div').appendChild(lvCan);
-					document.querySelector('#fm5300-nav>div').appendChild(fm5300);
-				}
-			}
+            function triggerButtonCreation() {
+                if(document.getElementById('exampleInputPassword1') && !document.getElementById('tabStrip')) {
+                    document.getElementById('exampleInputPassword1').parentNode.appendChild(tabStrip);
+                    document.querySelector('#fmb640-nav>div').appendChild(fmb640);
+                    document.querySelector('#lvCan200-nav>div').appendChild(lvCan);
+                    document.querySelector('#fm5300-nav>div').appendChild(fm5300);
+                    document.querySelector('#rfid-nav>div').appendChild(rfid);
+
+                    function onVehiclesInput(e) {
+                        const value = document.getElementById('vehiclesInput').value.toLowerCase();
+                        const options = document.getElementById('vehiclesList').children;
+
+                        for(let i = 0; i < options.length; i++) {
+                            if(options[i].value.toLowerCase() === value) {
+                                document.getElementById('exampleInputPassword1').value = 'lvcansetprog ' + options[i].dataset.program;
+                                document.getElementById('exampleInputPassword1').focus();
+                                triggerInput();
+                                break;
+                            }
+                        }
+                    }
+
+                    const lvCanVehiclesInput = document.getElementById('vehiclesInput');
+                    lvCanVehiclesInput.addEventListener('input', onVehiclesInput);
+                    lvCanVehiclesInput.addEventListener('keyup', onVehiclesInput);
+                }
+            }
         }
-	}, 1000);
+    }, 1000);
 
     function triggerInput() {
 		const event = new Event('input', {
@@ -113,6 +138,16 @@
 
 	//////Custom tabs\\\\\\
 
+    function rfidElement() {
+        const customDiv = document.createElement('div');
+        customDiv.id = 'rfidElement';
+
+        createBtn('Włącz RFID', (e) => {setMsg('setparam 11700:1;11702:1;50390:1;50391:5;50394:1;11805:1')}, customDiv, null, null, 'grid-column:3/5;grid-row:1');
+        createBtn('Wyłącz RFID', (e) => {setMsg('setparam 11700:0')}, customDiv, null, null, 'grid-column:5/7;grid-row:1');
+
+        return customDiv
+    }
+
 	function fm5300Element() {
 		const customDiv = document.createElement('div');
 		customDiv.id = 'fm5300Element';
@@ -146,17 +181,7 @@
 		const dropdown = document.createElement('div');
         dropdown.classList.add('customBtn');
 		dropdown.innerHTML = `
-			<input placeholder="lvcansetprog" id="vehiclesInput" list="vehiclesList" oninput="
-			const value = document.getElementById('vehiclesInput').value.toLowerCase();
-			const options = document.getElementById('vehiclesList').children;
-
-			for(let i = 0; i < options.length; i++) {
-				if(options[i].value.toLowerCase() === value) {
-					document.getElementById('exampleInputPassword1').value = 'lvcansetprog ' + options[i].dataset.program;
-                    document.getElementById('exampleInputPassword1').focus();
-					break;
-				}
-			}">
+			<input placeholder="lvcansetprog" id="vehiclesInput" list="vehiclesList">
 		`;
 
 		dropdown.style = 'grid-column:5/8;grid-row:1'
@@ -365,7 +390,7 @@
         stylesheet.type = "text/css";
 
 		stylesheet.textContent = `
-			#fmb640Element, #lvCanElement, #fm5300Element {
+			#fmb640Element, #lvCanElement, #fm5300Element, #rfidElement {
 				display:grid;
 				grid-template-rows: repeat(3, auto);
 				grid-template-columns: 15px 15px 12% 12% 12% 12% 12% 12% 12% 10%;
