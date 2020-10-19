@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.11
+// @version      2.27.12
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -269,7 +269,7 @@
 		const url = `${baseUrl}/api/vehicle/data/data_exploitation/${vehicleId}`;
 
 		const distance = $('[name=stan_licznika]').val().toString();
-		if(distance === '.') {
+		if(!distance || distance === '.') {
 			setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', neutralSvg, url)
 			asyncCounter.next();
 			return
