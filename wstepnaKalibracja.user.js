@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.10
+// @version      2.27.11
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -320,7 +320,7 @@
 			},
 			error: function (err) {
 				console.log(err);
-				setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', negativeSvg)
+				setSuccessFeed('Ustawiono dystans w Danych eksploatacyjnych', negativeSvg, url)
 				displayError('Wystąpił błąd podczas ustawiania dystansu.');
 				asyncCounter.next()
 			}
