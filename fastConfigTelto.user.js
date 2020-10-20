@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.2
+// @version      3.3
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -76,7 +76,7 @@
             function triggerButtonCreation() {
                 if(document.getElementById('exampleInputPassword1') && !document.getElementById('tabStrip')) {
 					document.getElementById('exampleInputPassword1').parentNode.appendChild(tabStrip);
-					
+
                     document.querySelector('#fmb640-nav>div').appendChild(fmb640);
                     document.querySelector('#lvCan200-nav>div').appendChild(lvCan);
                     document.querySelector('#fm5300-nav>div').appendChild(fm5300);
@@ -100,7 +100,7 @@
                     const lvCanVehiclesInput = document.getElementById('vehiclesInput');
                     lvCanVehiclesInput.addEventListener('input', onVehiclesInput);
 					lvCanVehiclesInput.addEventListener('keyup', onVehiclesInput);
-					
+
 
 					document.getElementById('firstThermometer').addEventListener('change', onThermometersChange);
 					document.getElementById('secondThermometer').addEventListener('change', onThermometersChange);
@@ -109,7 +109,7 @@
 						const secondThermometer = document.getElementById('secondThermometer').value;
 
 						let result = '';
-			
+
 						if(firstThermometer || secondThermometer) {
 							result = `setparam 1115:0;1100:120;1113:110;1114:9999;1110:6;50620:1;50610:1;50580:1;\nsetparam 50570:1;50540:150530:1;1250:1;1200:1;`;
 
@@ -180,11 +180,11 @@
 
         return customDiv
 	}
-	
+
 	function thermometersElement() {
         const customDiv = document.createElement('div');
 		customDiv.id = 'thermometersElement';
-		
+
 		const firstThermometer = document.createElement('input');
 		firstThermometer.id = 'firstThermometer';
 		firstThermometer.placeholder = 'Pierwszy termometr';
@@ -451,7 +451,7 @@
             #lvCanElement, #fm5300Element {
                 grid-row-gap: 2px;
             }
-            #tabStrip input {
+            #tabStrip div input {
                 width: 100%;
                 height: 100%;
                 font-weight: 500;
@@ -460,8 +460,8 @@
 				margin-top: 5px;
 			}
 			#thermometersElement input {
-				height: 33px;
-				width: 97%;
+				height: 33px !important;
+				width: 97% !important;
 			}
             #tabStrip ::-webkit-input-placeholder {
                text-align: center;
