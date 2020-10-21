@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.12
+// @version      2.27.13
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -378,9 +378,11 @@
             minOdchylenie = 1.5;
         } else if(fuelType === "plywak") {
             minOdchylenie = 5;
-        } else if(fuelType === "can") {
+        } else if(fuelType === "can" && isTruck) {
             minOdchylenie = 100;
-        };
+        } else if(fuelType === "can") {
+			minOdchylenie = 5;
+		}
 
 		let markaRejestratora = 0;
 		const selectedBlackbox = $('#rodzaj_rejestratora_id').find('[selected]').text();
@@ -434,7 +436,7 @@
 
 		const fuelSpecificData = {
 			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
-			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" ? 1 : 0),
+			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" || !isTruck ? 1 : 0),
 			'paliwo_z_can': (isChecked('spn96_c') ? 1 : 0),
 			'min_odchylenie': minOdchylenie,
 			'prog_weryfikujacy_paliwa': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 3.5) : (litersByPercent(fuelSettings.totalCapacity, 5) > 50 ? 50 : litersByPercent(fuelSettings.totalCapacity, 5))),
