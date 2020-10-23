@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.12.17
+// @version      1.12.18
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -62,7 +62,7 @@
 
         fetchSms();
 
-        function sendSms(number, message) {
+        function sendSms(number, message, callback) {
             const nr = number.toString().replace('+', '');
             let modem = null;
             if(String(nr).slice(0,2) === '46') {
@@ -70,6 +70,8 @@
             } else if(String(nr).slice(0,2) === '48') {
                 modem = 2;
             }
+
+            if(!modem) return
 
             const data = {
                 'csrf_test_name': csrf,
@@ -89,6 +91,8 @@
 
             $.post(`${window.location.origin}/messages/compose_process`, data, (res) => {
                 document.getElementById('resultWindow').innerHTML = res;
+
+                if(callback) callback();
             });
         }
 
@@ -354,7 +358,7 @@
             e.preventDefault();
 
             const message = $('#textarea').val();
-            const number = $('#nrInput').val();
+            const number = $('#nrInput').val().replaceAll(' ', '');
 
             if(message === '') return;
             
@@ -362,7 +366,7 @@
                 const numbers = number.split(',');
 
                 for(let i = 0; i < number.length; i++) {
-                    sendSms(numbers[i], message);
+                    sendSms(numbers[i], message, () => {console.log(`Wysłano wiadomość do ${numbers[i]}`));
                 }
             } else {
                 sendSms(number, message);
