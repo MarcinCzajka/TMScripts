@@ -361,12 +361,12 @@
             const number = $('#nrInput').val().replaceAll(' ', '');
 
             if(message === '') return;
-            
+
             if(number.includes(',')) {
                 const numbers = number.split(',');
 
                 for(let i = 0; i < number.length; i++) {
-                    sendSms(numbers[i], message, () => {console.log(`Wysłano wiadomość do ${numbers[i]}`));
+                    sendSms(numbers[i], message, () => {console.log(`Wysłano wiadomość do ${numbers[i]}`)});
                 }
             } else {
                 sendSms(number, message);
