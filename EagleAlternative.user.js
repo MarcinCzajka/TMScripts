@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.12.18
+// @version      1.12.19
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -25,6 +25,8 @@
 
     function showAltEagle(number = `+${query.slice(query.indexOf('number') + 7).replace('+', '')}`) {
 
+        let fetchType = 'sentitems'; //inbox
+
         if(document.getElementById('smsContainer')) {
             document.getElementById('nrInput').value = number;
             fetchSms();
@@ -34,7 +36,6 @@
 
         let interval = null;
         let flasher = null;
-        let fetchType = 'sentitems'; //inbox
 
         const csrf = $('csrf_test_name').first().val();
 
@@ -63,6 +64,14 @@
         fetchSms();
 
         function sendSms(number, message, callback) {
+            if(!number) {
+                console.log(`Nieprawidłowy numer: ${number}`);
+                return
+            } else if(!message) {
+                console.log(`Nieprawidłowa wiadomość: ${message}`);
+                return
+            }
+
             const nr = number.toString().replace('+', '');
             let modem = null;
             if(String(nr).slice(0,2) === '46') {
@@ -365,7 +374,7 @@
             if(number.includes(',')) {
                 const numbers = number.split(',');
 
-                for(let i = 0; i < number.length; i++) {
+                for(let i = 0; i < numbers.length; i++) {
                     sendSms(numbers[i], message, () => {console.log(`Wysłano wiadomość do ${numbers[i]}`)});
                 }
             } else {
