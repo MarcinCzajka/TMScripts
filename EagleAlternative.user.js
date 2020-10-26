@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.14.20
+// @version      1.15.20
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -25,6 +25,7 @@
 
     function showAltEagle(number = `+${query.slice(query.indexOf('number') + 7).replace('+', '')}`) {
         let fetchType = 'sentitems'; //inbox
+        let modem = 0;
 
         if(document.getElementById('smsContainer')) {
             document.getElementById('nrInput').value = number;
@@ -36,7 +37,7 @@
         let interval = null;
         let flasher = null;
 
-        const csrf = $('csrf_test_name').first().val();
+        const csrf = document.querySelector('input[name=csrf_test_name]').value;
 
         $('.workplace').remove();
 
@@ -54,6 +55,7 @@
         createNrInput(number);
 
         createFetchTypeBtnGroup();
+        detectModem(number);
 
         $('#container').append(smsContainer);
 
@@ -71,33 +73,37 @@
                 currentNumber.val(newNumber);
             }
 
+            detectModem(newNumber)
+
             $('#smsContainer').empty();
             fetchSms();
         };
 
-        function sendSms(number, message, callback) {
+        function detectModem(number) {
+            const nr = String(number).replace('+', '').slice(0,2);
+            if(nr === '46') {
+                document.getElementById('tele2Btn').click();
+            } else if(nr === '48') {
+                document.getElementById('tmobileBtn').click();
+            }
+        }
+
+        function sendSms(number, message) {
             if(!number) {
                 console.log(`Nieprawidłowy numer: ${number}`);
                 return
             } else if(!message) {
                 console.log(`Nieprawidłowa wiadomość: ${message}`);
                 return
+            } else if (!modem) {
+                console.log('Nie wybrano modemu (Tele2/Tmobile)');
+                return
             }
-
-            const nr = number.toString().replace('+', '');
-            let modem = null;
-            if(String(nr).slice(0,2) === '46') {
-                modem = 1;
-            } else if(String(nr).slice(0,2) === '48') {
-                modem = 2;
-            }
-
-            if(!modem) return
 
             const data = {
                 'csrf_test_name': csrf,
                 'sendoption': 'sendoption3',
-                'manualvalue': '+' + nr,
+                'manualvalue': '+' + number.replace('+', ''),
                 'senddateoption': 'option1',
                 'hour': '00',
                 'minute': '00',
@@ -112,8 +118,6 @@
 
             $.post(`${window.location.origin}/messages/compose_process`, data, (res) => {
                 document.getElementById('resultWindow').innerHTML = res;
-
-                if(callback) callback();
             });
         }
 
@@ -374,7 +378,7 @@
                 const numbers = number.split(',');
 
                 for(let i = 0; i < numbers.length; i++) {
-                    sendSms(numbers[i], message, () => {console.log(`Wysłano wiadomość do ${numbers[i]}`)});
+                    sendSms(numbers[i], message);
                 }
             } else {
                 sendSms(number, message);
@@ -418,7 +422,7 @@
                 togglePrivateBtn.onclick = () => {
                     if(!togglePrivateBtn.classList.contains('btn-primary')) {
                         fetchType = 'sentitems';
-                        swapBtnClass();
+                        setBtnClass(togglePrivateBtn, toggleAllBtn);
                         fetchSms();
                     }
                 }
@@ -429,7 +433,7 @@
                 toggleAllBtn.onclick = () => {
                     if(!toggleAllBtn.classList.contains('btn-primary')) {
                         fetchType = 'inbox';
-                        swapBtnClass();
+                        setBtnClass(toggleAllBtn, togglePrivateBtn);
                         fetchSms();
                     }
                 }
@@ -438,19 +442,43 @@
             document.getElementById('fetchTypeBtnGroup').appendChild(togglePrivateBtn);
             document.getElementById('fetchTypeBtnGroup').appendChild(toggleAllBtn);
 
-            function swapBtnClass() {
-                if(!togglePrivateBtn.classList.contains('btn-primary')) {
-                    togglePrivateBtn.classList.add('btn-primary');
-                    togglePrivateBtn.classList.remove('btn-secondary');
-                    toggleAllBtn.classList.add('btn-secondary');
-                    toggleAllBtn.classList.remove('btn-primary');
-                } else {
-                    toggleAllBtn.classList.add('btn-primary');
-                    toggleAllBtn.classList.remove('btn-secondary');
-                    togglePrivateBtn.classList.add('btn-secondary');
-                    togglePrivateBtn.classList.remove('btn-primary');
-                }
+            createOperatorBtnGroup(fetchTypeBtnGroup);
+        }
+
+        function createOperatorBtnGroup(parentElement) {
+            const btnGroup = document.createElement('div');
+            btnGroup.classList.add('btn-group');
+            btnGroup.role = 'group';
+            btnGroup.id = 'operatorBtnGroup';
+
+            const tele2Btn = document.createElement('button');
+            tele2Btn.classList.add('btn', 'btn-secondary', 'btn-sm');
+            tele2Btn.innerText = 'Tele2';
+            tele2Btn.id = 'tele2Btn';
+            tele2Btn.onclick = () => {
+                modem = 1;
+                setBtnClass(tele2Btn, tmobileBtn);
             }
+
+            const tmobileBtn = document.createElement('button');
+            tmobileBtn.classList.add('btn', 'btn-secondary', 'btn-sm');
+            tmobileBtn.innerText = 'T-Mobile';
+            tmobileBtn.id = 'tmobileBtn';
+            tmobileBtn.onclick = () => {
+                modem = 2;
+                setBtnClass(tmobileBtn, tele2Btn);
+            }
+
+
+            btnGroup.append(tele2Btn, tmobileBtn);
+            parentElement.appendChild(btnGroup);
+        }
+
+        function setBtnClass(primaryButton, secondaryButton) {
+            primaryButton.classList.add('btn-primary');
+            primaryButton.classList.remove('btn-secondary');
+            secondaryButton.classList.add('btn-secondary');
+            secondaryButton.classList.remove('btn-primary');
         }
 
     }
@@ -492,6 +520,12 @@
             #navigationInput {
                 border: 0;
                 width: 168px;
+            }
+            #fetchTypeBtnGroup .btn {
+                width: 97px;
+            }
+            #operatorBtnGroup button:first-child {
+                margin-left: 5em;
             }
             .inputHolder {
                 padding: 8px 4px 8px 0 !important;
@@ -619,7 +653,7 @@
 }
 .switch .toggle-inside {
   border-radius: ${5 * switchSize}px;
-  background: #4a4a4a;
+  background: #989797;
   position: absolute;
   transition: 0.25s ease all;
 }
@@ -644,7 +678,7 @@
 }
 .switch input ~ input:checked ~ .toggle-outside .toggle-inside {
   left: ${3.25 * switchSize}px;
-  background: #e8a11f;
+  background: #e4c629;
 }
 .switch input:checked + label:hover ~ .toggle-outside .toggle-inside {
   height: ${2.5 * switchSize}px;
