@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Create link to alternative Eagle in DB
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.1.5
+// @version      0.1.6
 // @description  Creates link near SIM to Eagle override
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToAltEagle.user.js
@@ -57,7 +57,7 @@
 
     function openEagle() {
         const url = 'http://' + window.location.host.replace('gps', 'sms') + ':86//'
-        const query = '?chat=true&number=' + simNr;
+        const query = '#chat=true&number=' + simNr;
         window.open(url + query);
     }
 

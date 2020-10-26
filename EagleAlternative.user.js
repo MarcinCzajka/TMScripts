@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.12.19
+// @version      1.14.20
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -14,7 +14,7 @@
 (function() {
     'use strict';
 
-    const query = window.location.search;
+    const query = window.location.hash || window.location.search;
 
     addStylesheet();
     createNavigationInput();
@@ -24,7 +24,6 @@
     }
 
     function showAltEagle(number = `+${query.slice(query.indexOf('number') + 7).replace('+', '')}`) {
-
         let fetchType = 'sentitems'; //inbox
 
         if(document.getElementById('smsContainer')) {
@@ -62,6 +61,19 @@
         createContainerShadow();
 
         fetchSms();
+
+        window.onhashchange = function(e) {
+            const hash = window.location.hash;
+            const newNumber = hash.slice(hash.indexOf('number') + 7).replace('+', '');
+            const currentNumber = $('#nrInput');
+
+            if(newNumber !== currentNumber.val()) {
+                currentNumber.val(newNumber);
+            }
+
+            $('#smsContainer').empty();
+            fetchSms();
+        };
 
         function sendSms(number, message, callback) {
             if(!number) {
@@ -194,45 +206,27 @@
                 }
 
                 $('#containerShadow').fadeTo(50, 0.5, function () { $(this).fadeTo(250, 0); });
-                $('#refreshBtn').fadeTo(50, 0.7, function () { $(this).fadeTo(250, 1); });
 
                 updateDate();
             })
         }
 
-        function listenForSms(ms) {
-            fetchSms();
+        function listenForSms(shouldRefresh) {
+            if(!!shouldRefresh) {
 
-            if(interval) {
-                clearInterval(interval);
-                interval = null;
-            }
+                if(interval) {
+                    clearInterval(interval);
+                    interval = null;
+                }
 
-            document.title = 'SMSEagle - Odświeżanie';
+                document.title = 'SMSEagle - Odświeżanie';
+                interval = setInterval(fetchSms, 3000);
 
-            interval = setInterval(fetchSms, 3000);
-            toggleRefreshBtnStyle(true);
-
-            window.setTimeout(() => {
+            } else if(interval) {
                 clearInterval(interval);
                 interval = null;
 
                 document.title = 'SMSEagle';
-
-                toggleRefreshBtnStyle(false)
-            }, ms)
-        }
-
-        function toggleRefreshBtnStyle(isRefreshing) {
-            const refreshBtn = $('#refreshBtn');
-            if(isRefreshing) {
-                refreshBtn.text('Odświeżam...');
-                refreshBtn.addClass('btn-warning');
-                refreshBtn.removeClass('btn-success');
-            } else {
-                refreshBtn.text('Odśwież');
-                refreshBtn.addClass('btn-success');
-                refreshBtn.removeClass('btn-warning');
             }
         }
 
@@ -307,7 +301,9 @@
 
             document.getElementById('container').appendChild(nrInput);
 
-            $('#nrInput').on('focusout', function() {$('#smsContainer').empty();fetchSms()});
+            $('#nrInput').on('focusout', function({target}) {
+                window.location.hash = `chat=true&number=${target.value}`;
+            });
         }
 
         function createInputPanel() {
@@ -323,20 +319,24 @@
                 lastUpdateDate.id = 'lastUpdateDate';
                 lastUpdateDate.style = 'width:100%; text-align: center;';
 
-            const refreshBtn = document.createElement('button');
+            const refreshBtn = document.createElement('div');
                 refreshBtn.id = 'refreshBtn';
-                refreshBtn.classList.add('btn');
-                refreshBtn.classList.add('refresh_button');
-                refreshBtn.classList.add('btn-success');
-                refreshBtn.innerText = 'Odśwież';
-                refreshBtn.style = 'width: 100px; margin-left: calc(100% - 220px);';
-                refreshBtn.title = 'Odświeża co 3 sekundy przez 5 minut';
+                refreshBtn.classList.add('switch');
+                refreshBtn.title = 'Odświeżaj co 3 sekundy';
+                refreshBtn.innerHTML = `
+                  <label>Odświeżanie</label>
+                  <input id="radioOff" type="radio" checked="checked" name="refreshSwitch">
+                  <input id="radioOn" type="radio" name="refreshSwitch">
+                  <span class="toggle-outside">
+                      <span class="toggle-inside"></span>
+                  </span>`;
+
 
             const sendBtn = document.createElement('button');
                 sendBtn.id = 'sendBtn';
                 sendBtn.classList.add('btn');
                 sendBtn.innerText = 'Wyślij'
-                sendBtn.style = 'width: 100px; margin-left: 20px';
+                sendBtn.style = 'width: 100px';
 
             const resultWindow = document.createElement('div');
                 resultWindow.id = 'resultWindow';
@@ -349,15 +349,14 @@
             $('#inputContainer').append(sendBtn);
             $('#inputContainer').append(resultWindow);
 
-            $('#refreshBtn').on('click', () => {
-                listenForSms(300000);
-            });
-
             $('#textarea').on('keypress', (e) => {
                 if(e.charCode === 13 && !e.shiftKey) {
                     handleSend(e);
                 }
             });
+
+            $('#radioOn').on('input', () => {listenForSms(true)});
+            $('#radioOff').on('input', () => {listenForSms(false)});
 
             $('#sendBtn').on('click', handleSend);
 
@@ -379,7 +378,7 @@
                 }
             } else {
                 sendSms(number, message);
-                listenForSms(300000);
+                document.getElementById('radioOn').click();
             }
 
             $('#textarea').val('');
@@ -473,6 +472,7 @@
             if(number === '') return
 
             showAltEagle(+number);
+            window.location.hash = `chat=true&number=${number}`;
         }
 
         $('#navigationInput').on('keypress', (e) => {
@@ -485,6 +485,8 @@
     function addStylesheet() {
         const stylesheet = document.createElement('style');
         stylesheet.type = "text/css";
+
+        const switchSize = 11.5;
 
         stylesheet.textContent = `
             #navigationInput {
@@ -516,6 +518,7 @@
                 border: 1px solid #97C6E3;
                 border-radius: 10px;
                 margin-bottom: 10px;
+                min-height: 32px;
             }
             .message {
                 background-color: #A8DDFD;
@@ -576,6 +579,83 @@
                 text-align: center;
                 margin-bottom: 2px;
             }
+.switch {
+  display: inline-block;
+  position: relative;
+  width: 190px;
+  height: ${2.5 * switchSize}px;
+  font-size: 0;
+  margin-left: 60%;
+}
+.switch input {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+}
+.switch input:checked {
+  z-index: 1;
+}
+.switch label {
+  color: #444;
+  opacity: 0.7;
+  transition: opacity 0.25s ease;
+  cursor: pointer;  cursor: default;
+  font-size: ${1.5 * switchSize}px;
+  line-height: ${3 * switchSize}px;
+  display: inline-block;
+  width: ${6 * switchSize}px;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+}
+.switch .toggle-outside {
+  height: 100%;
+  border-radius: ${2 * switchSize}px;
+  padding: ${0.25 * switchSize}px;
+  overflow: hidden;
+  transition: 0.25s ease all;
+}
+.switch .toggle-inside {
+  border-radius: ${5 * switchSize}px;
+  background: #4a4a4a;
+  position: absolute;
+  transition: 0.25s ease all;
+}
+.switch input {
+  height: ${3 * switchSize}px;
+  width: ${6 * switchSize}px;
+  left: ${9 * switchSize}px;
+  margin: 0;
+}
+.switch .toggle-outside {
+  background: #fff;
+  position: absolute;
+  width: ${5.5 * switchSize}px;
+  left: ${9 * switchSize}px;
+}
+.switch .toggle-inside {
+  height: ${2.5 * switchSize}px;
+  width: ${2.5 * switchSize}px;
+}
+.switch input:checked ~ .toggle-outside .toggle-inside {
+  left: ${0.25 * switchSize}px;
+}
+.switch input ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: ${3.25 * switchSize}px;
+  background: #e8a11f;
+}
+.switch input:checked + label:hover ~ .toggle-outside .toggle-inside {
+  height: ${2.5 * switchSize}px;
+  width: ${2.5 * switchSize}px;
+}
+.switch input:hover ~ .toggle-outside .toggle-inside {
+  width: ${3.5 * switchSize}px;
+}
+.switch input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
+  left: ${2.25 * switchSize}px;
+}
         `;
 
         document.querySelector('head').appendChild(stylesheet);
