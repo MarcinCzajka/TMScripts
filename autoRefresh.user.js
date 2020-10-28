@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.13
+// @version      0.0.14
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -62,11 +62,13 @@
 
         for(let i = data.length - 1; i >= 0; i--) {
             let newCompare;
-            if(comparisonMethod === 'seq') {
-                newCompare = data[i]['seq']
+            if(comparisonMethod === 'seq' && data[i]['seq']) {
+                newCompare = data[i]['seq'];
             } else {
                 newCompare = +(data[i]['received_at']['$date'].toString().slice(0, -3) + '000');
             }
+
+            console.log(comparisonMethod, lastCompare, newCompare)
 
             if(lastCompare < newCompare) {
                 const newRow = document.createElement('tr');
