@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.3
+// @version      3.4
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -62,16 +62,23 @@
 	</ul>`;
 
 	//Append new container to inexistent (at document.ready) element. Timeout at 0 is not enough
-    setTimeout(() => {
-        const IMEI = document.querySelectorAll('input')[0].value;
-        if(Number(IMEI) > 999999999) {
+    (function showButtons() {
+        const IMEI = document.querySelector('input')
+        if(!IMEI) {
+            setTimeout(showButtons,100);
+            return
+        }
+
+        if(Number(IMEI.value) > 999999999) {
 
 			document.getElementsByClassName('btn-secondary')[0].addEventListener('click', triggerButtonCreation);
 
             //If script is launched in mini sessionWindow (another script)
-            if(document.getElementById('exampleInputPassword1')) {
-				triggerButtonCreation();
-			}
+            setTimeout(() => {
+                if(document.getElementById('exampleInputPassword1')) {
+                    triggerButtonCreation();
+                }
+            }, 500);
 
             function triggerButtonCreation() {
                 if(document.getElementById('exampleInputPassword1') && !document.getElementById('tabStrip')) {
@@ -128,7 +135,7 @@
                 }
             }
         }
-    }, 1000);
+    })()
 
     function triggerInput() {
 		const event = new Event('input', {
