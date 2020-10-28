@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.27.13
+// @version      2.28.13
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -42,6 +42,8 @@
 
 	//Create instance of custom class Timer, declaration of which is available below. This object is used to measure Calibration time
 	const timer = new Timer();
+	
+	const parser = new DOMParser();
 
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
@@ -186,7 +188,6 @@
 					//Convert server response to text and check if dom contains warning about missing MFV
                     res.text()
                         .then(res => {
-                        const parser = new DOMParser();
 						const doc = parser.parseFromString(res, 'text/html');
 
 						let isInvoiceOk = true;
@@ -504,7 +505,16 @@
 			data: data,
 			dataType: 'text',
 			success: function (res) {
-				setSuccessFeed('Dane administracyjne', positiveSvg, url)
+				const doc = parser.parseFromString(res, 'text/html');
+
+				const error = doc.getElementById('info');
+				if(error) {
+					setSuccessFeed('Dane administracyjne', negativeSvg, url)
+					displayError(error.innerText);
+				} else {
+					setSuccessFeed('Dane administracyjne', positiveSvg, url)
+				}
+
 				asyncCounter.next()
 			},
 			error: function (err) {
