@@ -62,13 +62,11 @@
 
         for(let i = data.length - 1; i >= 0; i--) {
             let newCompare;
-            if(comparisonMethod === 'seq' && data[i]['seq']) {
-                newCompare = data[i]['seq'];
+            if(comparisonMethod === 'seq') {
+                newCompare = data[i]['seq']
             } else {
                 newCompare = +(data[i]['received_at']['$date'].toString().slice(0, -3) + '000');
             }
-
-            console.log(comparisonMethod, lastCompare, newCompare)
 
             if(lastCompare < newCompare) {
                 const newRow = document.createElement('tr');
@@ -132,7 +130,7 @@
             case 'received_at':
             case 'created_at':
                 result = new Date(result.$date)
-                result.setTime(result.getTime() + 7200000)
+                result.setTime(result.getTime() + 3600000)
                 return result.toISOString().
                     replace(/T/, ' ').
                     replace(/\..+/, '')
