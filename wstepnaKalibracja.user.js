@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.28.13
+// @version      2.28.14
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -17,28 +17,32 @@
 
 	//Create global variables of status icons
 	const svgSize = '1.8em';
-	const defaultSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-alarm" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	<path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
-	<path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
-	<path d="M.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
-	<path fill-rule="evenodd" d="M11.646 14.146a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708l-1-1a.5.5 0 0 1 0-.708zm-7.292 0a.5.5 0 0 0-.708 0l-1 1a.5.5 0 0 0 .708.708l1-1a.5.5 0 0 0 0-.708zM5.5.5A.5.5 0 0 1 6 0h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
-	<path d="M7 1h2v2H7V1z"/>
-  </svg>`;
-	const positiveSvg = `<svg style="color: green" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-check-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-	<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+	const defaultSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M8 15A6 6 0 1 0 8 3a6 6 0 0 0 0 12zm0 1A7 7 0 1 0 8 2a7 7 0 0 0 0 14z"/>
+		<path fill-rule="evenodd" d="M8 4.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.053.224l-1.5 3a.5.5 0 1 1-.894-.448L7.5 8.882V5a.5.5 0 0 1 .5-.5z"/>
+		<path d="M.86 5.387A2.5 2.5 0 1 1 4.387 1.86 8.035 8.035 0 0 0 .86 5.387zM11.613 1.86a2.5 2.5 0 1 1 3.527 3.527 8.035 8.035 0 0 0-3.527-3.527z"/>
+		<path fill-rule="evenodd" d="M11.646 14.146a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708l-1-1a.5.5 0 0 1 0-.708zm-7.292 0a.5.5 0 0 0-.708 0l-1 1a.5.5 0 0 0 .708.708l1-1a.5.5 0 0 0 0-.708zM5.5.5A.5.5 0 0 1 6 0h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+		<path d="M7 1h2v2H7V1z"/>
 	</svg>`;
-	const neutralSvg = `<svg width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-dash-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-	<path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
-  </svg>`;
-	const negativeSvg = `<svg style="color: red" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" class="bi bi-exclamation-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-	<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-	<path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-  </svg>`;
-  	const errorSvg = `<svg style="color: red; float:left" width="2.2em" height="2.2em" viewBox="0 0 16 16" class="bi bi-exclamation-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-</svg>`
+	const positiveSvg = `<svg style="color: green" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+		<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+		</svg>`;
+	const neutralSvg = `<svg width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+		<path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
+	</svg>`;
+	const negativeSvg = `<svg style="color: red" width="${svgSize}" height="${svgSize}" viewBox="0 0 16 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+		<path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+	</svg>`;
+  	const errorSvg = `<svg style="color: red; float:left" width="2.2em" height="2.2em" viewBox="0 0 16 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+	</svg>`
+	const warningSvg = `<svg style="color: #dea524" width="${svgSize}" height="${svgSize}" viewBox="0 0 17 16" fill="currentColor">
+		<path fill-rule="evenodd" d="M7.938 2.016a.146.146 0 0 0-.054.057L1.027 13.74a.176.176 0 0 0-.002.183c.016.03.037.05.054.06.015.01.034.017.066.017h13.713a.12.12 0 0 0 .066-.017.163.163 0 0 0 .055-.06.176.176 0 0 0-.003-.183L8.12 2.073a.146.146 0 0 0-.054-.057A.13.13 0 0 0 8.002 2a.13.13 0 0 0-.064.016zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+		<path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+	</svg>`;
 
 	//Create instance of custom class Timer, declaration of which is available below. This object is used to measure Calibration time
 	const timer = new Timer();
@@ -395,6 +399,12 @@
 			markaRejestratora = 6;
 		};
 
+		const distance = $('[name=stan_licznika]').val().toString();
+
+		const counterDate = $('#kiedy2').val().toString();
+		const counterHour = `${$('#kiedy2hour').val().toString().length === 1 ? '0' : ''}${$('#kiedy2hour').val().toString()}`;
+		const counterMinute = `${$('#kiedy2minute').val().toString().length === 1 ? '0' : ''}${$('#kiedy2minute').val().toString()}`;
+
 		const generalData = {
 			'aktywny': 1,
 			'datetime_from': `${$('#kiedy2').val()} 00:00:00`,
@@ -428,6 +438,8 @@
 			'dystans_gps_w_pojezdzie': 1,
 			'dystans_can_pokaz': (isChecked('spn917_c') ? 1 : 0),
 			'can_dystans': (isChecked('spn917_c') ? 1 : 0),
+			'counter_datetime': `${counterDate} ${counterHour}:${counterMinute}:00`,
+			'counter_value': !distance || distance === '.' ? '' : distance,
 			'gen_lokalizacje': 1,
 			'gen_dop_predkosci': 1,
 			'wysylaj_dhl': (window.location.host.indexOf('kj') === 0 ? 1 : 0),
@@ -438,7 +450,7 @@
 		const fuelSpecificData = {
 			'pomiar_paliwa_id': ($('.tanks_tr').not('.deleted').length > 0 ? 2 : 3),
 			'paliwo_z_sondy': (fuelType === "sonda" || fuelType === "plywak" || !isTruck ? 1 : 0),
-			'paliwo_z_can': (isChecked('spn96_c') ? 1 : 0),
+			'paliwo_z_can': (isChecked('spn250_c') || (!isTruck && markaRejestratora !== 4) ? 1 : 0),
 			'min_odchylenie': minOdchylenie,
 			'prog_weryfikujacy_paliwa': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 3.5) : (litersByPercent(fuelSettings.totalCapacity, 5) > 50 ? 50 : litersByPercent(fuelSettings.totalCapacity, 5))),
 			'prog_wartosci_paliwa': (fuelType !== "can" ? litersByPercent(fuelSettings.totalCapacity, 3.5) : (litersByPercent(fuelSettings.totalCapacity, 5) > 50 ? 50 : litersByPercent(fuelSettings.totalCapacity, 5))),
@@ -507,9 +519,9 @@
 			success: function (res) {
 				const doc = parser.parseFromString(res, 'text/html');
 
-				const error = doc.getElementById('info');
+				const error = doc.querySelector('info .error');
 				if(error) {
-					setSuccessFeed('Dane administracyjne', negativeSvg, url)
+					setSuccessFeed('Dane administracyjne', negativeSvg, url);
 					displayError(error.innerText);
 				} else {
 					setSuccessFeed('Dane administracyjne', positiveSvg, url)
