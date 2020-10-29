@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.28.14
+// @version      2.28.15
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -51,7 +51,7 @@
 
 	const confirmBtn = document.getElementById('confirm-trigger');
 	const wasVehicleCreated = $('.vehicle-files')[0];
-    const fuelSettings = {};
+	const fuelSettings = {};
 
 	const isTruck = $('#vehicle_type_id').select2('val') == "1";
 
@@ -262,9 +262,9 @@
 				asyncCounter.next()
 			},
 			error: function (err) {
-				console.log(err)
+				const errorMessage = JSON.parse(err.responseText).error.message;
 				setSuccessFeed('Pobrano dane źródłowe', negativeSvg, feedbackUrl)
-				displayError('Wystąpił błąd podczas pobierania danych źródłowych. Spróbuj ręcznie.');
+				displayError(errorMessage);
 				asyncCounter.next()
 			}
 		});
@@ -399,15 +399,9 @@
 			markaRejestratora = 6;
 		};
 
-		const distance = $('[name=stan_licznika]').val().toString();
-
-		const counterDate = $('#kiedy2').val().toString();
-		const counterHour = `${$('#kiedy2hour').val().toString().length === 1 ? '0' : ''}${$('#kiedy2hour').val().toString()}`;
-		const counterMinute = `${$('#kiedy2minute').val().toString().length === 1 ? '0' : ''}${$('#kiedy2minute').val().toString()}`;
-
 		const generalData = {
 			'aktywny': 1,
-			'datetime_from': `${$('#kiedy2').val()} 00:00:00`,
+			'datetime_from': `${$('#kiedy2').val().toString()} 00:00:00`,
 			'datetime_to': '',
 			'rodzaj_rejestratora_id': markaRejestratora,
 			'typ_rejestratora_id': $('#typ_rejestratora_id').val(),
@@ -438,8 +432,6 @@
 			'dystans_gps_w_pojezdzie': 1,
 			'dystans_can_pokaz': (isChecked('spn917_c') ? 1 : 0),
 			'can_dystans': (isChecked('spn917_c') ? 1 : 0),
-			'counter_datetime': `${counterDate} ${counterHour}:${counterMinute}:00`,
-			'counter_value': !distance || distance === '.' ? '' : distance,
 			'gen_lokalizacje': 1,
 			'gen_dop_predkosci': 1,
 			'wysylaj_dhl': (window.location.host.indexOf('kj') === 0 ? 1 : 0),
@@ -519,7 +511,7 @@
 			success: function (res) {
 				const doc = parser.parseFromString(res, 'text/html');
 
-				const error = doc.querySelector('info .error');
+				const error = doc.querySelector('#info.error');
 				if(error) {
 					setSuccessFeed('Dane administracyjne', negativeSvg, url);
 					displayError(error.innerText);
@@ -784,7 +776,6 @@
 		return document.getElementById(id).checked;
 	};
 
-	//Im using function instead of class for hoisting
 	function Timer() {
 		this.timeStart = null;
 		this.timeEnd = null;
@@ -802,8 +793,8 @@
 		this.toSeconds = (miliseconds) => {
 			const seconds = miliseconds /= 1000;
 			return Math.round(seconds);
-		};
-	};
+		}
+	}
 
     function guessFuelType() {
 		if (document.getElementsByClassName('tanks_tr').length > 0) {
