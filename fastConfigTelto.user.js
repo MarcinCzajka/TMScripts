@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.4
+// @version      3.5
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
