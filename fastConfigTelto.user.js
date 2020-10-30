@@ -213,7 +213,7 @@
         createBtn('SCANFMS', (e) => {setMsg('scanfms')}, customDiv, null, null, 'grid-column:5/7;grid-row:1');
 		createBtn('TACHOCHECK', (e) => {setMsg('tachocheck')}, customDiv, null, null, 'grid-column:7/9;grid-row:1');
 		createBtn('Mapowanie poziomu paliwa w Volvo 2013+', e => {setMsg('setparam 3771 1\nsetparam 3772 FFFFBF11\nsetparam 3773 1')}, customDiv, null, null, 'grid-column:3/9;grid-row:2');
-		createBtn("Prędkość FMS dla Mercedesa (domyślnie 500)", e => {setMsg('setparam 157 500\nsetparam 760 500')}, customDiv, null, null, 'grid-column:3/9;grid-row:3');
+		createBtn("Prędkość FMS dla Mercedesa (domyślnie 500)", e => {setMsg('setparam 157 500\nsetparam 760 500\nsetparam 30010 1')}, customDiv, null, null, 'grid-column:3/9;grid-row:3');
 
 		return customDiv
 	}
