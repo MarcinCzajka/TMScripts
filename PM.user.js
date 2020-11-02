@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.37.4
+// @version      4.38.4
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -591,18 +591,20 @@
 				.then(res => {
 					res.text()
 						.then(res => {
-						let editedResponse = res.slice(res.indexOf('<tbody>'), res.indexOf('</tbody>') + 8 );
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(res, 'text/html');
+                            const invoices = doc.getElementsByClassName('datatable_dscr');
 
-						if(editedResponse.includes(`<td class="datatable_dscr  " style="width:100px; text-align:left;" value="">
+                            if(invoices.length) {
+                                for(const dscr of invoices) {
+                                    console.log(dscr)
+                                    if(dscr.innerText.includes(id)) alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
+                                }
+                            }
 
-
-																														${id}
-			</td>`)) {
-							alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
-						};
-					});
-				});
-        };
+                    })
+            })
+        }
 
         function getUwagi() {
             const uwagi = $("#uwagi").val();
