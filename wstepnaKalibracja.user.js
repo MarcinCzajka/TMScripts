@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.19
+// @version      2.29.20
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -845,21 +845,31 @@
     function logUsageInSheet(vehicleId, fileId, baseUrl) {
         let alias = '';
 
-        //const aliasStr = document.querySelector('#header-login span');
-        //if(aliasStr) alias = aliasStr.innerText[0] + aliasStr.innerText.split(' ')[1].substring(0,2).toUpperCase();
-
         $.ajax({
-            url: "https://script.google.com/macros/s/AKfycby0PE9A8UV-mSG44VfNQiUSPC3Ko48filblKshNO6UtDojV7Ic/exec",
-            dataType: 'jsonp',
-            data: {
-                ScriptName: GM_info.script.name,
-                ScriptVersion: GM_info.script.version,
-                UsageLocation: window.location.href,
-                VehicleID: vehicleId,
-                FileID: fileId,
-                Alias: alias
+            method: 'GET',
+            url: baseUrl + '/api/#/',
+            dataType: 'text',
+            complete: (res) => {
+                const doc = parser.parseFromString(res.responseText, 'text/html');
+                const aliasStr = doc.querySelector('#header-login span');
+                if(aliasStr) alias = aliasStr.innerText[0] + aliasStr.innerText.split(' ')[1].substring(0,2).toUpperCase();
+
+                $.ajax({
+                    url: "https://script.google.com/macros/s/AKfycby0PE9A8UV-mSG44VfNQiUSPC3Ko48filblKshNO6UtDojV7Ic/exec",
+                    dataType: 'jsonp',
+                    data: {
+                        ScriptName: GM_info.script.name,
+                        ScriptVersion: GM_info.script.version,
+                        UsageLocation: window.location.href,
+                        VehicleID: vehicleId,
+                        FileID: fileId,
+                        Alias: alias
+                    }
+                })
             }
+
         })
+
     }
 
 })();
