@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.28.16
+// @version      2.28.18
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -53,18 +53,43 @@
 
 	//Conditions that have to be met in order to show Calibration button
 	if (confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
-		const kalibracjaWstepnaBtn = document.createElement('input');
-			kalibracjaWstepnaBtn.type = "button";
-			kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
-			kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
-			kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
+		init(confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1])
+	} else if(wasVehicleCreated) {
+		let targetElement = null;
+		for(const tr of document.querySelectorAll('tr.text')) {
+			if(tr.children[0].innerText.toLowerCase() === 'akcje') {
+				targetElement = tr.children[1];
+				break
+			}
+		}
 
-		confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1].appendChild(kalibracjaWstepnaBtn);
-		document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
+		$(document).keydown(e => {
+			if(e.keyCode === 17) {
+				$(document).keydown(e => {
+					if(e.keyCode === 192) {
+						init(targetElement);
+						$(document).off('keydown');
+					}
+				})
+			}
+		})
+	}
+
+	function init(targetElement) {
+		if(!document.getElementById('kalibracjaWstepnaBtn')) {
+			const kalibracjaWstepnaBtn = document.createElement('input');
+				kalibracjaWstepnaBtn.type = "button";
+				kalibracjaWstepnaBtn.id = "kalibracjaWstepnaBtn";
+				kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
+				kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
+
+			targetElement.appendChild(kalibracjaWstepnaBtn);
+			document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
+		}
 
 		createErrorFeed();
 		createSuccessFeed();
-	};
+	}
 
 	function kalibracjaWstepna() {
 		timer.start();
@@ -631,6 +656,8 @@
 	}
 
 	function createSuccessFeed() {
+		if(document.getElementById('successFeed')) return
+
 		const successFeed = document.createElement('table');
 			successFeed.id = 'successFeed';
 			successFeed.style.textAlign = 'center';
@@ -690,6 +717,8 @@
 	}
 
 	function createErrorFeed() {
+		if(document.getElementById('errorFeed')) return
+
 		const errorFeed = document.createElement('table');
 		errorFeed.innerHTML = '<tbody id="errorFeed"></tbody>'
 
