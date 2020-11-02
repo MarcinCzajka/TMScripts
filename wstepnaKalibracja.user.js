@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.28.18
+// @version      2.28.19
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -42,7 +42,7 @@
 
 	//Create instance of custom class Timer, declaration of which is available below. This object is used to measure Calibration time
 	const timer = new Timer();
-	
+
 	const parser = new DOMParser();
 
 	const confirmBtn = document.getElementById('confirm-trigger');
@@ -51,23 +51,23 @@
 
 	const isTruck = $('#vehicle_type_id').select2('val') == "1";
 
+    let actionElement = null;
+    for(const tr of document.querySelectorAll('tr.text')) {
+        if(tr.children[0].innerText.toLowerCase() === 'akcje') {
+            actionElement = tr.children[1];
+            break
+        }
+    }
+
 	//Conditions that have to be met in order to show Calibration button
 	if (confirmBtn && wasVehicleCreated && $('#type_id').val() % 2 !== 0) {
-		init(confirmBtn.parentElement.parentElement.parentElement.nextElementSibling.children[1])
+		init()
 	} else if(wasVehicleCreated) {
-		let targetElement = null;
-		for(const tr of document.querySelectorAll('tr.text')) {
-			if(tr.children[0].innerText.toLowerCase() === 'akcje') {
-				targetElement = tr.children[1];
-				break
-			}
-		}
-
 		$(document).keydown(e => {
 			if(e.keyCode === 17) {
 				$(document).keydown(e => {
 					if(e.keyCode === 192) {
-						init(targetElement);
+						init();
 						$(document).off('keydown');
 					}
 				})
@@ -75,7 +75,7 @@
 		})
 	}
 
-	function init(targetElement) {
+	function init() {
 		if(!document.getElementById('kalibracjaWstepnaBtn')) {
 			const kalibracjaWstepnaBtn = document.createElement('input');
 				kalibracjaWstepnaBtn.type = "button";
@@ -83,7 +83,7 @@
 				kalibracjaWstepnaBtn.value = "Konfiguracja wstępna";
 				kalibracjaWstepnaBtn.style = "width:150px;height:25px;padding:5px 15px;display:block;margin-top:5px";
 
-			targetElement.appendChild(kalibracjaWstepnaBtn);
+			actionElement.appendChild(kalibracjaWstepnaBtn);
 			document.getElementById('kalibracjaWstepnaBtn').addEventListener('click', kalibracjaWstepna);
 		}
 
@@ -677,14 +677,12 @@
 			</tbody>
 		`;
 
-		const createVehicleTr = document.getElementById('confirm-trigger').parentElement.parentElement.parentElement.nextElementSibling;
-
 		const newTr = document.createElement('tr');
 			newTr.innerHTML = `<td colspan="6"></td>`;
 			newTr.style.display = 'none';
 			newTr.id = "successFeedTr";
 
-		createVehicleTr.insertAdjacentElement('afterend', newTr);
+		actionElement.parentElement.insertAdjacentElement('afterend', newTr);
 		newTr.children[0].appendChild(successFeed);
 
 		addNewAction('Odklikano pokazywanie numeru bocznego', 'Dane podstawowe')
