@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.0
+// @version      1.1
 // @description  Send data to to google sheet
 // @author       MAC
 // @downloadURL  http://raw.githubusercontent.com/MarcinCzajka/TMScripts/master/logServiceInWorksheet.user.js
@@ -66,11 +66,14 @@
     }
 
     function getPrzyczyna() {
-        const kategoria = $('.couse')[0].children[0].innerText;
+        let kategoria = $('.couse')[0].children[0].innerText;
+        if(!kategoria) {
+            kategoria = $('.couse')[1].children[0].innerText;
+        }
 
         let opis;
         if(kategoria === 'Paliwo') {
-            opis = $('select.couse_select').first().find('option[selected]').text().trim();
+            opis = $('select.couse_select option[selected]').text().trim();
         } else {
             opis = $('.couse').find('[checked]')[0].nextSibling.nextSibling.nodeValue.trim();
         }
@@ -102,11 +105,21 @@
             url: "https://script.google.com/macros/s/AKfycbyZIpv753E2txA375iZFmBCY8pW-c_EnaGl7I3DMUrrHHR5v6g/exec",
             dataType: 'jsonp',
             data: data,
-            jsonpCallback: function () {
-                btn.value = 'Wysłano';
-                btn.style.background = '#1cb700';
-            }
+            jsonpCallback: "window.localJsonpCallback"
         })
+    }
+
+    window.localJsonpCallback = function(res) {
+        const btn = document.getElementById('copyBtn');
+
+        if(res.result === 'success') {
+            btn.value = 'Wysłano';
+            btn.style.background = '#1cb700';
+        } else {
+            console.log(res.request)
+            btn.value = 'Coś poszło nie tak';
+            btn.style.background = '#e80a0a';
+        }
     }
 
 })();
