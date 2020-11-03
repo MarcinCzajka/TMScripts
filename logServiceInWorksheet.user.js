@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.1
+// @version      1.2
 // @description  Send data to to google sheet
 // @author       MAC
 // @downloadURL  http://raw.githubusercontent.com/MarcinCzajka/TMScripts/master/logServiceInWorksheet.user.js
@@ -99,7 +99,15 @@
         btn.style.background = '#efb30c';
         btn.value = '. . .';
 
-        const data = createData();
+        let data = null;
+        try {
+            data = createData();
+        } catch(err) {
+            console.log(err)
+            alert('Napotkano problemy podczas zbierania danych.')
+            btn.value = 'Coś poszło nie tak';
+            btn.style.background = '#e80a0a';
+        }
 
         $.ajax({
             url: "https://script.google.com/macros/s/AKfycbyZIpv753E2txA375iZFmBCY8pW-c_EnaGl7I3DMUrrHHR5v6g/exec",
