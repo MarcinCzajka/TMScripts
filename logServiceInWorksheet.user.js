@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.7
-// @description  This script will prepare data to copy to online google sheet
+// @version      1.0
+// @description  Send data to to google sheet
 // @author       MAC
 // @downloadURL  http://raw.githubusercontent.com/MarcinCzajka/TMScripts/master/logServiceInWorksheet.user.js
 // @updateURL    http://raw.githubusercontent.com/MarcinCzajka/TMScripts/master/logServiceInWorksheet.user.js
@@ -19,9 +19,9 @@
         const newBar = document.createElement("td");
         newBar.id = 'newBar';
 
-        const inputStyling = 'style="height:2.5em;cursor:pointer;padding: 0.1em 1em 0.1em 1em;" type="button"';
+        const inputStyling = 'style="height:2.5em;width:11em;cursor:pointer;padding: 0.1em 1em 0.1em 1em;" type="button"';
 
-        newBar.insertAdjacentHTML('beforeend', `<td><input value="Copy to Excel" id="copyBtn" ${inputStyling} ></input></td>`);
+        newBar.insertAdjacentHTML('beforeend', `<td><input value="Send data to Sheet" id="copyBtn" ${inputStyling} ></input></td>`);
 
         $("#bottom_header")[0].children[0].children[0].children[0].append(newBar);
 
@@ -30,25 +30,39 @@
 
 
     function createData() {
-        const firma = $('#firma1_id').find('[selected]').text() + '\t';
-        const rejAndModel = getDataFromTable('Nr rejestracyjny') + '/' + getDataFromTable('Marka / Model') + '\t';
-        const sim = getDataFromTable('Nr karty SIM') + '\t';
-        const rodzajRejestratora = getDataFromTable('Rodzaj rejestratora / Typ rejestratora') + '\t';
-        const dataUtworzenia = getCreationMonthName() + '\t';
-        const gwarancja = ( getDataFromTable('Kategoria') === 'Pogwarancyjny' ? 'FAŁSZ' : 'PRAWDA' ) + '\t';
+        const location = window.location.host;
+        const fleet = location.substr(0, location.indexOf('.'));
+
+        const firma = $('#firma1_id').find('[selected]').text();
+        const rejAndModel = getDataFromTable('Nr rejestracyjny') + '/' + getDataFromTable('Marka / Model');
+        const sim = getDataFromTable('Nr karty SIM');
+        const rodzajRejestratora = getDataFromTable('Rodzaj rejestratora / Typ rejestratora');
+        const dataUtworzenia = getCreationMonthName();
+        const gwarancja = ( getDataFromTable('Kategoria') === 'Pogwarancyjny' ? 'FAŁSZ' : 'PRAWDA' );
 
         const godzinaUsterki = $('[name=problem_hour]').val();
         const godzina = (godzinaUsterki < 10 ? "0" + godzinaUsterki : godzinaUsterki);
         const minutaUsterki = $('[name=problem_minute]').val();
         const minuta = (minutaUsterki < 10 ? "0" + minutaUsterki : minutaUsterki);
-        const dataUsterki = `${$('#problem_date').val()} ${godzina}:${minuta}:00` + '\t';
+        const dataUsterki = `${$('#problem_date').val()} ${godzina}:${minuta}:00`;
 
-        const przyczyna = getPrzyczyna() + '\t';
+        const przyczyna = getPrzyczyna();
 
         const statusSerwisu = getDataFromTable('Status');
         const wykonano = (statusSerwisu === 'Odebrano' || statusSerwisu === 'Potwierdzono' ? 'PRAWDA' : 'FAŁSZ');
 
-        return firma + rejAndModel + sim + rodzajRejestratora + dataUtworzenia + gwarancja + dataUsterki + przyczyna + wykonano;
+        return {
+            flota: fleet,
+            Firma: firma,
+            'Nr rej / marka / model': rejAndModel,
+            SIM: sim,
+            'Rodzaj rejestratora ': rodzajRejestratora,
+            'Data utworzenia': dataUtworzenia,
+            Gwarancja: gwarancja,
+            'Data wystąpienia usterki': dataUsterki,
+            'Przyczyna serwisu': przyczyna,
+            'Wykonany': wykonano
+        }
     }
 
     function getPrzyczyna() {
@@ -77,16 +91,22 @@
     }
 
     function copyToClipboard() {
-        const str = createData();
+        const btn = document.getElementById('copyBtn');
 
-        const el = document.createElement('textarea');
-        el.value = str;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+        btn.style.background = '#efb30c';
+        btn.value = '. . .';
 
-        $(`#copyBtn`).fadeTo(50, 0.5, function () { $(this).fadeTo(250, 1.0); });
+        const data = createData();
+
+        $.ajax({
+            url: "https://script.google.com/macros/s/AKfycbyZIpv753E2txA375iZFmBCY8pW-c_EnaGl7I3DMUrrHHR5v6g/exec",
+            dataType: 'jsonp',
+            data: data,
+            jsonpCallback: function () {
+                btn.value = 'Wysłano';
+                btn.style.background = '#1cb700';
+            }
+        })
     }
 
 })();
