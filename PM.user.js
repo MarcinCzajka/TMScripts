@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.38.4
+// @version      4.38.5
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/PM.user.js
@@ -586,6 +586,8 @@
 		}
 
 		async function isInvoiceActiveOnAnotherVehicle(id) {
+            if(!id) return
+
             const baseUrl = `/api/invoice/vehicle?current_page=1&current_limit=10&form_action=search&form_search=${id}&form_filter=filter_enabled%3D1%26firma1_id%3D%26company_user_vehicle_groups%3D%26status_sim%3D1%26mapa_typ%3D0%26table_calendar_input%3D%26table_calendar_input2%3D%26table_calendar_input3%3D%26table_calendar_input4%3D%26table_calendar_input5%3D%26table_calendar_input6%3D&mod-sidemenu-val=`
             await fetch(baseUrl)
 				.then(res => {
@@ -598,7 +600,10 @@
                             if(invoices.length) {
                                 for(const dscr of invoices) {
                                     console.log(dscr)
-                                    if(dscr.innerText.includes(id)) alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
+                                    if(dscr.innerText.includes(id)) {
+                                        alert('Rejestrator może posiadać aktywny MFV. Sprawdź, czy to na pewno nowy montaż.');
+                                        return
+                                    }
                                 }
                             }
 
