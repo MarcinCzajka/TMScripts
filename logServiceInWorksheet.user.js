@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CopyDataForGoogleSheet
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.2
+// @version      1.3
 // @description  Send data to to google sheet
 // @author       MAC
 // @downloadURL  http://raw.githubusercontent.com/MarcinCzajka/TMScripts/master/logServiceInWorksheet.user.js
@@ -89,7 +89,7 @@
         const date = new Date($('.break')[0].children[0].children[0].children[0].innerText);
 
         let locale = 'pl-pl';
-        if(window.location.origin === "http://kj.framelogic.pl") locale = 'en-gb';
+        if(window.location.host.substr(0, window.location.host.indexOf('.')) === 'kj') locale = 'en-gb';
         return date.toLocaleString(locale, { month: "long" });
     }
 
@@ -99,15 +99,7 @@
         btn.style.background = '#efb30c';
         btn.value = '. . .';
 
-        let data = null;
-        try {
-            data = createData();
-        } catch(err) {
-            console.log(err)
-            alert('Napotkano problemy podczas zbierania danych.')
-            btn.value = 'Coś poszło nie tak';
-            btn.style.background = '#e80a0a';
-        }
+        const data = createData();
 
         $.ajax({
             url: "https://script.google.com/macros/s/AKfycbyZIpv753E2txA375iZFmBCY8pW-c_EnaGl7I3DMUrrHHR5v6g/exec",
