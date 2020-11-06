@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.6
+	// @version      2.28.7
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -115,7 +115,13 @@
 			generalCarSettings();
 
 			$('#pomiar_paliwa_id').select2('val', 3).trigger('change.select2')
-			unclick("#paliwo_z_sondy");
+
+            const blackboxType = $('#rodzaj_rejestratora_id').val();
+            if(blackboxType === '6' || blackboxType === '7') {
+                unclick("#paliwo_z_sondy");
+            } else {
+                click("#paliwo_z_sondy");
+            }
 
 			$("#min_odchylenie").val(5);
 
