@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.7
+	// @version      2.28.8
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
@@ -118,9 +118,9 @@
 
             const blackboxType = $('#rodzaj_rejestratora_id').val();
             if(blackboxType === '6' || blackboxType === '7') {
-                unclick("#paliwo_z_sondy");
-            } else {
                 click("#paliwo_z_sondy");
+            } else {
+                unclick("#paliwo_z_sondy");
             }
 
 			$("#min_odchylenie").val(5);
