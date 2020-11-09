@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.5
+// @version      3.6
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
@@ -118,7 +118,7 @@
 						let result = '';
 
 						if(firstThermometer || secondThermometer) {
-							result = `setparam 1115:0;1100:120;1113:110;1114:9999;1110:6;50620:1;50610:1;50580:1;\nsetparam 50570:1;50540:150530:1;1250:1;1200:1;`;
+							result = `setparam 1115:0;1100:120;1113:110;1114:9999;1110:6;50620:1;50610:1;50580:1;\nsetparam 1115:0;1100:120;1113:120;1114:9999;1110:6\nsetparam 50570:1;50540:150530:1;1250:1;1200:1;`;
 
 							if(firstThermometer) result += '1201:' + firstThermometer + ';';
 							if(secondThermometer) result += '1251:' + secondThermometer;
