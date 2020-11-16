@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.15.20
+// @version      1.16.20
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -14,11 +14,22 @@
 (function() {
     'use strict';
 
-    const query = window.location.hash || window.location.search;
+    if(window.location.href.includes('login')) {
+        window.localStorage.setItem('hash', window.location.hash || window.location.search)
+        return
+    }
+
+    let query = window.location.hash || window.location.search;
+
+    if(!query) {
+        query = window.localStorage.getItem('hash');
+        window.localStorage.removeItem('hash');
+    }
 
     addStylesheet();
     createNavigationInput();
 
+    if(!query) return
     if(query.includes('chat=true')) {
         showAltEagle();
     }
