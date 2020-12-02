@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zmień parametr w danych administracyjnych
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.3
+// @version      0.0.4
 // @description  Zmienia wybrane parametry dla wszystkich kartotek pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/changeParamInAdminData.user.js
@@ -39,7 +39,7 @@ window.changeParam = function(params = {}) {
                             const {name, value, type, checked, disabled} = input;
                             if(type === 'checkbox' && !disabled) {
                                 const val = params[name] || checked ? 1 : 0;
-                                if(val || val === 0) result[name] = val;
+                                if(val || params[name] !== undefined) result[name] = val;
                             } else if(type !== 'button' && !disabled) {
                                 result[name] = params[name] || value;
                             }
