@@ -38,7 +38,7 @@ window.changeParam = function(params = {}) {
                         for(const input of formInputs) {
                             const {name, value, type, checked, disabled} = input;
                             if(type === 'checkbox' && !disabled) {
-                                const val = params[name] !== 0 || checked ? 1 : 0;
+                                const val = params[name] !== 0 && checked ? 1 : 0;
                                 if(val || params[name] !== undefined) result[name] = val;
                             } else if(type !== 'button' && !disabled) {
                                 result[name] = params[name] || value;
