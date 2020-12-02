@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zmień parametr w danych administracyjnych
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.1
+// @version      0.0.2
 // @description  Zmienia wybrane parametry dla wszystkich kartotek pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/changeParamInAdminData.user.js
@@ -31,19 +31,22 @@ window.changeParam = function(params = {}) {
             } else {
                 res.text()
                     .then(res => {
-                        const result = {saveexitwindow: '', saveexit: ''};
+                        const result = {};
                         const doc = parser.parseFromString(res, 'text/html');
                         const formInputs = doc.querySelectorAll('form table tbody [name]:not([type=radio]),form table tbody [type=radio][checked]');
 
                         for(const input of formInputs) {
-                            const {name, value, type, checked} = input;
-                            if(type === 'checkbox') {
+                            const {name, value, type, checked, disabled, className} = input;
+                            if(type === 'checkbox' && !disabled) {
                                 const val = params[name] || checked ? 1 : 0;
-                                result[name] = val;
-                            } else {
-                                if(params[name] || value) result[name] = params[name] || value;
+                                if(val) result[name] = val;
+                            } else if(type !== 'button' && !disabled) {
+                                result[name] = params[name] || value;
                             }
                         }
+
+                        result.saveexitwindow = '';
+                        result.saveexit = '';
 
                         postData(url, result)
                     })
