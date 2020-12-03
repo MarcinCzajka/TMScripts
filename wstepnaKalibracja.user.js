@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.21
+// @version      2.29.22
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -129,6 +129,13 @@
 	};
 
 	function* AsyncCounter(nrOfOperations, btnToUpdate) {
+
+		//Try to prevent user from closing page until routine is finished
+        window.onbeforeunload = function(e) {
+            e.preventDefault();
+			e.returnValue = '';
+        };
+
 		for (let i = 1; i < nrOfOperations; i++) {
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
 			yield i;
@@ -147,6 +154,8 @@
 		setTimeout(() => {
 			btnToUpdate.value = "Konfiguracja wstępna";
 		}, 5000);
+
+        window.onbeforeunload = null;
 
 		return false;
 	};
@@ -778,8 +787,14 @@
 			if (isCanFuelAmmount()) {
 				return parseInt(document.getElementsByName('spn96_amount')[0].value);
 			} else {
-                const defaultCap = isTruck ? 999 : 99;
-                const result = await askForCapacity(defaultCap)
+				const defaultCap = isTruck ? 999 : 99;
+
+				//Dont count time that user spend on inserting fuel capacity into runtime
+				timer.delay = new Date();
+
+				const result = await askForCapacity(defaultCap);
+
+				timer.delay = new Date() - timer.delay;
 
 				return result ? result : defaultCap;
 			};
@@ -787,7 +802,7 @@
 	};
 
     function askForCapacity(defaultCap) {
-		//if fuel capacity is not provided ask user if he wants to provide it
+		//if fuel capacity is not provided ask user if he wants to provide it himself
         return new Promise((resolve, reject) => {
             fl_confirm_input(`Brak pojemności zbiorników.\nPodaj własną wartość lub zostanie przyjęta wartość ${defaultCap}l`, answer => { resolve(+answer) }, () => { reject(+defaultCap) });
         })
@@ -804,16 +819,21 @@
 	function Timer() {
 		this.timeStart = null;
 		this.timeEnd = null;
+		this.delay = null
 
 		this.start = () => {
 			this.timeStart = new Date();
-		};
+		}
 
 		this.getTime = () => {
-			this.timeEnd = new Date();
+			this.timeEnd = new Date
+
+			if(this.delay !== null) {
+				this.timeEnd = this.timeEnd - this.delay;
+			}
 
 			return this.toSeconds(this.timeEnd - this.timeStart);
-		};
+		}
 
 		this.toSeconds = (miliseconds) => {
 			const seconds = miliseconds /= 1000;
@@ -869,7 +889,6 @@
             }
 
         })
-
-    }
+	}
 
 })();
