@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.22
+// @version      2.29.23
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -129,7 +129,6 @@
 	};
 
 	function* AsyncCounter(nrOfOperations, btnToUpdate) {
-
 		//Try to prevent user from closing page until routine is finished
         window.onbeforeunload = function(e) {
             e.preventDefault();
@@ -138,6 +137,7 @@
 
 		for (let i = 1; i < nrOfOperations; i++) {
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
+            btnToUpdate.style.background = `linear-gradient(140deg, #28bea9 0% ${Math.floor(((i - 1) / nrOfOperations) * 100)}%, #ce2305)`;
 			yield i;
 		};
 
@@ -823,7 +823,7 @@
 
 		this.start = () => {
 			this.timeStart = new Date();
-		}
+		};
 
 		this.getTime = () => {
 			this.timeEnd = new Date
@@ -833,7 +833,7 @@
 			}
 
 			return this.toSeconds(this.timeEnd - this.timeStart);
-		}
+		};
 
 		this.toSeconds = (miliseconds) => {
 			const seconds = miliseconds /= 1000;
