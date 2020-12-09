@@ -4,8 +4,8 @@
 // @version      1.6
 // @description  Kalibracja
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/ustawieniaPaliwo.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/ustawieniaPaliwo.user.js
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/FuelSettingsConfig.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/FuelSettingsConfig.user.js
 // @match        */api/fuel/main/settings/*
 // @grant        none
 // @include      */api/fuel/main/settings/*

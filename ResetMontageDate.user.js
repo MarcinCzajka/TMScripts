@@ -4,8 +4,8 @@
 // @version      0.1.0
 // @description  Ukryj Raporty nie zawierające danych
 // @author       MAC
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/reportStat.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/reportStat.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/ResetMontageDate.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/ResetMontageDate.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include      *api/raports/stat*

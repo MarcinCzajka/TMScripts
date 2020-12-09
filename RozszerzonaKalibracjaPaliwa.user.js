@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Kalibracja
+// @name         Rozszerzona Kalibracja Paliwa
 // @namespace    https://github.com/MarcinCzajka
 // @version      1.21.2
-// @description  Kalibracja
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/Kalibracja.user.js
+// @description  Dodanie dodatkowych funkcji do kalibracji paliwa
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
 // @grant        none

@@ -4,8 +4,8 @@
 	// @version      2.28.8
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
-	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
-	// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/DA.user.js
+	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PresetyDaneAdministracyjne.user.js
+	// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/PresetyDaneAdministracyjne.user.js
 	// @match        */api/vehicle/admin/save/*
 	// @grant        GM_getValue
 	// @grant        GM_setValue

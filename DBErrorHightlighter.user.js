@@ -4,8 +4,8 @@
 // @version      0.10.8
 // @description  Mark data in table that seems suspicious
 // @author       MAC
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/databaseHightlighter.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
 // @match        http://*.pl/record/*
 // @grant        none
 // @include      *.pl/record/*

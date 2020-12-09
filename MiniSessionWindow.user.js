@@ -4,8 +4,8 @@
 // @version      0.13.20
 // @description  Displays session window in regular panel
 // @author       MAC
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/sessionWindow.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/MiniSessionWindow.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/MiniSessionWindow.user.js
 // @match        http://*.pl/record/*
 // @grant        none
 // @include      *.pl/record/*

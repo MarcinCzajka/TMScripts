@@ -4,8 +4,8 @@
 // @version      3.7
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/fastConfigTelto.user.js
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
 // @match        http://*/api/installation*
 // @grant        none
 // @include *.pl/session/*
