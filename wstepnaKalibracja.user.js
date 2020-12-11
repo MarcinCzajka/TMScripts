@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.23
+// @version      2.29.24
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -383,7 +383,7 @@
 			'data[points_to_average]': 3,
 			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
-			'data[invoice_matching]': (isTruck ? 3600 : 14400),
+			'data[invoice_matching]': (isTruck ? 10800 : 14400),
 			'data[fa_trust_voltage_low]': (isTruck ? 21 : 12),
 			'data[alg_stacyjka_typ]': 1,
 			'data[alg_obroty_typ]': (isChecked('spn190_c') ? 2 : 0),
