@@ -137,7 +137,9 @@
 
 		for (let i = 1; i < nrOfOperations; i++) {
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
-            btnToUpdate.style.background = `linear-gradient(140deg, #28bea9 0% ${Math.floor(((i - 1) / nrOfOperations) * 100)}%, #ce2305)`;
+
+            const percentage = Math.floor(((i - 1) / nrOfOperations) * 100);
+            btnToUpdate.style.background = `linear-gradient(140deg, #28bea9 0% ${percentage}%, #ce2305 ${percentage + 25}%)`;
 			yield i;
 		};
 
@@ -383,7 +385,7 @@
 			'data[points_to_average]': 3,
 			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
-			'data[invoice_matching]': (isTruck ? 10800 : 14400),
+			'data[invoice_matching]': (isTruck ? 3600 : 14400),
 			'data[fa_trust_voltage_low]': (isTruck ? 21 : 12),
 			'data[alg_stacyjka_typ]': 1,
 			'data[alg_obroty_typ]': (isChecked('spn190_c') ? 2 : 0),
