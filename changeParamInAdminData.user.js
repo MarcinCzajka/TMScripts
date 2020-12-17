@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Zmień parametr w danych administracyjnych
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.7
+// @version      0.1.7
 // @description  Zmienia wybrane parametry dla wszystkich kartotek pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/changeParamInAdminData.user.js
@@ -10,6 +10,23 @@
 // @grant        none
 // @include      */api/vehicle/admin/index*
 // ==/UserScript==
+
+window.reloadEvents = function(howMany = +document.querySelector('#container .datatable_admin_index tbody tr:last-child td').textContent) {
+    const ids = document.querySelectorAll('tbody tr .datatable_datetime_from');
+
+    for(let i = 0; i < howMany; i++) {
+        const id = ids[i].getAttribute('value');
+
+        axios.post('/api/vehicle/admin/ajaxRecreateVehicleEvents', {
+                vehicleThreadId: 41551}, {
+                withErrorHandling: true,
+            }).then(function (response) {
+                if (response !== undefined && response.data.message !== undefined) {
+                    console.log(`Wątek: ${i + 1}`, response.data.message);
+                }
+            });
+    }
+}
 
 window.changeParam = function(params = {}) {
     if(typeof params !== 'object' || $.isEmptyObject(params)) {
