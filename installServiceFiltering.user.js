@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Non-intrusive installation/service filtering
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.2
+// @version      0.3
 // @description  Non-intrusive installation/service filtering
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/installServiceFiltering.user.js
@@ -120,7 +120,7 @@
                         const doc = parser.parseFromString(res, 'text/html');
 
                         const type = doc.querySelector('#type_id option[selected]');
-                        if(type.value !== 2) {
+                        if(type.value !== '2') {
                             const newP = document.createElement('p');
                                 newP.innerText = type.innerText;
                                 newP.style.marginTop = '1px';
@@ -130,7 +130,7 @@
                             elem.appendChild(newP);
                         }
 
-                        if(!doc.getElementsByClassName('vehicle-files').length) {
+                        if(type.value !== '2' && !doc.getElementsByClassName('vehicle-files').length) {
                             parentElement.style.backgroundColor = parentElement.classList.contains('even') ? '#f3cfaa' : '#f7d6b5';
                         } else {
                             sibling.append('<div class="tickMark"></div>');
