@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.15
+// @version      0.0.16
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -105,7 +105,8 @@
     }
 
     function getData(url) {
-        const bearerToken = document.cookie.split('accessToken=')[1];
+        let bearerToken = document.cookie.split('accessToken=')[1];
+        if(bearerToken.includes(';')) bearerToken = bearerToken.substring(0, bearerToken.indexOf(';'));
 
         return new Promise((resolve, reject) => {
             fetch(url, {
