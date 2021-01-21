@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.16.21
+// @version      2.16.22
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -53,6 +53,7 @@
         function createLinkToEagle(el) {
             const td = document.createElement('td');
                 td.style.position = 'relative';
+                td.style.padding = '0';
             const btn = document.createElement('button');
                 btn.classList.add('btn', 'btn-success', 'btn-sm');
                 btn.style = 'position: absolute; right: 0; top: 0; height:100%;width:85px;';
