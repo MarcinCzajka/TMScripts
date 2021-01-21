@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.16.20
+// @version      2.16.21
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -11,6 +11,7 @@
 // @match        http://*.pl/record/*
 // @include      *.pl/record/*
 // @grant        none
+// @run-at document-end
 // ==/UserScript==
 
 (function() {
@@ -40,7 +41,7 @@
                         simNr = simTd.innerText;
 
                         if(simNr) {
-                            createLinkToEagle(simTd);
+                            createLinkToEagle(simTd.parentElement);
                         }
 
                         return
@@ -50,13 +51,17 @@
         }
 
         function createLinkToEagle(el) {
+            const td = document.createElement('td');
+                td.style.position = 'relative';
             const btn = document.createElement('button');
-            btn.classList.add('btn', 'btn-success', 'btn-sm');
-            btn.style = 'position: absolute; right: 0; top: 0; height:100%;';
-            btn.innerText = 'Wyślij SMS';
-            btn.onclick = openEagle;
+                btn.classList.add('btn', 'btn-success', 'btn-sm');
+                btn.style = 'position: absolute; right: 0; top: 0; height:100%;width:85px;';
+                btn.innerText = 'Wyślij SMS';
+                btn.onclick = openEagle;
 
-            el.append(btn);
+
+            el.append(td);
+            td.append(btn);
         }
 
         function openEagle() {
@@ -123,6 +128,8 @@
 
             createInputPanel();
             createContainerShadow();
+
+            createTemplates();
 
             fetchSms();
 
@@ -570,6 +577,14 @@
                     onNavigationInput(e);
                 }
             });
+        }
+
+        function createTemplates() {
+            const templateContainer = document.createElement('div');
+                templateContainer.id = 'templateContainer';
+
+
+
         }
 
         function addStylesheet() {
