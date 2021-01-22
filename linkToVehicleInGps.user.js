@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Link to Vehicle in GPS
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.3
+// @version      0.0.5
 // @description  Create link direct link to created vehicle
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToVehicleInGps.user.js
@@ -65,14 +65,11 @@
             })
         }).then(res => res.json())
             .then(json => {
-            console.log(imei)
-            console.log(json)
 
             if(!json.data) return showError(dropdown);
 
             const {fm_server_desc, fm_vehicle_id} = json.data;
-
-            if(!fm_server_desc || !fm_vehicle_id) return showError(dropdown);
+            if(!fm_server_desc && !fm_vehicle_id) return showError(dropdown);
 
             btn.setAttribute('data-toggle', 'dropdown');
             btn.setAttribute('aria-haspopup', true);
@@ -90,12 +87,21 @@
                 dropdownMenu.setAttribute('aria-labelledby', 'linksToFleet');
                 dropdownMenu.style.zIndex = '9999';
 
+            const d = new Date();
+            const today = d.getTime().toString().substr(0, 10);
+            d.setDate(d.getDate() - 7)
+            const weekAgo = d.getTime().toString().substr(0, 10);
+
             dropdownMenu.appendChild( createLink('Dane Podstawowe', `/vehicle/data/data/${fm_vehicle_id}`) );
             dropdownMenu.appendChild( createLink('Dane Rozszerzone', `/vehicle/data/data_extended/${fm_vehicle_id}`) );
-            dropdownMenu.appendChild( createLink('Dane GPS', `/vehicle/events/index/${fm_vehicle_id}`) );
+            dropdownMenu.appendChild( createLink('Dane GPS (7 dni)', `/vehicle/events/index/${fm_vehicle_id}/${weekAgo}/${today}`) );
+            dropdownMenu.appendChild( createLink('Wykres Pracy (7 dni)', `/vehicle/workchart/index/${fm_vehicle_id}/${weekAgo}/${today}`) );
+            dropdownMenu.appendChild( createLink('Wykres Paliwa (7 dni)', `/fuel/clientfuelchart/index/${fm_vehicle_id}/${weekAgo}/${today}`) );
             dropdownMenu.appendChild( createLink('Serwisy', `/services/main/index_vehicle/${fm_vehicle_id}`) );
-            dropdownMenu.appendChild( createLink('Dane Administracyjne', `/vehicle/admin/index/${fm_vehicle_id}`) );
+            dropdownMenu.appendChild( createLink('Dane Administracyjne', `/vehicle/admin/save/${fm_vehicle_id}`) );
             dropdownMenu.appendChild( createLink('Dane Źródłowe', `/vehicle/gps/index/${fm_vehicle_id}`) );
+            dropdownMenu.appendChild( createLink('Kalibracja Paliwa', `/fuel/main/calibration/${fm_vehicle_id}`) );
+            dropdownMenu.appendChild( createLink('MFV', `/vehicle/invoice/index/${fm_vehicle_id}`) );
 
             dropdown.appendChild(dropdownMenu);
 
