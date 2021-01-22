@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Link to Vehicle in GPS
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.2
+// @version      0.0.3
 // @description  Create link direct link to created vehicle
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToVehicleInGps.user.js
@@ -53,8 +53,7 @@
     function fetchVehicle(imei, dropdown) {
         const btn = dropdown.firstChild;
 
-        let bearerToken = document.cookie.split('accessToken=')[1];
-        if(bearerToken.includes(';')) bearerToken = bearerToken.substring(0, bearerToken.indexOf(';'));
+        const bearerToken = JSON.parse(window.localStorage.vuex).auth.accessToken;
 
         const {origin} = window.location
 
