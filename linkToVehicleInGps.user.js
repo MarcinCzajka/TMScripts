@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Link to Vehicle in GPS
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.1
+// @version      0.0.2
 // @description  Create link direct link to created vehicle
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/linkToVehicleInGps.user.js
@@ -65,14 +65,15 @@
                 'Authorization': 'Bearer ' + bearerToken
             })
         }).then(res => res.json())
-            .then(({data}) => {
-            const {fm_server_desc, fm_vehicle_id} = data;
+            .then(json => {
+            console.log(imei)
+            console.log(json)
 
-            if(!fm_server_desc || !fm_vehicle_id) {
-                dropdown.innerHTML = '<div class="btn btn-sm btn-danger disabled" style="opacity:0.15">Kartoteka</div>';
-                dropdown.title = 'Brak informacji o kartotece';
-                return
-            }
+            if(!json.data) return showError(dropdown);
+
+            const {fm_server_desc, fm_vehicle_id} = json.data;
+
+            if(!fm_server_desc || !fm_vehicle_id) return showError(dropdown);
 
             btn.setAttribute('data-toggle', 'dropdown');
             btn.setAttribute('aria-haspopup', true);
@@ -112,12 +113,18 @@
             function toggleDropdown() {
                 document.getElementById('linksDropdownMenu').classList.toggle('show');
             }
+
             function hideDropdown({relatedTarget}) {
                 if(relatedTarget) {
                     if(relatedTarget.classList.contains('dropdown-item')) return
                 }
 
                 document.getElementById('linksDropdownMenu').classList.remove('show');
+            }
+
+            function showError(dropdown) {
+                dropdown.innerHTML = '<div class="btn btn-sm btn-danger disabled" style="opacity:0.15">Kartoteka</div>';
+                dropdown.title = 'Brak informacji o kartotece';
             }
         })
     }
