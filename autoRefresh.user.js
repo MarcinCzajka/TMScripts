@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.16
+// @version      0.0.17
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -105,8 +105,7 @@
     }
 
     function getData(url) {
-        let bearerToken = document.cookie.split('accessToken=')[1];
-        if(bearerToken.includes(';')) bearerToken = bearerToken.substring(0, bearerToken.indexOf(';'));
+        const bearerToken = JSON.parse(window.localStorage.vuex).auth.accessToken;
 
         return new Promise((resolve, reject) => {
             fetch(url, {
