@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.17
+// @version      0.0.18
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -52,7 +52,8 @@
         const url = `${window.location.href.replace('record', 'api/v1/tracker')}/record?sort=received_at%7Cdesc&current_page=1&per_page=25&from__received_at=${dateFrom}&to__received_at=${dateTo}&imei=${document.querySelector('input[placeholder="IMEI urządzenia"]').value}`;
         const blob = await getData(url);
 
-        const data = blob.data;
+        if(!blob) return false;
+        const {data} = blob;
         if(!data) return false;
 
         //Dont proceed if table is refreshing using native refresh/reset button
@@ -115,9 +116,15 @@
                     'Authorization': 'Bearer ' + bearerToken
                 })
             })
-                .then(res => res.json())
-                .then(data => {
-                     resolve(data)
+            .then(res => {
+                if(!res.ok) {
+                    setButtonStyle('error');
+                    return false
+                }
+                return res.json()
+            })
+            .then(data => {
+                resolve(data)
             })
         })
     }
@@ -240,30 +247,34 @@
         if(!isRefreshing && !turnOff) {
             isRefreshing = setInterval(getFrames, refreshInterval)
 
-            setButtonStyle(true);
+            setButtonStyle('positive');
 
             getFrames();
         } else if(isRefreshing) {
             clearInterval(isRefreshing);
             isRefreshing = null;
 
-            setButtonStyle(false);
+            setButtonStyle('negative');
         }
     }
 
-    function setButtonStyle (positive) {
+    function setButtonStyle (status) {
         const button = document.getElementById('refreshButton');
         const singleRefreshButton = document.getElementById('singleRefreshButton');
 
-        if(positive) {
+        if(status === 'positive') {
             button.classList.add('btn-warning');
-            button.classList.remove('btn-info');
+            button.classList.remove('btn-info', 'btn-danger');
             button.innerText = 'Odświeżam...';
 
             singleRefreshButton.classList.add('hidden');
+        } else if(status === 'error') {
+            button.classList.add('btn-danger');
+            button.classList.remove('btn-info', 'btn-warning');
+            button.innerText = 'Problem . . .';
         } else {
             button.classList.add('btn-info');
-            button.classList.remove('btn-warning');
+            button.classList.remove('btn-warning', 'btn-danger');
             button.innerText = 'Odświeżaj';
 
             singleRefreshButton.classList.remove('hidden');
