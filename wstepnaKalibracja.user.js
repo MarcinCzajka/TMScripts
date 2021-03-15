@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.24
+// @version      2.29.25
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -135,6 +135,8 @@
 			e.returnValue = '';
         };
 
+        btnToUpdate.style.transition = 'background 2s';
+
 		for (let i = 1; i < nrOfOperations; i++) {
 			btnToUpdate.value = `Working... ${i}/${nrOfOperations}`;
 
@@ -146,6 +148,7 @@
 		const duration = timer.getTime()
 		document.getElementById('timer').innerText = `Wypełnianie protokołu zajęło: ${duration} sekund${duration < 5 ? (duration === 1 ? 'ę' : 'y') : ''}`;
 
+        btnToUpdate.style.transition = '';
 		btnToUpdate.style.background = '#28bea9';
 		btnToUpdate.value = "Uzupełniono kartotekę.";
 
@@ -385,7 +388,7 @@
 			'data[points_to_average]': 3,
 			'data[points_for_value]': 2,
 			'data[alg_obroty_typ]': 2,
-			'data[invoice_matching]': (isTruck ? 3600 : 14400),
+			'data[invoice_matching]': (probes >= 1 ? 7200 : 14400),
 			'data[fa_trust_voltage_low]': (isTruck ? 21 : 12),
 			'data[alg_stacyjka_typ]': 1,
 			'data[alg_obroty_typ]': (isChecked('spn190_c') ? 2 : 0),
