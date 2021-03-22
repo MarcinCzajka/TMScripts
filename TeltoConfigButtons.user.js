@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.7
+// @version      3.9
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
-// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
-// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
+// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
+// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
 // @match        http://*/api/installation*
 // @grant        none
-// @include *.pl/session/*
+// @include      *.pl/session/*
 // ==/UserScript==
 
 (function() {
@@ -94,20 +94,33 @@
                         const value = document.getElementById('vehiclesInput').value.toLowerCase();
                         const options = document.getElementById('vehiclesList').children;
 
+                        let isInList = false;
+
+
                         for(let i = 0; i < options.length; i++) {
                             if(options[i].value.toLowerCase() === value) {
+                                isInList = true
+
                                 document.getElementById('exampleInputPassword1').value = 'lvcansetprog ' + options[i].dataset.program;
                                 document.getElementById('exampleInputPassword1').focus();
                                 triggerInput();
+
+                                e.target.value = typedInput;
                                 break;
                             }
                         }
+
+                        if(!isInList) {
+                            typedInput = value
+                        }
                     }
+
 
                     const lvCanVehiclesInput = document.getElementById('vehiclesInput');
                     lvCanVehiclesInput.addEventListener('input', onVehiclesInput);
 					lvCanVehiclesInput.addEventListener('keyup', onVehiclesInput);
 
+                    let typedInput = lvCanVehiclesInput.value
 
 					document.getElementById('firstThermometer').addEventListener('change', onThermometersChange);
 					document.getElementById('secondThermometer').addEventListener('change', onThermometersChange);
