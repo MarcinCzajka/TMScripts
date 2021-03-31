@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.18
+// @version      0.0.19
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -138,7 +138,7 @@
             case 'received_at':
             case 'created_at':
                 result = new Date(result.$date)
-                result.setTime(result.getTime() + 3600000)
+                result.setTime(result.getTime() + 7200000)
                 return result.toISOString().
                     replace(/T/, ' ').
                     replace(/\..+/, '')

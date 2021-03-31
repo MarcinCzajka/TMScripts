@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Guziki konfiguracyjne telto
 // @namespace    https://github.com/MarcinCzajka
-// @version      3.9
+// @version      3.10
 // @description  Szybka konfiguracja przy użyciu buttonów
 // @author       MAC
-// @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
-// @updateURL    https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
+// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
+// @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/TeltoConfigButtons.user.js
 // @match        http://*/api/installation*
 // @grant        none
-// @include      *.pl/session/*
+// @include *.pl/session/*
 // ==/UserScript==
 
 (function() {
@@ -196,7 +196,10 @@
         customDiv.id = 'rfidElement';
 
         createBtn('Włącz RFID', (e) => {setMsg('setparam 11700:1;11702:1;50390:1;50391:5;50394:1;11805:1')}, customDiv, null, null, 'grid-column:3/5;grid-row:1');
-        createBtn('Wyłącz RFID', (e) => {setMsg('setparam 11700:0')}, customDiv, null, null, 'grid-column:5/7;grid-row:1');
+        createBtn('Wyłącz RFID', (e) => {setMsg('setparam 11700:0')}, customDiv, null, null, 'grid-column:3/5;grid-row:2');
+
+        createBtn('Włącz Dout1 i Dout2', (e) => {setMsg('setdigout 11')}, customDiv, null, null, 'grid-column:5/8;grid-row:1');
+        createBtn('Wyłącz Dout1 i Dout2', (e) => {setMsg('setdigout 00')}, customDiv, null, null, 'grid-column:5/8;grid-row:2');
 
         return customDiv
 	}
