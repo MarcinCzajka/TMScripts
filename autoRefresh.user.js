@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Refresher
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.0.19
+// @version      0.0.20
 // @description  Auto refresh when new data is available
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/autoRefresh.user.js
@@ -23,6 +23,8 @@
         document.querySelectorAll('button.btn.mr-sm-2.btn-sm').forEach(element => {
             element.addEventListener('click', clearNewFrames);
         })
+
+        setTimeout(() => {document.querySelector('.input-group select').addEventListener('change', clearNewFrames)}, 350);
 
         createRefreshButton();
         createAnimationNode();
