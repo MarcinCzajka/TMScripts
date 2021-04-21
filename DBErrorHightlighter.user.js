@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.8
+// @version      0.10.9
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
@@ -13,8 +13,6 @@
 
 
 const headers = [];
-const coloredElements = [];
-
 let blackboxProducer = '';
 
 (function() {
@@ -164,38 +162,35 @@ function loopThroughColumn(columnName, callback) {
 }
 
 function markError(el, msg) {
-    el.style.backgroundColor = 'rgba(255, 105, 100, 0.3)';
+    el.classList.add('dataError');
     if(msg) el.title = msg;
-	coloredElements.push(el);
 }
 
 function markAlert(el, msg) {
-    el.style.backgroundColor = 'rgba(242, 195, 41, 0.5)';
+    el.classList.add('dataAlert');
     if(msg) el.title = msg;
-	coloredElements.push(el);
 }
 
 function markMissingCanData(el, msg) {
-    el.style.backgroundColor = 'rgba(255, 0, 0, 0.16)';
+    el.classList.add('missingCanData');
     if(msg) el.title = msg;
-	coloredElements.push(el);
 }
 
 function clearElements() {
-	coloredElements.forEach(function(el) {
-        el.style = '';
-        el.title = '';
-	});
+	const coloredElements = document.querySelectorAll('.markError, .markAlert, .missingCanData');
 
-    coloredElements.length = 0;
+    for(let i = 0; i < coloredElements.length; i++) {
+        coloredElements[i].removeAttribute('title');
+        coloredElements[i].classList.remove('markError', 'markAlert', 'missingCanData');
+    }
 }
 
 function guessBlackbox() {
     try {
         const id = document.querySelectorAll('[placeholder="IMEI urządzenia"]')[0].value;
-        const left = id.slice(0,3);
+        const isSetivo = id.charAt(2) === '_' ? true : +id < 99999 ? true : false;
 
-        if(left === 'H1_' || left === 'H3_' || +id < 99999) {
+        if(isSetivo) {
             return 'setivo'
         } else if(+id > 9999999) {
             return 'teltonika'
@@ -265,3 +260,20 @@ function next(el) {
     }
 }
 
+(function addStylesheet() {
+    const stylesheet = document.createElement('style');
+    stylesheet.type = "text/css";
+
+    stylesheet.textContent = `
+        td.dataError {
+            background-color: rgba(255, 105, 100, 0.3);
+        }
+        td.dataAlert {
+            background-color: rgba(242, 195, 41, 0.5);
+        }
+        td.missingCanData {
+            background-color: rgba(255, 0, 0, 0.16);
+        `;
+
+    document.querySelector('head').appendChild(stylesheet);
+})()
