@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.9
+// @version      0.10.10
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
@@ -29,7 +29,7 @@ let blackboxProducer = '';
             });
         });
 
-        observer.observe(document.getElementsByTagName('table')[0], { attributes : true, attributeFilter : ['style'] });
+        observer.observe(document.querySelector('table'), { attributes : true, attributeFilter : ['style'] });
     }, 1000);
 
     window.checkData = function () {
@@ -140,14 +140,19 @@ function incorrectTachoStatus(el) {
 
 function markEmptyCanValues() {
     const canHeaders = ['Poziom paliwa', 'Zuż. paliwa', 'Dystans (CAN)', 'Prędkość (CAN)', 'Obroty silnika (CAN)'];
-    for(let header of canHeaders) {
-        if(isHexDataAvailable(header)) {
-            loopThroughColumn(header, (el) => {
-                if(el.children[0].title.split('').every(char => char === 'F')) {
-                    if(getCellInRowByColumn(el, 'Stacyjka').innerText === 'Wł.') markMissingCanData(el, `${el.children[0].title} - Ramka przepisana`);
-                }
-            });
-        }
+    for(const header of canHeaders) {
+        loopThroughColumn(header, (el) => {
+            if(!el.children[0])
+                return false;
+
+            const title = el.children[0].title;
+            if(!title)
+                return false;
+
+            if(title.split('').every(char => char === 'F')) {
+                if(getCellInRowByColumn(el, 'Stacyjka').innerText === 'Wł.') markMissingCanData(el, `${el.children[0].title} - Ramka przepisana`);
+            }
+        });
     }
 }
 
@@ -156,7 +161,7 @@ function markEmptyCanValues() {
 function loopThroughColumn(columnName, callback) {
     const index = headers.indexOf(columnName);
 
-    for(let row of document.getElementsByTagName('tbody')[0].children) {
+    for(let row of document.querySelector('tbody').children) {
         callback(row.children[index]);
     };
 }
@@ -199,18 +204,6 @@ function guessBlackbox() {
         }
     } catch(err) {
         console.log(err);
-    }
-}
-
-function isHexDataAvailable(columnName) {
-    try {
-        if(document.getElementsByTagName('tbody')[0].children[0].children[ headers.indexOf(columnName) ].children[0].title !== '') {
-            return true
-        } else {
-            return false
-        }
-    } catch(err) {
-        return false
     }
 }
 
@@ -265,13 +258,13 @@ function next(el) {
     stylesheet.type = "text/css";
 
     stylesheet.textContent = `
-        td.dataError {
+        tr td.dataError {
             background-color: rgba(255, 105, 100, 0.3);
         }
-        td.dataAlert {
+        tr td.dataAlert {
             background-color: rgba(242, 195, 41, 0.5);
         }
-        td.missingCanData {
+        tr td.missingCanData {
             background-color: rgba(255, 0, 0, 0.16);
         `;
 
