@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.10
+// @version      0.10.11
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
@@ -145,9 +145,9 @@ function markEmptyCanValues() {
             if(!el.children[0])
                 return false;
 
-            const title = el.children[0].title;
-            if(!title)
-                return false;
+            const title = el.children[0]?.title || getDataFromCanColumn(el);
+
+            if(!title) return
 
             if(title.split('').every(char => char === 'F')) {
                 if(getCellInRowByColumn(el, 'Stacyjka').innerText === 'Wł.') markMissingCanData(el, `${el.children[0].title} - Ramka przepisana`);
@@ -158,12 +158,41 @@ function markEmptyCanValues() {
 
 // <--  Helper functions... --!>
 
+function getDataFromCanColumn(el) {
+    const row = getRowIndex(el);
+    const headerTitle = document.querySelector('thead tr').children[getColumnIndex(el)].children[0].title;
+    const canDataEl = getCellInColumnByRow(row, 'Dane CAN (fmsdata)')?.children[0]?.children[0];
+    const canDataDictionary = canDataEl?.title.split(/\r\n|\r|\n/);
+
+    if(!canDataDictionary) return false
+
+    let hexArr = null;
+    for(const str of canDataDictionary) {
+        if(str.includes(headerTitle)) {
+            hexArr = str.slice(str.indexOf('[') + 1, str.indexOf(']')).replaceAll(' ', '').split(',');
+            break
+        }
+    }
+
+    let result = '';
+    for(const hex of hexArr) {
+        const mHex = +hex * 2;
+        result += canDataEl.innerText.slice(mHex, mHex + 2);
+    }
+
+    return result
+}
+
 function loopThroughColumn(columnName, callback) {
     const index = headers.indexOf(columnName);
 
-    for(let row of document.querySelector('tbody').children) {
-        callback(row.children[index]);
-    };
+    try {
+        for(let row of document.querySelector('tbody').children) {
+            callback(row.children[index]);
+        };
+    } catch(err) {
+        console.log(err, `Error in function: ${callback.name}`)
+    }
 }
 
 function markError(el, msg) {
@@ -220,7 +249,11 @@ function decToBin(num) {
 }
 
 function getCellInRowByColumn(el, columnName) {
-    return document.getElementsByTagName('tbody')[0].children[getRowIndex(el)].children[headers.indexOf(columnName)];
+    return document.querySelector('tbody').children[getRowIndex(el)].children[headers.indexOf(columnName)];
+}
+
+function getCellInColumnByRow(row, columnName) {
+    return document.querySelector('tbody').children[row].children[headers.indexOf(columnName)];
 }
 
 function offset(el, offset) {
