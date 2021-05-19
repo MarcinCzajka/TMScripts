@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.25
+// @version      2.29.26
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -644,6 +644,7 @@
             'firma1_id': $('#firma1_id').val(),
             'marka_id': $('#marka_id').val(),
             'model': $('#model').val(),
+            'is_active': 1,
             'nr_boczny_pojazdu': ''
         };
 
