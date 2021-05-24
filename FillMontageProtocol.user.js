@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wypełnianie protokołu montażowego
 // @namespace    https://github.com/MarcinCzajka
-// @version      4.38.5
+// @version      4.40.0
 // @description  Automatyczne wypełnianie protokołów
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/FillMontageProtocol.user.js
@@ -115,7 +115,7 @@
 
                         const observer = new MutationObserver(function(mutations) {
                             for(let regNumber of document.getElementById('reg_number_select').children){
-                                if(regNumber.innerText === userJSON.rej) {
+                                if(regNumber.innerText.includes(userJSON.rej)) {
                                     $('#reg_number_select').select2('val', regNumber.value).trigger('change')
                                     break
                                 }
@@ -295,9 +295,15 @@
 
                         if(canConfig.canWebasto.toLowerCase().includes("tak")) click("#webasto_can_c")
 
+                        if(canConfig.isCan === 'true') document.querySelector('div[data-name=can_c]').click()
+
                         //Przystawka CAN
-                        let rodzajPrzystawki = (userJSON.typRejestratora === "Albatros" ? "Przystawka Canlogistic (Albatros)" : "Przystawka indukcyjna magistrali CAN");
-                        addUrzadzenieDodatkoweInne(rodzajPrzystawki);
+                        if(canConfig.canConnection === 'bramkafms') {
+                            $("#uwagi").val(getUwagi() + 'BramkaFMS');
+                        } else if(document.getElementById('s2id_rodzaj_rejestratora_id').innerText.toLowerCase() !== 'teltonika') {
+                            let rodzajPrzystawki = (userJSON.typRejestratora === "Albatros" ? "Przystawka Canlogistic (Albatros)" : "Przystawka indukcyjna magistrali CAN");
+                            addUrzadzenieDodatkoweInne(rodzajPrzystawki);
+                        }
                     }
 
                     //D8
@@ -325,7 +331,7 @@
 
                             const d8Connections = $("#kabel_d8_podlaczenie_id")[0];
                             let d8ToSelect = userJSON.d8;
-                            if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) d8ToSelect = 'FMB640'
+                            if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) d8ToSelect = 'FMB640';
 
 							for(let connection of d8Connections) {
 								if (connection.innerText === d8ToSelect) {
@@ -339,7 +345,7 @@
                     }
 
                     //TachoReader
-                    if(userJSON.d8 === "Tachoreader") {
+                    if(userJSON.d8 === 'Tachoreader') {
                         //FMB640
                         if(userJSON.typRejestratora.substring(0,2).toLowerCase === "fm" || parseInt(userJSON.id) > 999999) {
                             click('#fmb640');
@@ -362,27 +368,27 @@
                     }
 
                     //Urządzenia dodatkowe Din 1-5
-                    if(userJSON.konfiguracja.toLowerCase().includes("webasto")) {
+                    if(userJSON.dinConfig?.webasto) {
+                        addUrzadzenieDodatkoweDin('Webasto', +userJSON.dinConfig.webasto?.din || '', capitalizeFirstLetter(userJSON.dinConfig?.webasto?.stan) || 'Wysoki', 'Granatowy');
+                    } else if(userJSON.konfiguracja.toLowerCase().includes('webasto')) {
                         let webastoString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('webasto')).toLowerCase();
                         const separator = webastoString.indexOf(',') === -1 ? undefined : webastoString.indexOf(',');
                         webastoString = webastoString.slice(0, separator);
 
-                        if(webastoString.includes("can")) {
-                            click("#webasto_can_c")
-                        } else {
-                            let webastoDin = 2;
-                            for (let i = 0; i < webastoString.length; i++) {
-                                if(parseInt(webastoString.charAt(i))) {
-                                    webastoDin = parseInt(webastoString.charAt(i));
-                                    break;
-                                };
+                        let webastoDin = 2;
+                        for (let i = 0; i < webastoString.length; i++) {
+                            if(parseInt(webastoString.charAt(i))) {
+                                webastoDin = parseInt(webastoString.charAt(i));
+                                break;
                             };
 
                             addUrzadzenieDodatkoweDin('Webasto', webastoDin, 'Wysoki', 'Granatowy');
                         };
                     };
 
-					if(userJSON.konfiguracja.toLowerCase().includes("pompa")) {
+                    if(userJSON.dinConfig?.pompa) {
+                        addUrzadzenieDodatkoweDin('Pompa', +userJSON.dinConfig?.pompa?.din || '', capitalizeFirstLetter(userJSON.dinConfig.pompa?.stan) || 'Wysoki', 'Beżowy');
+                    } else if(userJSON.konfiguracja.toLowerCase().includes("pompa")) {
                         let pompaString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('pompa')).toLowerCase();
                         const separator = pompaString.indexOf(',') === -1 ? undefined : pompaString.indexOf(',');
                         pompaString = pompaString.slice(0, separator);
@@ -398,20 +404,35 @@
 						addUrzadzenieDodatkoweDin('Pompa', pompaDin, 'Wysoki', 'Beżowy');
                     };
 
+                    if(userJSON.dinConfig?.inny) {
+                        addUrzadzenieDodatkoweDin('praca urządzenia dodatkowego', +userJSON.dinConfig?.inny.din || '', capitalizeFirstLetter(userJSON.dinConfig.inny?.stan) || 'Wysoki', 'Niebieski');
+                    }
+                    if(userJSON.dinConfig?.inny2) {
+                        addUrzadzenieDodatkoweDin('praca urządzenia dodatkowego', +userJSON.dinConfig?.inny2.din || '', capitalizeFirstLetter(userJSON.dinConfig.inny2?.stan) || 'Wysoki', 'Żółty', !!userJSON.dinConfig?.inny);
+                    }
+
                     //Urządzenia dodatkowe inne
-                    if(userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
-                    if(userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
+                    if(userJSON.additionalConfig?.rfid || userJSON.konfiguracja.toLowerCase().includes("rfid")) addUrzadzenieDodatkoweInne('RFID - czytnik zbliżeniowy');
+                    if(userJSON.additionalConfig?.immo || userJSON.konfiguracja.toLowerCase().includes("immo")) addUrzadzenieDodatkoweInne('immobiliser');
+                    if(userJSON.additionalConfig?.TF03 || userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
 					if(userJSON.konfiguracja.toLowerCase().includes("t8c")) addUrzadzenieDodatkoweInne('T8C - terminal mobilny');
-                    if(userJSON.konfiguracja.toLowerCase().includes("tf03")) addUrzadzenieDodatkoweInne('TF03 - przystawka do paliwa');
-                    if(userJSON.konfiguracja.toLowerCase().includes("garmin")) addUrzadzenieDodatkoweInne('Garmin 5 lub 7');
 
-                    if(userJSON.konfiguracja.toLowerCase().includes("tomtom")) {
-                        let tomtomString = userJSON.konfiguracja.substr(userJSON.konfiguracja.indexOf('tomtom')).toLowerCase();
-                        const separator = tomtomString.indexOf(',') === -1 ? undefined : tomtomString.indexOf(',');
-                        tomtomString = parseInt(tomtomString.slice(tomtomString.indexOf(' '), separator));
+                    if(userJSON.additionalConfig?.demontazdeski) addWykonaneCzynnosci('Demontaż deski rozdzielczej');
+                    if(userJSON.additionalConfig?.demontazzbiornika) addWykonaneCzynnosci('Demontaż zbiornika/zabudowy');
 
-                        addUrzadzenieDodatkoweInne('TOM-TOM');
-                        if(tomtomString) document.getElementsByClassName("activities-section header-title")[0].previousElementSibling.children[2].children[4].children[0].value = tomtomString;
+                    const terminal = userJSON.additionalConfig.terminal;
+                    if(terminal) {
+                        const newElement = addWykonaneCzynnosci('inne');
+                        const newTextarea = newElement?.children[2]?.children[4]?.children[0];
+                        const terminalType = terminal.type;
+
+                        if(newTextarea && terminalType) {
+                            if(terminalType === 'Garmin') addUrzadzenieDodatkoweInne('Garmin 5 lub 7');
+                            if(terminal.number) newTextarea.value = `${terminalType} ${terminal.number}`;
+                            if(terminal.cable === '1') newTextarea.value = `${newTextarea.value}\n\nWyprowadzenie zasilania do ${terminalType}a`.trim();
+
+                            newElement.children[3]?.children[1]?.click();
+                        }
                     }
 
                     //Termometry
@@ -426,7 +447,6 @@
 
                     //Sondy an0
                     if(userJSON.an0numer) {
-
                         if(!$('tr[data-number=1]')[0]) document.getElementsByClassName("tanks plus fl-tipsy-bottom-right")[0].click()
 
                         const an0 = document.querySelectorAll("tr[data-number='1']")[0].children[2];
@@ -503,18 +523,21 @@
             }, 0);
         };
 
-		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, color) {
+		function addUrzadzenieDodatkoweDin(urzadzenie, din, stan, color, duplicate = false) {
 			//Sprawdź czy nie ma takiego urządzenia
-			let deviceExists = false;
-			let newDeviceId = "";
-			const addedDevices = document.getElementsByClassName('din_tr');
-			for(let addedDevice of addedDevices) {
-				if(addedDevice.children[1].children[0].children[0].children[0].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
-					deviceExists = true;
-					newDeviceId = addedDevice.children[1].children[0].id;
-					break;
-				}
-			}
+            let deviceExists = false;
+            let newDeviceId = "";
+
+            if(!duplicate) {
+                const addedDevices = document.getElementsByClassName('din_tr');
+                for(let addedDevice of addedDevices) {
+                    if(addedDevice.children[1].children[0].children[0].children[0].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
+                        deviceExists = true;
+                        newDeviceId = addedDevice.children[1].children[0].id;
+                        break;
+                    }
+                }
+            }
 
 			if(!deviceExists) {
 				document.getElementsByClassName("din plus fl-tipsy-bottom-right")[0].click();
@@ -541,7 +564,6 @@
 			$(`#${newDinTr.children[1].children[2].id}`).select2('val', (stan === 'Wysoki' ? 1 : 0));
 
 			//kolor
-
 				const dinColors = $(`#${newDinTr.children[2].children[2].id}`)[0].nextSibling;
 
                 for (let itemColor of dinColors) {
@@ -550,13 +572,15 @@
                         break;
                     };
                 };
+            newDinTr.parentElement.children[3].children[1].click();
 		};
 
-		function addUrzadzenieDodatkoweInne(urzadzenie) {
-			//Sprawdź czy nie ma już takiego urządzenia w protokole
-			const addedDevices = document.getElementsByClassName('active dino_tr');
+		function addUrzadzenieDodatkoweInne(czynnosc) {
+			//Sprawdź czy nie ma już takiej czynności w protokole
+			const addedDevices = document.getElementsByClassName('active activities_tr');
 			for(let device of addedDevices) {
-				if(device.children[2].children[0].children[0].children[0].innerText.toLowerCase() === urzadzenie.toLowerCase()) {
+				if(device.children[2].children[0].children[0].children[0].innerText.toLowerCase() === czynnosc.toLowerCase()) {
+                    device.children[3].children[1].click();
 					return;
 				}
 			}
@@ -569,7 +593,35 @@
 
             let deviceWasFound = false;
             for(let device of devices) {
-                if (device.innerText.toLowerCase() === urzadzenie.toLowerCase()) {
+                if (device.innerText.toLowerCase() === czynnosc.toLowerCase()) {
+                    $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
+                    document.getElementById(newDeviceId).parentElement.parentElement.children[3].children[1].click();
+                    deviceWasFound = true;
+                    break;
+                };
+            };
+        }
+
+        function addWykonaneCzynnosci(czynnosc) {
+            //Sprawdź czy nie ma już takiego urządzenia w protokole
+            const addedDevices = document.getElementsByClassName('active dino_tr');
+            for(let device of addedDevices) {
+                if(device.children[2].children[0].children[0].children[0].innerText.toLowerCase() === czynnosc.toLowerCase()) {
+                    device.children[3].children[1].click();
+                    return device;
+                }
+            }
+
+            //Jak nie ma to doklikaj
+            document.getElementsByClassName("activities plus fl-tipsy-bottom-right")[0].click();
+
+            const lastElem = document.getElementById('paliwo').previousElementSibling.children[2];
+            const newDeviceId = lastElem.children[0].id;
+            const devices = lastElem.children[1];
+
+            let deviceWasFound = false;
+            for(let device of devices) {
+                if (device.innerText.toLowerCase() === czynnosc.toLowerCase()) {
                     $(`#${newDeviceId}`).next().select2('val', device.value).trigger('change');
                     deviceWasFound = true;
                     break;
@@ -577,15 +629,17 @@
             };
 
             if(!deviceWasFound) {
-                $('.odd.active.added.dino_tr').first().remove();
+                $('.odd.active.added.activities_tr').first().remove();
                 return
             }
 
-            const newCanTr = document.getElementsByClassName("active added dino_tr");
-            newCanTr[newCanTr.length - 1].classList.add("bad");
-		}
+            const newCanTr = document.getElementsByClassName("active added activities_tr");
+            newCanTr[newCanTr.length - 1].children[3].children[1].click();
 
-		async function isInvoiceActiveOnAnotherVehicle(id) {
+            return newCanTr[newCanTr.length - 1]
+        }
+
+        async function isInvoiceActiveOnAnotherVehicle(id) {
             if(!id) return
 
             const baseUrl = `/api/invoice/vehicle?current_page=1&current_limit=10&form_action=search&form_search=${id}&form_filter=filter_enabled%3D1%26firma1_id%3D%26company_user_vehicle_groups%3D%26status_sim%3D1%26mapa_typ%3D0%26table_calendar_input%3D%26table_calendar_input2%3D%26table_calendar_input3%3D%26table_calendar_input4%3D%26table_calendar_input5%3D%26table_calendar_input6%3D&mod-sidemenu-val=`
@@ -625,6 +679,11 @@
 
         function unClick(element) {
 			if($(element)[0].checked) $(element).click();
+        }
+
+        function capitalizeFirstLetter(string) {
+            if(typeof string !== 'string') return
+            return string[0].toUpperCase() + string.slice(1);
         }
 
     }
