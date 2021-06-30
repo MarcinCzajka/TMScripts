@@ -131,7 +131,7 @@
 
             createInputPanel();
 
-            container.appendChild( createTemplates() )
+            //container.appendChild( createTemplates() )
 
             createContainerShadow();
 
