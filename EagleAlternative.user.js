@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.16.22
+// @version      2.17.24
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -10,7 +10,8 @@
 // @include      http://*sms.fr*
 // @match        http://*.pl/record/*
 // @include      *.pl/record/*
-// @grant        none
+// @grant        GM_setValue
+// @grant        GM_getValue
 // @run-at document-end
 // ==/UserScript==
 
@@ -81,6 +82,7 @@
         if(!query) {
             query = window.localStorage.getItem('hash');
             window.localStorage.removeItem('hash');
+            history.pushState(null, null, query);
         }
 
         addStylesheet();
@@ -125,12 +127,13 @@
             createFetchTypeBtnGroup();
             detectModem(number);
 
-            $('#container').append(smsContainer);
+            container.appendChild(smsContainer);
 
             createInputPanel();
-            createContainerShadow();
 
-            createTemplates();
+            container.appendChild( createTemplates() )
+
+            createContainerShadow();
 
             fetchSms();
 
@@ -195,36 +198,34 @@
                 const nr = `+${$('#nrInput').val().replace('+', '')}`;
                 $('#smsCache').load(`${window.location.origin}//messages/conversation/folder/${fetchType}/${nr}/`, function() {
 
-                    const smsCount = $('#smsCache .optionmenu').length;
+                    const smsElements = $('#smsCache .messaging .message_container.item');
 
-                    if(!smsCount) return;
-
-                    $('#smsCache #contact_container').remove();
+                    if(!smsElements) return;
 
                     const smsFolder = document.getElementById('smsFolder');
                     smsFolder.textContent = '';
 
-                    for(let i = smsCount; i > 0; i--) {
+                    for(const sms of smsElements) {
+
                         const div = document.createElement('div');
                             div.classList.add('sms');
 
-                        const displace = (i - 1) * 12;
+                        const timestamp = document.createElement('div');
+                            timestamp.textContent = Array.from($(sms).find('.details')[0].children).find(el => el.textContent === 'Data:').nextSibling.textContent.trim().replaceAll('/', '-');
+                            timestamp.classList.add('timestamp');
+                        div.append(timestamp);
 
-                        const timestamp = $('#smsCache').children().eq(4 + displace).children()[0];
-                            timestamp.classList.add('timestamp')
-                            div.append(timestamp);
-
-                        const smsContent = $('#smsCache .message_content')[i - 1];
+                        const smsContent = document.createElement('p');
                             smsContent.classList.add('smsContent');
-                            div.append(smsContent);
+                            smsContent.textContent = $(sms).find('div.info.clearfix')[0].nextSibling.textContent.trim();
+                        div.append(smsContent);
 
-                        if($('#smsCache').children().eq(5 + displace).children().eq(1).children().first().hasClass('icon-arrow-up')) {
+
+                        if(sms.classList.contains('itemOut')) {
                             div.classList.add('message');
 
-                            const errorElement = $('#smsCache .detail_area').eq(i - 1).find('tbody')[0];
-
-                            const deliveryStatus = errorElement.children[3].children[2].innerText;
-                            const status = errorElement.children[4].children[2].innerText;
+                            const deliveryStatus = Array.from($(sms).find('.details')[0].children).find(el => el.textContent === 'Status modemu:').nextSibling.textContent.trim();;
+                            const status = Array.from($(sms).find('.details')[0].children).find(el => el.textContent === 'Kod statusu:').nextSibling.textContent.trim();;
 
                             if(deliveryStatus !== 'DeliveryOK' && status !== '-1') {
                                 div.classList.add('error');
@@ -244,15 +245,19 @@
 
                         const smsContainer = $('#smsContainer');
                         const fetchedSms = document.querySelectorAll('#smsFolder .sms');
+                        const fetchedSmsLength = fetchedSms.length;
                         const isContainerEmpty = !$('#smsContainer').children().length;
-                        for(let i = 0; i < smsCountDifference; i++) {
+
+                        for(let i = 1; i <= smsCountDifference; i++) {
+                            const newSms = fetchedSms[fetchedSmsLength - i];
+
                             if(isContainerEmpty) {
-                                smsContainer.prepend(fetchedSms[i])
+                                smsContainer.prepend(newSms);
                             } else {
-                                smsContainer.append(fetchedSms[i])
+                                smsContainer.append(newSms);
                             }
 
-                            if(fetchedSms[i].classList.contains('message')) addResendBtn(fetchedSms[i]);
+                            if(newSms.classList.contains('message')) addResendBtn(newSms);
                         }
 
                         scrollDown();
@@ -584,7 +589,56 @@
             const templateContainer = document.createElement('div');
                 templateContainer.id = 'templateContainer';
 
+            const header = document.createElement('h5');
 
+            const headerTitle = document.createElement('p');
+                headerTitle.innerText = 'Presety';
+
+            const newCategory = document.createElement('i');
+                newCategory.classList.add('isb-text_document', 'newCategory');
+                newCategory.title = 'Nowa kategoria';
+
+            newCategory.addEventListener('click', () => {
+                if(document.querySelector('.inputContainer')) return
+
+                const inputContainer = document.createElement('div');
+                    inputContainer.classList.add('inputContainer');
+
+                const input = document.createElement('input');
+                    input.placeholder = 'Nazwa nowej kategorii...';
+
+                const acceptBtn = document.createElement('button');
+                    acceptBtn.classList.add('btn', 'acceptBtn');
+                    acceptBtn.innerText = 'Dodaj';
+
+                inputContainer.append(input, acceptBtn);
+                header.appendChild(inputContainer);
+
+                acceptBtn.addEventListener('click', () => {
+                    const templateData = GM_getValue('templateData');
+                    if(!templateData) GM_setValue('templateData', {lastId: 0, templateGroups: []} )
+
+                    const newId = templateData.lastId + 1;
+                    templateData.lastId = newId;
+                    templateData.templateGroups.push({name: input.value, templates: [], id: newId});
+
+                    GM_setValue('templateData', templateData);
+
+                    inputContainer.parentElement.removeChild(inputContainer);
+                })
+
+                input.focus()
+            })
+
+            header.append(headerTitle, newCategory);
+
+            templateContainer.appendChild(header);
+
+
+            return templateContainer
+        }
+
+        function addTemplate(data) {
 
         }
 
@@ -593,6 +647,8 @@
             stylesheet.type = "text/css";
 
             const switchSize = 11.5;
+            const templateWidth = 300;
+            const headerHeight = 40;
 
             stylesheet.textContent = `
                 #navigationInput {
@@ -641,15 +697,14 @@
                 }
                 .timestamp {
                     position: absolute;
-                    font-size: .85em;
-                    font-weight: 300;
+                    font-size: .88em;
                     bottom: 0;
                     right: 8px;
                 }
                 .smsContent {
                     overflow-wrap: break-word;
-                    font-weight: 700;
-                    margin-right: 55px;
+                    font-weight: 600;
+                    margin: 3px 55px 5px 10px;
                 }
                 .message.error {
                     background-color: #F95;
@@ -661,6 +716,7 @@
                     margin: 0;
                 }
                 #container {
+                    position: relative;
                     width: 750px;
                     margin-left: calc(50% - 375px);
                 }
@@ -768,6 +824,56 @@
                 .switch input:hover ~ input:checked ~ .toggle-outside .toggle-inside {
                 left: ${2.25 * switchSize}px;
                 }
+                #templateContainer {
+                    background-color: white;
+                    position: absolute;
+                    right: -${templateWidth + 50}px;
+                    top: 0;
+                    width: ${templateWidth}px;
+                    text-align: center;
+                    height: 610px;
+                    border: 1px solid #ccc;
+                    border-top: 0;
+                }
+
+                #templateContainer h5 {
+                    border-bottom: 1px solid #ccc;
+                    margin: 0;
+                    height: ${headerHeight}px;
+                    line-height: ${headerHeight}px;
+                }
+
+                #templateContainer h5 p {
+                    margin: 0;
+                }
+
+                #templateContainer h5 i {
+                    position: absolute;
+                    cursor: pointer;
+                    padding: 5px;
+                }
+
+                #templateContainer h5 .newCategory {
+                    top: 7px;
+                    right: 11px;
+                }
+
+                #templateContainer .inputContainer {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                }
+
+                #templateContainer input {
+                    margin:0;
+                    padding: 2px;
+                    flex: 70%;
+                }
+
+                #templateContainer .acceptBtn {
+                    margin:0;
+                }
+
             `;
 
             document.querySelector('head').appendChild(stylesheet);
