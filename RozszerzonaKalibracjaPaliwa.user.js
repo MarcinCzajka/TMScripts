@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Rozszerzona Kalibracja Paliwa
 // @namespace    https://github.com/MarcinCzajka
-// @version      1.21.2
+// @version      2.0.1
 // @description  Dodanie dodatkowych funkcji do kalibracji paliwa
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
 // @author       MAC
 // @match        */api/fuel/main/calibration/*
+// @match        */api/fuel/main/chart/*
 // @grant        none
 // @include      */api/fuel/main/calibration/*
 // ==/UserScript==
@@ -14,39 +15,13 @@
 (function() {
     'use strict';
 
-    let intervalCount = 1;
-    const checkForConfirmedEvents = setInterval(function(){
-        console.log('Scanning for events: ' + intervalCount);
-        if(intervalCount > 2) clearInterval(checkForConfirmedEvents);
+    if(!window.location.href.includes('/api/fuel/main/calibration/')) return
 
-        const eventStatuses = $("#fuel_chart").contents().find("img.invoice_report_status");
-        if(eventStatuses[0]) {
-            for(let i = 0; i < eventStatuses.length; i++) {
-                if(eventStatuses[i].title !== 'status w raporcie: niepotwierdzone') {
-                    alert('Wątek zawiera wyjaśnione zdarzenia.');
-
-                    clearInterval(checkForConfirmedEvents);
-                    break;
-                };
-            };
-        } else {
-            const fueldropStatuses = $("#fuel_chart").contents().find("img.invoice_report_status_fueldrop");
-            if(fueldropStatuses[0]) {
-                for(let i = 0; i < fueldropStatuses.length; i++) {
-                    if(fueldropStatuses[i].title !== 'status w raporcie: niepotwierdzone') {
-                        alert('Wątek zawiera wyjaśnione zdarzenia.');
-
-                        clearInterval(checkForConfirmedEvents);
-                        break;
-                    };
-                };
-            };
-        };
-
-        intervalCount++;
-    }, 2000);
-
-
+    window.onConfirmedEvents = function() {
+        const saveCalibration = document.getElementById('save_calibration');
+        saveCalibration.style.filter = 'sepia() saturate(10000%) hue-rotate(16deg)';
+        saveCalibration.title = 'Wątek zawiera wyjaśnione zdarzenia';
+    }
 
 	const fueltanksCount = document.getElementsByClassName('canvas-container').length / 2;
 	for(let index = 1, panelsCount = 1; index <= 6; index++) {
@@ -127,15 +102,10 @@
 
     function makePoints(obj, textboxId) {
 
-        const addValue = parseInt($(`#${textboxId}`).val() || 0);
+        const addValue = parseInt($(`#${textboxId}`).val().split(' ')[0] || 0);
+        const offset = parseInt($(`#${textboxId}`).val().split(' ')[1] || 0)
 
-        const points = [
-            [0,300],
-            [75, 225 + addValue],
-            [150, 150],
-            [225, 75 - addValue],
-            [300,0]
-        ];
+        const points = volvoCalibration(addValue, offset)
 
         setPoints(obj, points);
     };
@@ -157,9 +127,9 @@
         const bottomX = 225 - +value;
         const bottomY = 75 - +value;
         const offsetX = (topX / 2) + +offset;
-        const offsetY = (topY + (topX / 2)) - +offset;
+        const offsetY = (topY + (topX / 2));
         const bottomOffsetX = bottomX + (topX - offsetX);
-        const bottomOffsetY = bottomY - (topX - offsetX);
+        const bottomOffsetY = bottomY - (topX / 2);
 
         return [
             [0,300],
@@ -180,3 +150,59 @@
     };
 
 })();
+
+//Operations on iframe
+(function() {
+    'use strict';
+
+    if(window.location.href.includes('/api/fuel/main/calibration/')) return
+
+    const iframe = document.querySelector('iframe#fuel_chart');
+    const iframeWindow = iframe ? iframe.contentWindow : window;
+    const iframeDocument = iframe ? iframe.contentDocument : document;
+
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if(mutation.addedNodes[0]?.classList?.contains('newDot')) {
+                const newDot = mutation.addedNodes[0];
+                const sizeElement = iframeDocument.querySelector('#chart canvas.dygraph-rangesel-fgcanvas');
+
+                const newLine = iframeDocument.createElement('div');
+                newLine.style = `position: absolute; pointer-events: none; border-bottom: 1px #ff5959 dashed; top: 25%; left: -${(newDot.style.left.slice(0, -2) - sizeElement.style.left.slice(0, -2)) - 10}px; width: ${sizeElement.style.width};`;
+
+                newDot.append(newLine);
+            }
+
+        })
+    })
+
+    observer.observe(iframeDocument.querySelector('body'), {childList: true});
+
+    //Edition will be turned off by default
+    const fixBugObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if(mutation.addedNodes[0]?.id === 'chart') {
+                checkForConfirmedEvents();
+
+                if(iframeDocument.getElementById('edition')?.checked) iframeDocument.getElementById('edition').click();
+                fixBugObserver.disconnect();
+            }
+        })
+    })
+
+    fixBugObserver.observe(iframeDocument.getElementById('container'), {childList: true, subtree: true});
+    //-//
+
+    function checkForConfirmedEvents() {
+        if(window.parent?.onConfirmedEvents) {
+            if(iframeDocument.querySelector('img[src$="tick_green_small.png"')) iframeWindow.parent.onConfirmedEvents()
+        }
+    }
+
+    //Show advanced settings on minut key click
+    $(window).keypress(({keyCode}) => {if(keyCode === 45) $('.advanced_setting').css({'display': 'inline-block'})})
+
+})();
+
+
+
