@@ -1,7 +1,7 @@
 	// ==UserScript==
 	// @name         Presety - Dane Administracyjne
 	// @namespace    https://github.com/MarcinCzajka
-	// @version      2.28.8
+	// @version      2.28.9
 	// @description  Dodaje buttony z gotowymi ustawieniami
 	// @author       MAC
 	// @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/PresetyDaneAdministracyjne.user.js
@@ -98,7 +98,7 @@
 			click("#sposob_gener_zdarzen4");
 			click("#rejestruj_obroty2");
 			click("#tachometr_w_pojezdzie3");
-			click("#gen_zdarzen_predkosc1");
+			click("#gen_zdarzen_predkosc2");
 
 			if(!fuelCapacity) {
 				const fallbackCapacity = 999
