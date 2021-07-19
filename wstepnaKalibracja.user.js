@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wstępna kalibracja pojazdu
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.29.26
+// @version      2.29.27
 // @description  Wstępne założenie kartoteki pojazdu
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/wstepnaKalibracja.user.js
@@ -295,14 +295,14 @@
 			type: "POST",
 			data: data,
 			success: function () {
-				setSuccessFeed('Pobrano dane źródłowe', positiveSvg, feedbackUrl)
-				asyncCounter.next()
+				setSuccessFeed('Pobrano dane źródłowe', positiveSvg, feedbackUrl);
+				asyncCounter.next();
 			},
 			error: function (err) {
 				const errorMessage = JSON.parse(err.responseText).error.message;
-				setSuccessFeed('Pobrano dane źródłowe', negativeSvg, feedbackUrl)
+				setSuccessFeed('Pobrano dane źródłowe', negativeSvg, feedbackUrl);
 				displayError(errorMessage);
-				asyncCounter.next()
+				asyncCounter.next();
 			}
 		});
 	};
@@ -450,7 +450,7 @@
 			'stacyjka': 1,
 			'sposob_gener_zdarzen': (isChecked('can_c') ? 4 : 1),
 			'algorithm_version': 5,
-			'gen_zdarzen_predkosc': 1,
+			'gen_zdarzen_predkosc': (isChecked('spn84_c') ? 2 : 1),
 			'wywlaszczenie_zdarzenia': 1000,
 			'poprawnosc_tacho_id': (isChecked('can_c') ? 1 : 0), //Sprawdzanie poprawności pracy tachografu (0 - brak, 1 - CAN)
 			'min_napiecie_stacji': (isTruck ? 21 : 12),
