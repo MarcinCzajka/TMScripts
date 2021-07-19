@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rozszerzona Kalibracja Paliwa
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.0.2
+// @version      2.0.3
 // @description  Dodanie dodatkowych funkcji do kalibracji paliwa
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/RozszerzonaKalibracjaPaliwa.user.js
@@ -196,7 +196,7 @@
 
     function checkForConfirmedEvents() {
         if(window.parent?.onConfirmedEvents) {
-            if(iframeDocument.querySelector('img[src$="tick_green_small.png"')) iframeWindow.parent.onConfirmedEvents()
+            if(iframeDocument.querySelector('img[src$="tick_green_small.png"][class^="invoice_report_status"]')) iframeWindow.parent.onConfirmedEvents()
         }
     }
 
