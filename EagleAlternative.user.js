@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.17.24
+// @version      2.18.24
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -12,6 +12,7 @@
 // @include      *.pl/record/*
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_deleteValue
 // @run-at document-end
 // ==/UserScript==
 
@@ -131,7 +132,7 @@
 
             createInputPanel();
 
-            //container.appendChild( createTemplates() )
+            container.appendChild( createTemplates() )
 
             createContainerShadow();
 
@@ -586,6 +587,9 @@
         }
 
         function createTemplates() {
+
+            if(!GM_getValue('templateData')) GM_setValue('templateData', {lastId: 0, templateGroups: []} )
+
             const templateContainer = document.createElement('div');
                 templateContainer.id = 'templateContainer';
 
@@ -599,6 +603,9 @@
                 newCategory.title = 'Nowa kategoria';
 
             newCategory.addEventListener('click', () => {
+                const newMessageTemlateInputContainer = document.querySelector('#templateContainer .inputContainer.newMessageTemplate');
+                if(newMessageTemlateInputContainer) newMessageTemlateInputContainer.remove();
+
                 if(document.querySelector('.inputContainer')) return
 
                 const inputContainer = document.createElement('div');
@@ -612,19 +619,26 @@
                     acceptBtn.innerText = 'Dodaj';
 
                 inputContainer.append(input, acceptBtn);
-                header.appendChild(inputContainer);
+
+                templateContainer.insertBefore(inputContainer, header.nextSibling);
 
                 acceptBtn.addEventListener('click', () => {
+                    if(!input.value) return
+
                     const templateData = GM_getValue('templateData');
-                    if(!templateData) GM_setValue('templateData', {lastId: 0, templateGroups: []} )
 
                     const newId = templateData.lastId + 1;
                     templateData.lastId = newId;
-                    templateData.templateGroups.push({name: input.value, templates: [], id: newId});
+
+                    const newTemplate = {name: input.value, templates: [], id: newId};
+
+                    templateData.templateGroups.push(newTemplate);
 
                     GM_setValue('templateData', templateData);
 
                     inputContainer.parentElement.removeChild(inputContainer);
+
+                    appendTemplate(newTemplate, document.getElementById('templatesList'));
                 })
 
                 input.focus()
@@ -634,12 +648,105 @@
 
             templateContainer.appendChild(header);
 
+            const templates = generateTemplates(GM_getValue('templateData').templateGroups);
+            templateContainer.appendChild(templates);
 
             return templateContainer
         }
 
-        function addTemplate(data) {
+        function appendTemplate(template, container) {
+            const element = document.createElement('div');
+            element.classList.add('templateWrapper');
 
+            const header = document.createElement('header');
+            const title = document.createElement('h4');
+            title.textContent = template.name;
+
+            const newMessage = document.createElement('i');
+            newMessage.classList.add('icon-plus-sign');
+
+            newMessage.addEventListener('click', () => {
+                const newMessageTemlateInputContainer = document.querySelector('#templateContainer .inputContainer.newMessageTemplate');
+                if(newMessageTemlateInputContainer) newMessageTemlateInputContainer.remove();
+
+                const temlateInputContainer = document.querySelector('#templateContainer .inputContainer');
+                if(temlateInputContainer) temlateInputContainer.remove();
+
+                const inputContainer = document.createElement('div');
+                inputContainer.classList.add('inputContainer', 'newMessageTemplate');
+
+                const input = document.createElement('input');
+                input.placeholder = 'Nowa komenda SMS...';
+
+                const acceptBtn = document.createElement('button');
+                acceptBtn.classList.add('btn', 'acceptBtn');
+                acceptBtn.innerText = 'Zapisz';
+
+                acceptBtn.addEventListener('click', () => {
+                    if(!input.value) return
+
+                    const templateId = template.id;
+                    const templateData = GM_getValue('templateData');
+
+                    for(const template of templateData.templateGroups) {
+                        if(templateId === template.id) {
+                            template.templates.push(input.value);
+                            break
+                        }
+                    }
+
+                    GM_setValue('templateData', templateData);
+
+                    inputContainer.parentElement.removeChild(inputContainer);
+
+                    const message = document.createElement('li');
+                    message.classList.add('messageTemplate');
+                    message.textContent = input.value;
+
+                    message.addEventListener('click', () => {
+                        document.getElementById('textarea').value = input.value;
+                    });
+
+                    element.children[1].append(message);
+                })
+
+                inputContainer.append(input, acceptBtn);
+
+                element.insertBefore(inputContainer, element.nextSibling);
+            })
+
+            header.append(title, newMessage);
+            element.appendChild(header);
+
+            const messageList = document.createElement('ul');
+            element.appendChild(messageList);
+
+            if(template.templates?.length) {
+                for(const messageTemplate of template.templates) {
+                    const message = document.createElement('li');
+                    message.classList.add('messageTemplate');
+                    message.textContent = messageTemplate;
+
+                    message.addEventListener('click', () => {
+                        document.getElementById('textarea').value = messageTemplate;
+                    });
+
+                    messageList.append(message);
+                }
+            }
+
+            container.appendChild(element);
+        }
+
+        function generateTemplates(data) {
+            const container = document.createElement('div');
+            container.id = 'templatesList';
+
+            for(const template of data) {
+                appendTemplate(template, container);
+            }
+
+            return container
         }
 
         function addStylesheet() {
@@ -830,13 +937,13 @@
                     right: -${templateWidth + 50}px;
                     top: 0;
                     width: ${templateWidth}px;
-                    text-align: center;
                     height: 610px;
                     border: 1px solid #ccc;
                     border-top: 0;
                 }
 
                 #templateContainer h5 {
+                    text-align: center;
                     border-bottom: 1px solid #ccc;
                     margin: 0;
                     height: ${headerHeight}px;
@@ -862,6 +969,7 @@
                     display: flex;
                     flex-wrap: wrap;
                     width: 100%;
+                    float: none;
                 }
 
                 #templateContainer input {
@@ -872,6 +980,29 @@
 
                 #templateContainer .acceptBtn {
                     margin:0;
+                }
+
+                #templateContainer .templateWrapper header {
+                    display: flex;
+                }
+
+                #templateContainer .templateWrapper ul {
+                    list-style: none;
+                }
+
+                #templateContainer .templateWrapper ul li {
+                    cursor: pointer;
+                    line-height: 15px;
+                    margin: 0 10px 6px 0;
+                }
+
+                #templateContainer .templateWrapper header h4 {
+                    margin: 10px;
+                }
+
+                #templateContainer .templateWrapper header i {
+                    align-self: center;
+                    cursor: pointer;
                 }
 
             `;
