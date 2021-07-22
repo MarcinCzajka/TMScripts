@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.18.28
+// @version      2.19.27
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -476,7 +476,7 @@
                 const seconds = date.getSeconds().toString();
 
                 const formattedDate = hours + ":" + (minutes.length === 1 ? '0' + minutes : minutes) + ":" + (seconds.length === 1 ? '0' + seconds : seconds);
-                $('#lastUpdateDate').text('Last update: ' + formattedDate);
+                $('#lastUpdateDate').text('Ostatnia aktualizacja: ' + formattedDate);
             }
 
             function createContainerShadow() {
@@ -791,19 +791,95 @@
         }
 
         function editTemplate(e) {
-            const templateElement = e.target.parentElement.parentElement;
-            const templateId = +templateElement.dataset.templateId;
+            const templateWrapper = e.target.parentElement.parentElement;
+            const templateId = +templateWrapper.dataset.templateId;
 
-            const templateData = GM_getValue('templateData');
+            templateWrapper.classList.add('edit');
 
-            for(let i = 0; i < templateData.templateGroups.length; i ++) {
-                if(templateData.templateGroups[i].id === templateId) {
-                    console.log(templateData.templateGroups[i])
-                    break
-                }
+            const acceptChangesButton = document.createElement('i');
+                acceptChangesButton.classList.add('icon-ok', 'editButton');
+            const declineChangesButton = document.createElement('i');
+                declineChangesButton.classList.add('icon-remove', 'editButton');
+
+            templateWrapper.children[0].append(acceptChangesButton, declineChangesButton);
+
+            const header = templateWrapper.children[0].children[0];
+
+            const headerEdit = document.createElement('input');
+                headerEdit.value = header.innerText;
+
+            header.parentElement.insertBefore(headerEdit, header);
+
+            const messagesList = templateWrapper.children[1];
+
+            const editInputList = [];
+
+            for(const li of messagesList.children) {
+                const messageEditElement = document.createElement('input');
+                    messageEditElement.value = li.innerText;
+
+                editInputList.push(messageEditElement);
             }
 
-            GM_setValue('templateData', templateData)
+            messagesList.append(...editInputList);
+
+            acceptChangesButton.addEventListener('click', () => {
+                if(!headerEdit.value) {
+                    headerEdit.classList.add('error');
+                    return
+                }
+
+                const templateData = GM_getValue('templateData');
+
+                for(const template of templateData.templateGroups) {
+                    if(template.id === templateId) {
+                        template.name = headerEdit.value;
+
+                        const newTemplates = [];
+                        for(const input of editInputList) {
+                            if(input.value) newTemplates.push(input.value);
+                        }
+
+                        template.templates = newTemplates;
+                    }
+                }
+
+                GM_setValue('templateData', templateData);
+
+                header.innerText = headerEdit.value;
+
+                while (messagesList.firstChild) {
+                    messagesList.removeChild(messagesList.lastChild);
+                }
+
+                for(const input of editInputList) {
+                    if(input.value) {
+                        console.log(input.value)
+                        const newLi = document.createElement('li');
+                            newLi.classList.add('messageTemplate');
+                            newLi.innerText = input.value;
+
+                        messagesList.appendChild(newLi);
+                    }
+                }
+
+                endEdition();
+            })
+
+            declineChangesButton.addEventListener('click', endEdition)
+
+            function endEdition() {
+                acceptChangesButton.remove();
+                declineChangesButton.remove();
+                headerEdit.remove();
+
+                for(const input of editInputList) {
+                    input.remove();
+                }
+
+                templateWrapper.classList.remove('edit');
+            }
+
         }
 
         function generateTemplates(data) {
@@ -1087,8 +1163,32 @@
                     margin-left: 7px;
                 }
 
-                .templateWrapper .icon-cog {
-                    display: none !important;
+                .templateWrapper.edit i:not(.editButton) {
+                    display: none;
+                }
+
+                #templateContainer .templateWrapper.edit ul li {
+                    display: none;
+                }
+
+                #templateContainer .templateWrapper.edit header h4 {
+                    display: none;
+                }
+
+                #templateContainer .templateWrapper.edit header input {
+                    flex: none;
+                    width: 75%;
+                    margin: 5px;
+                }
+
+                #templateContainer input {
+                    border-radius: 3px;
+                    border: 1px solid black;
+                    margin: -1px;
+                }
+
+                #templateContainer input.error {
+                    border: 1px solid red;
                 }
 
             `;
