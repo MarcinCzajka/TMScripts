@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.18.25
+// @version      2.18.27
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -622,7 +622,12 @@
 
                 templateContainer.insertBefore(inputContainer, header.nextSibling);
 
-                acceptBtn.addEventListener('click', () => {
+                acceptBtn.addEventListener('click', onInput)
+                $(input).keypress((e) => {
+                    if(e.keyCode === 13 && !e.shiftKey) onInput();
+                })
+
+                function onInput() {
                     if(!input.value) return
 
                     const templateData = GM_getValue('templateData');
@@ -639,7 +644,7 @@
                     inputContainer.parentElement.removeChild(inputContainer);
 
                     appendTemplate(newTemplate, document.getElementById('templatesList'));
-                })
+                }
 
                 input.focus()
             })
@@ -683,7 +688,12 @@
                 acceptBtn.classList.add('btn', 'acceptBtn');
                 acceptBtn.innerText = 'Zapisz';
 
-                acceptBtn.addEventListener('click', () => {
+                acceptBtn.addEventListener('click', onInput);
+                $(input).keypress((e) => {
+                    if(e.keyCode === 13 && !e.shiftKey) onInput();
+                })
+
+                function onInput() {
                     if(!input.value) return
 
                     const templateId = template.id;
@@ -709,7 +719,7 @@
                     });
 
                     element.children[1].append(message);
-                })
+                }
 
                 inputContainer.append(input, acceptBtn);
 
@@ -720,7 +730,11 @@
                 deleteIcon.classList.add('icon-trash');
                 deleteIcon.addEventListener('click', deleteTemplate);
 
-            header.append(title, newMessage, deleteIcon);
+            const editIcon = document.createElement('i');
+                editIcon.classList.add('icon-cog');
+                editIcon.addEventListener('click', editTemplate);
+
+            header.append(title, newMessage, deleteIcon, editIcon);
             element.appendChild(header);
 
             const messageList = document.createElement('ul');
@@ -750,7 +764,6 @@
             const templateId = +templateElement.dataset.templateId;
 
             const templateData = GM_getValue('templateData');
-            const templatesArray = templateData.templateGroups;
 
             for(let i = 0; i < templateData.templateGroups.length; i ++) {
                 if(templateData.templateGroups[i].id === templateId) {
@@ -761,6 +774,22 @@
 
             GM_setValue('templateData', templateData)
             templateElement.remove();
+        }
+
+        function editTemplate(e) {
+            const templateElement = e.target.parentElement.parentElement;
+            const templateId = +templateElement.dataset.templateId;
+
+            const templateData = GM_getValue('templateData');
+
+            for(let i = 0; i < templateData.templateGroups.length; i ++) {
+                if(templateData.templateGroups[i].id === templateId) {
+                    templateData.templateGroups[i]
+                    break
+                }
+            }
+
+            GM_setValue('templateData', templateData)
         }
 
         function generateTemplates(data) {
