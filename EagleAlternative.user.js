@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.19.27
+// @version      2.19.28
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -761,7 +761,9 @@
                     message.textContent = messageTemplate;
 
                     message.addEventListener('click', () => {
-                        document.getElementById('textarea').value = messageTemplate;
+                        const textarea = document.getElementById('textarea');
+                        textarea.value = messageTemplate;
+                        textarea.focus();
                     });
 
                     messageList.append(message);
