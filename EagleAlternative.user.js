@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.18.27
+// @version      2.18.28
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -602,7 +602,9 @@
                 newCategory.classList.add('isb-text_document', 'newCategory');
                 newCategory.title = 'Nowa kategoria';
 
-            newCategory.addEventListener('click', () => {
+            newCategory.addEventListener('click', (e) => {
+                e.stopPropagation();
+
                 const newMessageTemlateInputContainer = document.querySelector('#templateContainer .inputContainer.newMessageTemplate');
                 if(newMessageTemlateInputContainer) newMessageTemlateInputContainer.remove();
 
@@ -644,9 +646,14 @@
                     inputContainer.parentElement.removeChild(inputContainer);
 
                     appendTemplate(newTemplate, document.getElementById('templatesList'));
+
+                    document.querySelector('body').removeEventListener('click', e => {closeOnClickOutsideOfElement(inputContainer)});
                 }
 
-                input.focus()
+                document.querySelector('body').addEventListener('click', e => {closeOnClickOutsideOfElement(inputContainer)});
+                inputContainer.addEventListener('click', (e) => {e.stopPropagation()})
+
+                input.focus();
             })
 
             header.append(headerTitle, newCategory);
@@ -671,7 +678,9 @@
             const newMessage = document.createElement('i');
                 newMessage.classList.add('icon-plus-sign');
 
-            newMessage.addEventListener('click', () => {
+            newMessage.addEventListener('click', (e) => {
+                e.stopPropagation();
+
                 const newMessageTemlateInputContainer = document.querySelector('#templateContainer .inputContainer.newMessageTemplate');
                 if(newMessageTemlateInputContainer) newMessageTemlateInputContainer.remove();
 
@@ -719,9 +728,14 @@
                     });
 
                     element.children[1].append(message);
+
+                    document.querySelector('body').removeEventListener('click', e => {closeOnClickOutsideOfElement(inputContainer)});
                 }
 
                 inputContainer.append(input, acceptBtn);
+
+                document.querySelector('body').addEventListener('click', e => {closeOnClickOutsideOfElement(inputContainer)});
+                inputContainer.addEventListener('click', (e) => {e.stopPropagation()})
 
                 element.parentElement.insertBefore(inputContainer, element.nextSibling);
             })
@@ -784,7 +798,7 @@
 
             for(let i = 0; i < templateData.templateGroups.length; i ++) {
                 if(templateData.templateGroups[i].id === templateId) {
-                    templateData.templateGroups[i]
+                    console.log(templateData.templateGroups[i])
                     break
                 }
             }
@@ -801,6 +815,11 @@
             }
 
             return container
+        }
+
+        function closeOnClickOutsideOfElement(element) {
+            document.querySelector('body').removeEventListener('click', closeOnClickOutsideOfElement);
+            if(element) element.remove();
         }
 
         function addStylesheet() {
@@ -1066,6 +1085,10 @@
                     align-self: center;
                     cursor: pointer;
                     margin-left: 7px;
+                }
+
+                .templateWrapper .icon-cog {
+                    display: none !important;
                 }
 
             `;
