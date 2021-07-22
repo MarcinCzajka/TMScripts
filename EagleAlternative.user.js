@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Eagle Alternative
 // @namespace    https://github.com/MarcinCzajka
-// @version      2.18.24
+// @version      2.18.25
 // @description  Overlay for Kalkun integration
 // @downloadURL https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
 // @updateURL   https://github.com/MarcinCzajka/TMScripts/raw/master/EagleAlternative.user.js
@@ -596,7 +596,7 @@
             const header = document.createElement('h5');
 
             const headerTitle = document.createElement('p');
-                headerTitle.innerText = 'Presety';
+                headerTitle.innerText = 'Templates';
 
             const newCategory = document.createElement('i');
                 newCategory.classList.add('isb-text_document', 'newCategory');
@@ -656,14 +656,15 @@
 
         function appendTemplate(template, container) {
             const element = document.createElement('div');
-            element.classList.add('templateWrapper');
+                element.classList.add('templateWrapper');
+                element.dataset.templateId = template.id;
 
             const header = document.createElement('header');
             const title = document.createElement('h4');
-            title.textContent = template.name;
+                title.textContent = template.name;
 
             const newMessage = document.createElement('i');
-            newMessage.classList.add('icon-plus-sign');
+                newMessage.classList.add('icon-plus-sign');
 
             newMessage.addEventListener('click', () => {
                 const newMessageTemlateInputContainer = document.querySelector('#templateContainer .inputContainer.newMessageTemplate');
@@ -712,10 +713,14 @@
 
                 inputContainer.append(input, acceptBtn);
 
-                element.insertBefore(inputContainer, element.nextSibling);
+                element.parentElement.insertBefore(inputContainer, element.nextSibling);
             })
 
-            header.append(title, newMessage);
+            const deleteIcon = document.createElement('i');
+                deleteIcon.classList.add('icon-trash');
+                deleteIcon.addEventListener('click', deleteTemplate);
+
+            header.append(title, newMessage, deleteIcon);
             element.appendChild(header);
 
             const messageList = document.createElement('ul');
@@ -736,6 +741,26 @@
             }
 
             container.appendChild(element);
+        }
+
+        function deleteTemplate( e ) {
+            if (!confirm('Czy na pewno chcesz usunąć grupę? Wszystkie szablony w grupie zostaną utracone.')) return
+
+            const templateElement = e.target.parentElement.parentElement;
+            const templateId = +templateElement.dataset.templateId;
+
+            const templateData = GM_getValue('templateData');
+            const templatesArray = templateData.templateGroups;
+
+            for(let i = 0; i < templateData.templateGroups.length; i ++) {
+                if(templateData.templateGroups[i].id === templateId) {
+                    templateData.templateGroups.splice(i, 1);
+                    break
+                }
+            }
+
+            GM_setValue('templateData', templateData)
+            templateElement.remove();
         }
 
         function generateTemplates(data) {
@@ -940,6 +965,14 @@
                     height: 610px;
                     border: 1px solid #ccc;
                     border-top: 0;
+                    overflow-x: hidden;
+                    overflow-y: scroll;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+
+                #templateContainer::-webkit-scrollbar {
+                    display: none;
                 }
 
                 #templateContainer h5 {
@@ -997,12 +1030,13 @@
                 }
 
                 #templateContainer .templateWrapper header h4 {
-                    margin: 10px;
+                    margin: 10px 5px 10px 10px;
                 }
 
                 #templateContainer .templateWrapper header i {
                     align-self: center;
                     cursor: pointer;
+                    margin-left: 7px;
                 }
 
             `;
