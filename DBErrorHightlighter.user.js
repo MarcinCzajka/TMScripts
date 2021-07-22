@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GPS Data Hightlighter
 // @namespace    https://github.com/MarcinCzajka
-// @version      0.10.11
+// @version      0.10.12
 // @description  Mark data in table that seems suspicious
 // @author       MAC
 // @downloadURL  https://github.com/MarcinCzajka/TMScripts/raw/master/DBErrorHightlighter.user.js
@@ -40,6 +40,7 @@ let blackboxProducer = '';
 
         loopThroughColumn("Szerokość", lokalizacja);
         loopThroughColumn("Satelity", satelity);
+        loopThroughColumn("Sygnał GSM", lowGsmSignal);
         loopThroughColumn("Stacyjka", ignitionMatchVoltage);
         loopThroughColumn("Stacyjka", ignitionMatchDigital);
         loopThroughColumn("Nap. aku.", napAku);
@@ -75,6 +76,12 @@ function satelity(el) {
         markError(el, 'Brak połączonych satelit');
     } else if(+el.innerText < 4) {
         markAlert(el, `Tylko ${el.innerText} połączone satelity.`);
+    }
+}
+
+function lowGsmSignal(el) {
+    if(+el.innerText < 14) {
+        markAlert(el, 'Słaby sygnał GSM');
     }
 }
 
